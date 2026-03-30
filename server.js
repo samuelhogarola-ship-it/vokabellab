@@ -21,13 +21,14 @@ app.get("/api/vocabulario", async (req, res) => {
       database_id: DATABASE_ID,
     });
 
-    const palabras = response.results.map(page => {
-      return {
-        aleman: page.properties["Alemán"]?.title?.[0]?.plain_text || "",
-        espanol: page.properties["Español"]?.rich_text?.[0]?.plain_text || "",
-        categoria: page.properties["Categoría"]?.select?.name || "Vocabulario"
-      };
-    });
+   const palabras = response.results.map(page => {
+  return {
+    aleman: page.properties["Alemán"]?.title?.[0]?.plain_text || "",
+    espanol: page.properties["Español"]?.rich_text?.[0]?.plain_text || "",
+    categoria: page.properties["Categoría"]?.select?.name || "Vocabulario",
+    frase: page.properties["Frase"]?.rich_text?.[0]?.plain_text || ""
+  };
+});
 
     res.json({ palabras });
 
