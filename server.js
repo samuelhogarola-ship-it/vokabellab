@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
-import { Client } from "@notionhq/client";
 import dotenv from "dotenv";
+import { createClient } from "@supabase/supabase-js";
 
 dotenv.config();
 
@@ -9,37 +9,39 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const notion = new Client({
-  auth: process.env.NOTION_API_KEY,
-});
-
-const DATABASE_ID = process.env.NOTION_DB_ID;
+// 👇 NUEVO (sustituye Notion)
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_ANON_KEY
+);
 
 app.get("/api/vocabulario", async (req, res) => {
   try {
-    const response = await notion.databases.query({
-      database_id: DATABASE_ID,
-    });
+    const { data, error } = await supabase
+      .from("vocabulario")
+      .select("aleman, espanol, categoria, frase");
 
-   const palabras = response.results.map(page => {
-  return {
-    aleman: page.properties["Alemán"]?.title?.[0]?.plain_text || "",
-    espanol: page.properties["Español"]?.rich_text?.[0]?.plain_text || "",
-    categoria: page.properties["Categoría"]?.select?.name || "Vocabulario",
-    frase: page.properties["Frase"]?.rich_text?.[0]?.plain_text || ""
-  };
-});
+    if (error) {
+      console.error("Error Supabase:", error);
+      return res.status(500).json({ error: "Error al obtener vocabulario" });
+    }
+
+    const palabras = (data || []).map((item) => ({
+      aleman: item.aleman || "",
+      espanol: item.espanol || "",
+      categoria: item.categoria || "Vocabulario",
+      frase: item.frase || "",
+    }));
 
     res.json({ palabras });
-
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Error leyendo Notion" });
+    console.error("Error servidor:", error);
+    res.status(500).json({ error: "Error interno" });
   }
 });
 
+// 👇 ESTO NO LO TOCAS (lo dejas como estaba)
 const PORT = process.env.PORT || 3000;
-
 app.listen(PORT, () => {
-  console.log(`Servidor en puerto ${PORT}`);
+  console.log(`Servidor corriendo en puerto ${PORT}`);
 });
