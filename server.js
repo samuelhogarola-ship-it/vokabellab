@@ -22,7 +22,11 @@ app.get("/api/vocabulario", async (req, res) => {
 
     if (error) {
       console.error("Error Supabase:", error);
-      return res.status(500).json({ error: "Error al obtener vocabulario" });
+      return res.status(500).json({
+        error: error.message,
+        details: error.details,
+        hint: error.hint
+      });
     }
 
     const palabras = (data || []).map((item) => ({
@@ -35,7 +39,7 @@ app.get("/api/vocabulario", async (req, res) => {
     res.json({ palabras });
   } catch (error) {
     console.error("Error servidor:", error);
-    res.status(500).json({ error: "Error interno" });
+    res.status(500).json({ error: String(error) });
   }
 });
 
