@@ -18,7 +18,7 @@ app.get("/api/vocabulario", async (req, res) => {
   try {
     const { data, error } = await supabase
       .from("vocabulario")
-      .select('*');
+      .select('id,"Alemán","Categoría","Español","Frase",nivel');
 
     if (error) {
       console.error("Error Supabase:", error);
@@ -30,6 +30,7 @@ app.get("/api/vocabulario", async (req, res) => {
       espanol: item["Español"] || "",
       categoria: item["Categoría"] || "Vocabulario",
       frase: item["Frase"] || "",
+      nivel: item.nivel || ""
     }));
 
     res.json({ palabras });
