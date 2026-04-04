@@ -18,22 +18,24 @@ app.get("/api/vocabulario", async (req, res) => {
   try {
     const { data, error } = await supabase
       .from("vocabulario")
-      .select('*')
-      .limit(5);
+      .select('*');
 
     if (error) {
       console.error("Error Supabase:", error);
-      return res.status(500).json({
-        error: error.message,
-        details: error.details,
-        hint: error.hint
-      });
+      return res.status(500).json({ error: "Error al obtener vocabulario" });
     }
 
-    res.json({ ok: true, data });
+    const palabras = (data || []).map((item) => ({
+      aleman: item["Alemán"] || "",
+      espanol: item["Español"] || "",
+      categoria: item["Categoría"] || "Vocabulario",
+      frase: item["Frase"] || "",
+    }));
+
+    res.json({ palabras });
   } catch (error) {
     console.error("Error servidor:", error);
-    res.status(500).json({ error: String(error) });
+    res.status(500).json({ error: "Error interno" });
   }
 });
 
