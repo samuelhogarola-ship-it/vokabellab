@@ -1,0 +1,2416 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vokabel Lab | Práctica de vocabulario en alemán</title>
+  <meta name="description" content="Practica vocabulario de alemán por temas con tarjetas, escritura y test en Vokabel Lab."/>
+  <link rel="canonical" href="https://www.vokabellab.com/"/>
+  <meta property="og:title" content="Vokabel Lab | Práctica de vocabulario en alemán"/>
+  <meta property="og:description" content="Tu laboratorio de vocabulario en formato pop-up para repasar alemán de forma visual y rápida."/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://www.vokabellab.com/"/>
+  <meta property="og:image" content="https://www.vokabellab.com/logo.png"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Lato', arial, sans-serif;
+      background: #ffffff;
+      color: #1b1b1b;
+      min-height: 100vh;
+      font-size: 16px;
+    }
+
+    /* ── TOP BAR ── */
+    .topbar {
+      text-align: center;
+      padding: 8px 20px;
+      font-size: 13px;
+      color: #5e5e5e;
+      border-bottom: 1px solid #ebebeb;
+    }
+
+    /* ── NAVBAR ── */
+    nav {
+      background: #ffffff;
+      border-bottom: 1px solid #e8e8e8;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .nav-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: center;
+      padding: 0 24px; height: 54px; gap: 6px;
+    }
+    .nav-inner a, .nav-inner button {
+      font-family: 'Lato', sans-serif;
+      font-size: 12px; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      color: #1b1b1b; text-decoration: none;
+      background: none; border: none; cursor: pointer;
+      padding: 8px 14px;
+      transition: color .15s;
+    }
+    .nav-inner a:hover, .nav-inner button:hover { color: #3AA9AB; }
+    .nav-inner .nav-active { color: #3AA9AB; }
+    .nav-sep { color: #ddd; font-size: 11px; }
+
+    /* ── LAYOUT ── */
+    .page { max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px; display: flex; gap: 48px; }
+    .content { flex: 1; min-width: 0; }
+    .sidebar { width: 280px; flex-shrink: 0; }
+    @media (max-width: 768px) { .page { flex-direction: column; } .sidebar { width: 100%; } }
+
+    /* ── BREADCRUMB ── */
+    .breadcrumb {
+      font-size: 13px; color: #3AA9AB; margin-bottom: 28px;
+      cursor: pointer; display: flex; align-items: center; gap: 4px;
+    }
+    .breadcrumb:hover { text-decoration: underline; }
+
+    /* ── SECTION TITLE ── */
+    .section-heading {
+      font-family: 'Cabin', sans-serif;
+      font-size: 22px; font-weight: 700; color: #1b1b1b;
+      margin-bottom: 6px;
+    }
+    .section-sub { font-size: 14px; color: #5e5e5e; margin-bottom: 28px; }
+
+    /* ── HORIZONTAL RULE ── */
+    hr { border: none; border-top: 1px solid #e8e8e8; margin: 28px 0; }
+
+    /* ── THEMA GRID ── */
+    .thema-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1px; background: #e8e8e8; border: 1px solid #e8e8e8; margin-bottom: 32px; }
+    .thema-card {
+      background: #fff; padding: 24px 20px;
+      cursor: pointer; transition: background .15s;
+      text-align: left;
+    }
+    .thema-card:hover { background: #f6f6f6; }
+    .thema-card.sel   { background: #f0fafa; }
+    .t-num  { font-family: 'Cabin', sans-serif; font-size: 13px; font-weight: 700; color: #3AA9AB; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+    .t-name { font-family: 'Cabin', sans-serif; font-size: 15px; font-weight: 700; color: #1b1b1b; margin-bottom: 4px; }
+    .t-cnt  { font-size: 12px; color: #a4a4a4; }
+
+    /* ── MODE CARDS ── */
+    .mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: #e8e8e8; border: 1px solid #e8e8e8; margin-bottom: 40px; }
+    @media (max-width: 500px) { .mode-grid { grid-template-columns: 1fr; } }
+    .mode-card {
+      background: #fff; padding: 32px 28px;
+      cursor: pointer; transition: background .15s;
+    }
+    .mode-card:hover { background: #f6f6f6; }
+    .mode-icon { font-size: 28px; margin-bottom: 12px; }
+    .mode-label { font-family: 'Cabin', sans-serif; font-size: 17px; font-weight: 700; color: #1b1b1b; margin-bottom: 8px; }
+    .mode-desc  { font-size: 14px; color: #5e5e5e; line-height: 1.6; }
+    .mode-tag   { display: inline-block; margin-top: 12px; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #3AA9AB; }
+
+    /* ── CHIP / FILTER ── */
+    .filter-label { font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #5e5e5e; margin-bottom: 10px; }
+    .chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+    .chip {
+      font-family: 'Lato', sans-serif; font-size: 13px;
+      padding: 6px 14px; border: 1px solid #d0d0d0;
+      background: #fff; color: #5e5e5e; cursor: pointer;
+      transition: all .15s; user-select: none;
+    }
+    .chip:hover { border-color: #3AA9AB; color: #3AA9AB; }
+    .chip.sel   { background: #3AA9AB; border-color: #3AA9AB; color: #fff; font-weight: 700; }
+
+    /* ── ADV SUMMARY ── */
+    .adv-box {
+      background: #f6f6f6; border-left: 3px solid #3AA9AB;
+      padding: 14px 18px; font-size: 14px; color: #5e5e5e;
+      line-height: 1.6; margin-bottom: 20px;
+    }
+    .adv-box strong { color: #1b1b1b; }
+
+    /* ── BUTTONS ── */
+    .btn {
+      font-family: 'Lato', sans-serif; font-size: 12px; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      border: none; padding: 14px 32px; cursor: pointer;
+      transition: background .18s;
+    }
+    .btn-teal    { background: #3AA9AB; color: #fff; }
+    .btn-teal:hover { background: #2C8182; }
+    .btn-outline { background: #fff; color: #1b1b1b; border: 1px solid #1b1b1b; }
+    .btn-outline:hover { background: #f6f6f6; }
+    .btn:disabled { background: #e0e0e0; color: #aaa; cursor: not-allowed; }
+    .btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+
+    /* ── STATS ROW ── */
+    .stats-row { display: flex; gap: 1px; background: #e8e8e8; border: 1px solid #e8e8e8; margin-bottom: 32px; }
+    .stat-box { background: #fff; padding: 18px 20px; flex: 1; text-align: center; }
+    .stat-n { font-family: 'Cabin', sans-serif; font-size: 28px; font-weight: 700; color: #3AA9AB; }
+    .stat-l { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #a4a4a4; margin-top: 2px; }
+
+    /* ── PROGRESS BAR ── */
+    .prog-wrap { height: 3px; background: #e8e8e8; margin-bottom: 4px; }
+    .prog-fill  { height: 100%; background: #3AA9AB; transition: width .6s; }
+    .prog-label { font-size: 12px; color: #a4a4a4; text-align: right; margin-bottom: 24px; }
+
+    /* ── FLASHCARD ── */
+    .card-wrap { perspective: 1000px; margin-bottom: 20px; }
+    .card {
+      width: 100%; height: 200px; position: relative;
+      transform-style: preserve-3d; transition: transform .5s;
+      cursor: pointer;
+    }
+    .card.flipped { transform: rotateY(180deg); }
+    .card-face {
+      position: absolute; inset: 0;
+      backface-visibility: hidden;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center; text-align: center;
+      padding: 28px 36px;
+      border: 1px solid #e8e8e8;
+    }
+    .card-front { background: #f6f6f6; }
+    .card-back  { background: #3AA9AB; color: #fff; transform: rotateY(180deg); }
+
+    .c-badges { position: absolute; top: 14px; display: flex; gap: 8px; justify-content: space-between; width: calc(100% - 28px); }
+    .c-badge  { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #a4a4a4; }
+    .c-badge.teal { color: #3AA9AB; }
+    .c-word   { font-family: 'Cabin', sans-serif; font-size: 28px; font-weight: 700; color: #1b1b1b; }
+    .c-hint   { font-size: 12px; color: #a4a4a4; margin-top: 8px; letter-spacing: .5px; }
+    .c-trans  { font-family: 'Cabin', sans-serif; font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+    .c-ex     { font-size: 13px; font-style: italic; opacity: .9; line-height: 1.5; }
+    .c-type   { font-size: 11px; opacity: .75; margin-top: 6px; letter-spacing: 1px; text-transform: uppercase; }
+
+    /* ── CARD NAV ── */
+    .card-nav { display: flex; gap: 12px; justify-content: center; align-items: center; margin-bottom: 32px; }
+    .btn-no  { border: 1px solid #1b1b1b; background: #fff; color: #1b1b1b; }
+    .btn-no:hover  { background: #1b1b1b; color: #fff; }
+    .btn-yes { background: #3AA9AB; color: #fff; border: 1px solid #3AA9AB; }
+    .btn-yes:hover { background: #2C8182; border-color: #2C8182; }
+    .c-counter { font-size: 13px; color: #a4a4a4; min-width: 60px; text-align: center; }
+
+    /* ── WORD LIST ── */
+    .word-table { width: 100%; border-collapse: collapse; }
+    .word-table th {
+      font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+      color: #a4a4a4; padding: 0 16px 10px; text-align: left; border-bottom: 1px solid #e8e8e8;
+    }
+    .word-table td { padding: 13px 16px; border-bottom: 1px solid #f0f0f0; font-size: 14px; color: #5e5e5e; }
+    .word-table tr:hover td { background: #f6f6f6; }
+    .td-de { font-family: 'Cabin', sans-serif; font-weight: 700; color: #1b1b1b; font-size: 15px; }
+    .lvl-badge { font-size: 10px; font-weight: 700; letter-spacing: 1px; padding: 3px 8px; text-transform: uppercase; }
+    .lvl-A { background: #e8f5e9; color: #2e7d32; }
+    .lvl-B { background: #fff8e1; color: #f57f17; }
+    .lvl-C { background: #fce4ec; color: #c62828; }
+    .dom-yes { color: #3AA9AB; font-weight: 700; font-size: 13px; }
+    .dom-no  { color: #a4a4a4; font-size: 13px; }
+
+    /* ── SIDEBAR ── */
+    .sidebar-box { border: 1px solid #e8e8e8; padding: 24px; margin-bottom: 24px; }
+    .sidebar-title { font-family: 'Cabin', sans-serif; font-size: 15px; font-weight: 700; color: #1b1b1b; margin-bottom: 14px; }
+    .sidebar-stat { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f0f0f0; font-size: 14px; }
+    .sidebar-stat:last-child { border-bottom: none; }
+    .sidebar-stat span:first-child { color: #5e5e5e; }
+    .sidebar-stat span:last-child  { font-weight: 700; color: #1b1b1b; }
+    .sidebar-stat .teal { color: #3AA9AB; }
+
+    /* ── HERO ── */
+    .hero-popup {
+      position: relative;
+      margin-bottom: 32px;
+      padding: 34px;
+      border: 1px solid rgba(17, 56, 57, 0.12);
+      background:
+        radial-gradient(circle at top left, rgba(58,169,171,0.22), transparent 34%),
+        radial-gradient(circle at bottom right, rgba(248,197,57,0.20), transparent 30%),
+        linear-gradient(145deg, #fffef9 0%, #f4fbfb 52%, #eef7f7 100%);
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(17, 56, 57, 0.12);
+    }
+    .hero-popup::before,
+    .hero-popup::after {
+      content: '';
+      position: absolute;
+      border-radius: 999px;
+      background: rgba(58,169,171,0.08);
+      filter: blur(4px);
+    }
+    .hero-popup::before {
+      width: 220px; height: 220px;
+      top: -90px; right: -90px;
+    }
+    .hero-popup::after {
+      width: 160px; height: 160px;
+      bottom: -70px; left: -50px;
+    }
+    .hero-popup-inner {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(260px, 360px);
+      gap: 26px;
+      align-items: center;
+    }
+    .hero-copy {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .hero-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      color: #1f6f70;
+      background: rgba(58,169,171,0.12);
+      border: 1px solid rgba(58,169,171,0.16);
+    }
+    .hero-popup h1 {
+      font-family: 'Cabin', sans-serif;
+      font-size: clamp(32px, 5vw, 56px);
+      line-height: .94;
+      color: #102526;
+      max-width: 10ch;
+    }
+    .hero-popup p {
+      max-width: 56ch;
+      font-size: 16px;
+      line-height: 1.7;
+      color: #486364;
+    }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 4px;
+    }
+    .hero-note {
+      font-size: 12px;
+      letter-spacing: .6px;
+      text-transform: uppercase;
+      color: #759091;
+    }
+    .hero-card {
+      position: relative;
+      justify-self: center;
+      width: min(100%, 340px);
+      padding: 16px;
+      background: rgba(255,255,255,0.82);
+      border: 1px solid rgba(16,37,38,0.08);
+      box-shadow: 0 20px 40px rgba(16,37,38,0.16);
+      transform: rotate(3deg);
+      backdrop-filter: blur(8px);
+    }
+    .hero-card::before {
+      content: 'Live Preview';
+      position: absolute;
+      top: -12px;
+      left: 18px;
+      padding: 5px 10px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      color: #fff;
+      background: #102526;
+    }
+    .hero-card img {
+      width: 100%;
+      display: block;
+      background: #fff;
+    }
+    .hero-card-shadow {
+      position: absolute;
+      inset: 22px -10px -14px 18px;
+      background: linear-gradient(180deg, rgba(58,169,171,0.18), rgba(248,197,57,0.15));
+      z-index: -1;
+      transform: rotate(-6deg);
+    }
+    @media (max-width: 860px) {
+      .hero-popup { padding: 26px 22px; }
+      .hero-popup-inner { grid-template-columns: 1fr; }
+      .hero-copy { order: 2; }
+      .hero-card {
+        order: 1;
+        transform: rotate(0deg);
+        width: min(100%, 300px);
+      }
+      .hero-card-shadow { transform: rotate(-3deg); }
+      .hero-popup h1 { max-width: 100%; }
+    }
+
+    /* ── EMPTY ── */
+    .empty { text-align: center; padding: 60px 20px; }
+    .empty-icon { font-size: 40px; margin-bottom: 16px; }
+    .empty-text { font-family: 'Cabin', sans-serif; font-size: 18px; font-weight: 700; color: #1b1b1b; margin-bottom: 8px; }
+    .empty-sub  { font-size: 14px; color: #5e5e5e; }
+
+    /* ── TABS ── */
+    .tabs { display: flex; gap: 0; border-bottom: 2px solid #e8e8e8; margin-bottom: 28px; }
+    .tab-btn {
+      font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+      padding: 12px 20px; background: none; border: none; cursor: pointer;
+      color: #a4a4a4; border-bottom: 2px solid transparent; margin-bottom: -2px;
+      transition: all .15s;
+    }
+    .tab-btn:hover { color: #1b1b1b; }
+    .tab-btn.active { color: #3AA9AB; border-bottom-color: #3AA9AB; }
+
+    /* ── ESCRIBIR ── */
+    .write-word {
+      font-family: 'Cabin', sans-serif; font-size: 32px; font-weight: 700;
+      color: #1b1b1b; text-align: center; padding: 36px 24px 28px;
+      border: 1px solid #e8e8e8; background: #f6f6f6; margin-bottom: 16px;
+    }
+    .write-badges { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; }
+    .write-input {
+      width: 100%; padding: 14px 16px; font-family: 'Lato', sans-serif;
+      font-size: 16px; border: 1.5px solid #d0d0d0; outline: none;
+      transition: border-color .15s; color: #1b1b1b;
+    }
+    .write-input:focus { border-color: #3AA9AB; }
+    .write-input.correct { border-color: #3AA9AB; background: #f0fafa; }
+    .write-input.wrong   { border-color: #e76f51; background: #fdf3f0; }
+    .write-feedback {
+      margin-top: 12px; padding: 12px 16px; font-size: 14px;
+      border-left: 3px solid; display: none;
+    }
+    .write-feedback.correct { border-color: #3AA9AB; background: #f0fafa; color: #2C8182; }
+    .write-feedback.wrong   { border-color: #e76f51; background: #fdf3f0; color: #c0392b; }
+    .write-btn-row { display: flex; gap: 10px; margin-top: 14px; }
+
+    /* ── MULTIPLE CHOICE ── */
+    .mc-word {
+      font-family: 'Cabin', sans-serif; font-size: 32px; font-weight: 700;
+      color: #1b1b1b; text-align: center; padding: 36px 24px 28px;
+      border: 1px solid #e8e8e8; background: #f6f6f6; margin-bottom: 20px;
+    }
+    .mc-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+    @media (max-width: 500px) { .mc-options { grid-template-columns: 1fr; } }
+    .mc-opt {
+      padding: 14px 18px; border: 1.5px solid #d0d0d0; background: #fff;
+      font-family: 'Lato', sans-serif; font-size: 14px; color: #1b1b1b;
+      cursor: pointer; text-align: left; transition: all .15s;
+    }
+    .mc-opt:hover:not(:disabled) { border-color: #3AA9AB; background: #f0fafa; }
+    .mc-opt.correct  { border-color: #3AA9AB; background: #f0fafa; color: #2C8182; font-weight: 700; }
+    .mc-opt.wrong    { border-color: #e76f51; background: #fdf3f0; color: #c0392b; }
+    .mc-opt.reveal   { border-color: #3AA9AB; background: #f0fafa; color: #2C8182; font-weight: 700; }
+    .mc-opt:disabled { cursor: default; }
+  </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">www.vokabellab.com &nbsp;|&nbsp; Laboratorio de vocabulario alemán</div>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="nav-inner">
+    <a href="#">Inicio</a>
+    <span class="nav-sep">|</span>
+    <button class="nav-active" onclick="goHome()">Práctica Alemán</button>
+    <span class="nav-sep">|</span>
+    <a href="#">Blog</a>
+    <span class="nav-sep">|</span>
+    <a href="#">Sobre mí</a>
+    <span class="nav-sep">|</span>
+    <a href="#">Servicios</a>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- HOME                                                   -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div id="s-home" class="page">
+  <div class="content">
+    <section class="hero-popup" id="heroImgWrap">
+      <div class="hero-popup-inner">
+        <div class="hero-copy">
+          <span class="hero-kicker">Vokabel Lab • Alemán con ritmo</span>
+          <h1>Tu laboratorio de vocabulario en formato pop-up</h1>
+          <p>Repasa por temas, mezcla tipos de palabra y convierte cada clase en una sesión rápida, visual y bastante más divertida de estudiar.</p>
+          <div class="hero-actions">
+            <button class="btn btn-teal" onclick="goScreen('s-simple')">Entrar al laboratorio</button>
+            <button class="btn btn-outline" onclick="goScreen('s-advanced')">Abrir modo avanzado</button>
+          </div>
+          <div class="hero-note">Práctica visual, tarjetas, escritura y test en una sola pantalla.</div>
+        </div>
+        <div class="hero-card">
+          <div class="hero-card-shadow"></div>
+          <img src="./logo.png" alt="Logo de Vokabel Lab"/>
+        </div>
+      </div>
+    </section>
+    <h1 class="section-heading">Práctica de vocabulario</h1>
+    <p class="section-sub">Elige cómo quieres repasar el vocabulario de tus clases de alemán.</p>
+    <hr>
+
+    <div class="mode-grid">
+      <div class="mode-card" onclick="goScreen('s-simple')">
+        <div class="mode-icon">📖</div>
+        <div class="mode-label">Tema completo</div>
+        <div class="mode-desc">Selecciona un Thema y practica todas sus palabras de una vez.</div>
+        <span class="mode-tag">Rápido y directo →</span>
+      </div>
+      <div class="mode-card" onclick="goScreen('s-advanced')">
+        <div class="mode-icon">🎯</div>
+        <div class="mode-label">Modo avanzado</div>
+        <div class="mode-desc">Combina varios temas y filtra por tipo de palabra: verbos, sustantivos, adjetivos…</div>
+        <span class="mode-tag">Control total →</span>
+      </div>
+    </div>
+
+    <div class="filter-label">Tu progreso</div>
+    <div class="stats-row" id="homeStats"></div>
+    <div class="prog-wrap"><div class="prog-fill" id="homeBar" style="width:0"></div></div>
+    <div class="prog-label" id="homeBarLabel"></div>
+  </div>
+
+  <div class="sidebar">
+    <div class="sidebar-box">
+      <div class="sidebar-title">Resumen por nivel</div>
+      <div id="sidebarLevels"></div>
+    </div>
+    <div class="sidebar-box" style="background:#f6f6f6; border-color:#e8e8e8">
+      <div style="font-size:13px; color:#5e5e5e; line-height:1.7">
+        Practica el vocabulario de tus clases con tarjetas interactivas. Marca las palabras que ya dominas y céntrate en las que necesitas repasar.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- TEMA COMPLETO                                          -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div id="s-simple" class="page" style="display:none">
+  <div class="content">
+    <div class="breadcrumb" onclick="goHome()">‹ Todas las secciones</div>
+    <h1 class="section-heading">Selecciona un Thema</h1>
+    <p class="section-sub">Haz clic en el tema que quieres repasar completo.</p>
+    <hr>
+    <div class="thema-grid" id="themaGrid"></div>
+  </div>
+  <div class="sidebar">
+    <div class="sidebar-box">
+      <div class="sidebar-title">Cómo funciona</div>
+      <div style="font-size:13px; color:#5e5e5e; line-height:1.8">
+        1. Elige un Thema<br>
+        2. Ves la palabra en alemán<br>
+        3. Piensa la respuesta<br>
+        4. Da la vuelta a la tarjeta<br>
+        5. Marca si la sabías o no
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- MODO AVANZADO                                          -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div id="s-advanced" class="page" style="display:none">
+  <div class="content">
+    <div class="breadcrumb" onclick="goHome()">‹ Todas las secciones</div>
+    <h1 class="section-heading">Modo avanzado</h1>
+    <p class="section-sub">Combina temas y tipos de palabra para una práctica personalizada.</p>
+    <hr>
+
+    <div class="filter-label">1 — Selecciona los temas</div>
+    <div class="chip-row" id="themaChips"></div>
+
+    <div class="filter-label">2 — Filtra por tipo de palabra <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#a4a4a4">(opcional — vacío = todos)</span></div>
+    <div class="chip-row" id="typeChips"></div>
+
+    <div class="adv-box" id="advSummary">Selecciona al menos un tema para ver el resumen.</div>
+
+    <div class="btn-row">
+      <button class="btn btn-teal" id="btnStart" onclick="startAdvanced()" disabled>Empezar práctica</button>
+      <button class="btn btn-outline" onclick="goHome()">Cancelar</button>
+    </div>
+  </div>
+  <div class="sidebar">
+    <div class="sidebar-box">
+      <div class="sidebar-title">Ejemplos de uso</div>
+      <div style="font-size:13px; color:#5e5e5e; line-height:1.9">
+        • Solo los <strong>verbos</strong> del Thema 2<br>
+        • Los <strong>sustantivos</strong> de Thema 1 y 3<br>
+        • Todo el vocabulario de Thema 4<br>
+        • Adjetivos de todos los temas
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- PRÁCTICA                                               -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div id="s-practice" class="page" style="display:none">
+  <div class="content">
+    <div class="breadcrumb" onclick="goHome()">‹ Todas las secciones</div>
+    <h1 class="section-heading" id="practiceTitle"></h1>
+    <p class="section-sub" id="practiceSub"></p>
+    <hr>
+
+    <!-- STATS (compartidas) -->
+    <div class="stats-row">
+      <div class="stat-box"><div class="stat-n" id="pTotal">0</div><div class="stat-l">palabras</div></div>
+      <div class="stat-box"><div class="stat-n" id="pDom">0</div><div class="stat-l">acertadas</div></div>
+      <div class="stat-box"><div class="stat-n" id="pRacha">0</div><div class="stat-l">racha</div></div>
+      <div class="stat-box"><div class="stat-n" id="pPct">—</div><div class="stat-l">% acierto</div></div>
+    </div>
+    <div class="prog-wrap"><div class="prog-fill" id="pBar" style="width:0"></div></div>
+    <div class="prog-label" id="pBarLabel" style="margin-bottom:20px"></div>
+
+    <div class="tabs">
+      <button class="tab-btn active" id="tab-write"  onclick="switchTab('write')">✏️ Escribir</button>
+      <button class="tab-btn"        id="tab-cards"  onclick="switchTab('cards')">🃏 Tarjetas</button>
+      <button class="tab-btn"        id="tab-mc"     onclick="switchTab('mc')">🎯 Test</button>
+      <button class="tab-btn"        id="tab-list"   onclick="switchTab('list')">📋 Lista</button>
+    </div>
+
+    <!-- ══ MODO 1: ESCRIBIR ══ -->
+    <div id="view-write">
+      <div class="write-word" id="w-de"></div>
+      <div class="write-badges" id="w-badges">
+        <span class="c-badge teal" id="w-type" style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#3AA9AB"></span>
+        <span class="c-badge"      id="w-thema" style="font-size:11px;color:#a4a4a4"></span>
+      </div>
+      <input class="write-input" id="w-input" type="text"
+             placeholder="Escribe la traducción en español…"
+             onkeydown="if(event.key==='Enter')checkWrite()"/>
+      <div class="write-feedback" id="w-feedback"></div>
+      <div class="write-btn-row">
+        <button class="btn btn-teal"    id="w-check" onclick="checkWrite()">Comprobar</button>
+        <button class="btn btn-outline" id="w-next"  onclick="nextWrite()" style="display:none">Siguiente →</button>
+        <span   class="c-counter"      id="w-counter" style="margin-left:auto;align-self:center"></span>
+      </div>
+      <div class="empty" id="writeEmpty" style="display:none">
+        <div class="empty-icon">🎉</div>
+        <div class="empty-text">¡Runde abgeschlossen!</div>
+        <div class="empty-sub" style="margin-bottom:24px">Has completado todas las palabras.</div>
+        <div class="btn-row" style="justify-content:center">
+          <button class="btn btn-teal" onclick="restartSession('write')">Repetir</button>
+          <button class="btn btn-outline" onclick="goHome()">Inicio</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ MODO 2: TARJETAS ══ -->
+    <div id="view-cards" style="display:none">
+      <div id="cardArea">
+        <div class="card-wrap">
+          <div class="card" id="flashcard" onclick="flipCard()">
+            <div class="card-face card-front">
+              <div class="c-badges">
+                <span class="c-badge" id="c-type"></span>
+                <span class="c-badge teal" id="c-thema"></span>
+              </div>
+              <div class="c-word" id="c-de"></div>
+              <div class="c-hint">Haz clic para ver la traducción</div>
+            </div>
+            <div class="card-face card-back">
+              <div class="c-trans" id="c-es"></div>
+              <div class="c-type"  id="c-cat"></div>
+            </div>
+          </div>
+        </div>
+        <div class="card-nav">
+          <button class="btn btn-no"  onclick="markCard(false)">✗ No lo sé</button>
+          <span   class="c-counter"   id="c-counter"></span>
+          <button class="btn btn-yes" onclick="markCard(true)">✓ Lo sé</button>
+        </div>
+      </div>
+      <div class="empty" id="cardEmpty" style="display:none">
+        <div class="empty-icon">🎉</div>
+        <div class="empty-text">¡Runde abgeschlossen!</div>
+        <div class="empty-sub" style="margin-bottom:24px">Has completado todas las tarjetas.</div>
+        <div class="btn-row" style="justify-content:center">
+          <button class="btn btn-teal" onclick="restartSession('cards')">Repetir</button>
+          <button class="btn btn-outline" onclick="goHome()">Inicio</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ MODO 3: TEST (MÚLTIPLE OPCIÓN) ══ -->
+    <div id="view-mc" style="display:none">
+      <div class="mc-word" id="mc-de"></div>
+      <div class="write-badges" id="mc-badges">
+        <span class="c-badge teal" id="mc-type" style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#3AA9AB"></span>
+        <span class="c-badge"      id="mc-thema" style="font-size:11px;color:#a4a4a4"></span>
+      </div>
+      <div class="mc-options" id="mc-options"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
+        <button class="btn btn-outline" id="mc-next" onclick="nextMC()" style="display:none">Siguiente →</button>
+        <span   class="c-counter"      id="mc-counter" style="margin-left:auto"></span>
+      </div>
+      <div class="empty" id="mcEmpty" style="display:none">
+        <div class="empty-icon">🎉</div>
+        <div class="empty-text">¡Runde abgeschlossen!</div>
+        <div class="empty-sub" style="margin-bottom:24px">Test completado.</div>
+        <div class="btn-row" style="justify-content:center">
+          <button class="btn btn-teal" onclick="restartSession('mc')">Repetir</button>
+          <button class="btn btn-outline" onclick="goHome()">Inicio</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ LISTA ══ -->
+    <div id="view-list" style="display:none">
+      <table class="word-table">
+        <thead><tr><th>Alemán</th><th>Español</th><th>Tipo</th><th>Lektion</th></tr></thead>
+        <tbody id="wordTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="sidebar">
+    <div class="sidebar-box">
+      <div class="sidebar-title">Esta sesión</div>
+      <div id="sessionSidebar"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<script>
+// ── DATOS (vendrán de tu BD) ────────────────────────────
+const words = [
+  {de:'die Landschaft',es:'paisaje',thema:1,type:'Nomen'},
+  {de:'die Tageszeiten',es:'las partes del día',thema:1,type:'Nomen'},
+  {de:'am Morgen',es:'por la mañana',thema:1,type:'Ausdruck'},
+  {de:'vormittags',es:'por la mañana (antes de mediodía)',thema:1,type:'Adjektiv/Adverb'},
+  {de:'der Mittag',es:'mediodía',thema:1,type:'Nomen'},
+  {de:'am Abend / nachts',es:'por la noche',thema:1,type:'Ausdruck'},
+  {de:'der Wochentag',es:'día de la semana',thema:1,type:'Nomen'},
+  {de:'der Donnerstag',es:'jueves',thema:1,type:'Nomen'},
+  {de:'die Jahreszeit',es:'estación del año',thema:1,type:'Nomen'},
+  {de:'der Frühling',es:'primavera',thema:1,type:'Nomen'},
+  {de:'das Datum',es:'fecha',thema:1,type:'Nomen'},
+  {de:'die Zeit',es:'tiempo',thema:1,type:'Nomen'},
+  {de:'die Uhrzeit / die Stunde',es:'hora',thema:1,type:'Nomen'},
+  {de:'der Termin',es:'cita',thema:1,type:'Nomen'},
+  {de:'der Kalender',es:'agenda',thema:1,type:'Nomen'},
+  {de:'der Tag',es:'día',thema:1,type:'Nomen'},
+  {de:'der Feiertag',es:'día festivo',thema:1,type:'Nomen'},
+  {de:'die Woche',es:'semana',thema:1,type:'Nomen'},
+  {de:'das Wochenende',es:'fin de semana',thema:1,type:'Nomen'},
+  {de:'Anfang Mai',es:'a principios de mayo',thema:1,type:'Nomen'},
+  {de:'heute',es:'hoy',thema:1,type:'Adjektiv/Adverb'},
+  {de:'der Ausflug',es:'excursión',thema:1,type:'Nomen'},
+  {de:'nach Hause gehen / zurückgehen',es:'ir (volver) a casa',thema:1,type:'Verb'},
+  {de:'das Restaurant',es:'restaurante',thema:1,type:'Nomen'},
+  {de:'der Park',es:'parque',thema:1,type:'Nomen'},
+  {de:'die Natur',es:'naturaleza',thema:1,type:'Nomen'},
+  {de:'das Wetter',es:'tiempo (meteorológico)',thema:1,type:'Nomen'},
+  {de:'der Regen',es:'lluvia',thema:1,type:'Nomen'},
+  {de:'die Sonne',es:'sol',thema:1,type:'Nomen'},
+  {de:'der Grad',es:'grado',thema:1,type:'Nomen'},
+  {de:'die Chefin',es:'jefa',thema:1,type:'Nomen'},
+  {de:'der Direktor',es:'director',thema:1,type:'Nomen'},
+  {de:'der Kollege / die Kollegin',es:'colega / compañera',thema:1,type:'Nomen'},
+  {de:'der Anfang',es:'comienzo',thema:1,type:'Nomen'},
+  {de:'der Freund',es:'amigo',thema:1,type:'Nomen'},
+  {de:'die Karte',es:'tarjeta',thema:1,type:'Nomen'},
+  {de:'die Mutter',es:'madre',thema:1,type:'Nomen'},
+  {de:'der Vater',es:'padre',thema:1,type:'Nomen'},
+  {de:'das Plakat',es:'cartel / pancarta',thema:1,type:'Nomen'},
+  {de:'die SMS',es:'SMS',thema:1,type:'Nomen'},
+  {de:'das Tier',es:'animal',thema:1,type:'Nomen'},
+  {de:'der Zettel',es:'papel (de nota)',thema:1,type:'Nomen'},
+  {de:'anfangen / beginnen',es:'empezar',thema:1,type:'Verb'},
+  {de:'besuchen',es:'visitar (también asistir a un curso)',thema:1,type:'Verb'},
+  {de:'finden',es:'encontrar',thema:1,type:'Verb'},
+  {de:'geben',es:'dar',thema:1,type:'Verb'},
+  {de:'hoffentlich',es:'ojalá',thema:1,type:'Adjektiv/Adverb'},
+  {de:'mit',es:'con',thema:1,type:'Adjektiv/Adverb'},
+  {de:'von … bis',es:'desde… hasta',thema:1,type:'Ausdruck'},
+  {de:'wann?',es:'¿Cuándo?',thema:1,type:'Adjektiv/Adverb'},
+  {de:'das Obst',es:'fruta',thema:2,type:'Nomen'},
+  {de:'die Orange',es:'naranja',thema:2,type:'Nomen'},
+  {de:'der Salat',es:'ensalada / lechuga',thema:2,type:'Nomen'},
+  {de:'die Zwiebel',es:'cebolla',thema:2,type:'Nomen'},
+  {de:'die Beilage',es:'guarnición',thema:2,type:'Nomen'},
+  {de:'die Kartoffel',es:'patata',thema:2,type:'Nomen'},
+  {de:'der Reis',es:'arroz',thema:2,type:'Nomen'},
+  {de:'der Käse',es:'queso',thema:2,type:'Nomen'},
+  {de:'der Emmentaler',es:'queso emmenthal',thema:2,type:'Nomen'},
+  {de:'die Milch',es:'leche',thema:2,type:'Nomen'},
+  {de:'das Brot',es:'pan',thema:2,type:'Nomen'},
+  {de:'das Brötchen',es:'panecillo',thema:2,type:'Nomen'},
+  {de:'der Kuchen',es:'pastel / bizcocho',thema:2,type:'Nomen'},
+  {de:'das Fleisch',es:'carne',thema:2,type:'Nomen'},
+  {de:'die Wurst',es:'salchicha / embutido',thema:2,type:'Nomen'},
+  {de:'das Salz',es:'sal',thema:2,type:'Nomen'},
+  {de:'der Zucker',es:'azúcar',thema:2,type:'Nomen'},
+  {de:'das Eis',es:'helado',thema:2,type:'Nomen'},
+  {de:'das Getränk',es:'bebida',thema:2,type:'Nomen'},
+  {de:'der Orangensaft',es:'zumo de naranja',thema:2,type:'Nomen'},
+  {de:'das Wasser',es:'agua',thema:2,type:'Nomen'},
+  {de:'einkaufen gehen',es:'ir de compras',thema:2,type:'Verb'},
+  {de:'der Einkauf',es:'la compra',thema:2,type:'Nomen'},
+  {de:'die Verkäuferin',es:'vendedora',thema:2,type:'Nomen'},
+  {de:'der Supermarkt',es:'supermercado',thema:2,type:'Nomen'},
+  {de:'das Angebot',es:'oferta',thema:2,type:'Nomen'},
+  {de:'der Preis',es:'precio',thema:2,type:'Nomen'},
+  {de:'die Dose',es:'lata',thema:2,type:'Nomen'},
+  {de:'die Flasche',es:'botella',thema:2,type:'Nomen'},
+  {de:'die Packung',es:'envase / paquete',thema:2,type:'Nomen'},
+  {de:'die Tafel',es:'tableta',thema:2,type:'Nomen'},
+  {de:'die Tüte',es:'bolsa',thema:2,type:'Nomen'},
+  {de:'die Eltern',es:'padres',thema:3,type:'Nomen'},
+  {de:'der Sohn',es:'hijo',thema:3,type:'Nomen'},
+  {de:'die Tante',es:'tía',thema:3,type:'Nomen'},
+  {de:'die Frau',es:'mujer / esposa',thema:3,type:'Nomen'},
+  {de:'der Arzt',es:'médico',thema:3,type:'Nomen'},
+  {de:'die Informatik',es:'informática',thema:3,type:'Nomen'},
+  {de:'kochen',es:'cocinar / hervir',thema:3,type:'Verb'},
+  {de:'aufwachen',es:'despertar',thema:3,type:'Verb'},
+  {de:'das Problem',es:'problema',thema:3,type:'Nomen'},
+  {de:'erzählen',es:'contar',thema:3,type:'Verb'},
+  {de:'vergleichen',es:'comparar',thema:3,type:'Verb'},
+  {de:'anders / verschieden',es:'diferente',thema:3,type:'Adjektiv/Adverb'},
+  {de:'möglich',es:'posible',thema:3,type:'Adjektiv/Adverb'},
+  {de:'nicht mehr',es:'ya no',thema:3,type:'Adjektiv/Adverb'},
+  {de:'alles',es:'todo',thema:3,type:'Adjektiv/Adverb'},
+  {de:'wenig',es:'poco',thema:3,type:'Adjektiv/Adverb'},
+  {de:'viel',es:'mucho',thema:3,type:'Adjektiv/Adverb'},
+  {de:'okay',es:'¡vale!',thema:3,type:'Adjektiv/Adverb'},
+  {de:'einverstanden',es:'de acuerdo',thema:3,type:'Verb'},
+  {de:'laufen',es:'andar; correr',thema:4,type:'Verb'},
+  {de:'das Fahrrad',es:'bicicleta',thema:4,type:'Nomen'},
+  {de:'Fahrrad fahren',es:'ir en bicicleta',thema:4,type:'Verb'},
+  {de:'schwimmen',es:'nadar',thema:4,type:'Verb'},
+  {de:'Fußball spielen',es:'jugar al fútbol',thema:4,type:'Verb'},
+  {de:'das Hobby',es:'hobby; afición',thema:4,type:'Nomen'},
+  {de:'ins Theater gehen',es:'ir al teatro',thema:4,type:'Verb'},
+  {de:'fernsehen',es:'ver la televisión',thema:4,type:'Verb'},
+  {de:'Klavier spielen',es:'tocar el piano',thema:4,type:'Verb'},
+  {de:'tanzen',es:'bailar',thema:4,type:'Verb'},
+  {de:'reisen',es:'viajar; turismo',thema:4,type:'Verb'},
+  {de:'Sport machen',es:'hacer deporte',thema:4,type:'Verb'},
+  {de:'das Fitnessstudio',es:'gimnasio',thema:4,type:'Nomen'},
+  {de:'das Team',es:'equipo',thema:4,type:'Nomen'},
+  {de:'das Spiel',es:'juego; partido',thema:4,type:'Nomen'},
+  {de:'spielen',es:'jugar',thema:4,type:'Verb'},
+  {de:'der Muskelkater',es:'agujetas',thema:4,type:'Nomen'},
+  {de:'der Start',es:'inicio; arranque',thema:4,type:'Nomen'},
+  {de:'das Ziel',es:'meta',thema:4,type:'Nomen'},
+  {de:'der Sieg',es:'victoria',thema:4,type:'Nomen'},
+  {de:'die Anzeige',es:'anuncio',thema:4,type:'Nomen'},
+  {de:'die Zeitung',es:'periódico',thema:4,type:'Nomen'},
+  {de:'das Kind',es:'niño',thema:4,type:'Nomen'},
+  {de:'der Jugendliche',es:'adolescente',thema:4,type:'Nomen'},
+  {de:'der Erwachsene',es:'adulto',thema:4,type:'Nomen'},
+  {de:'der Rentner',es:'jubilado',thema:4,type:'Nomen'},
+  {de:'das Gefühl',es:'sensación',thema:4,type:'Nomen'},
+  {de:'das Interesse',es:'interés',thema:4,type:'Nomen'},
+  {de:'die Sache / das Ding',es:'cosa; objeto',thema:4,type:'Nomen'},
+  {de:'der Schuh',es:'zapato',thema:4,type:'Nomen'},
+  {de:'der Schüler',es:'alumno',thema:4,type:'Nomen'},
+  {de:'bekommen / erhalten',es:'obtener; recibir',thema:4,type:'Verb'},
+  {de:'bezahlen',es:'pagar',thema:4,type:'Verb'},
+  {de:'erlauben',es:'permitir',thema:4,type:'Verb'},
+  {de:'verbieten',es:'prohibir',thema:4,type:'Verb'},
+  {de:'fahren',es:'ir (en vehículo)',thema:4,type:'Verb'},
+  {de:'funktionieren',es:'funcionar',thema:4,type:'Verb'},
+  {de:'schaffen',es:'crear algo; conseguir algo',thema:4,type:'Verb'},
+  {de:'schlafen',es:'dormir',thema:4,type:'Verb'},
+  {de:'suchen',es:'buscar',thema:4,type:'Verb'},
+  {de:'sich treffen',es:'encontrarse',thema:4,type:'Verb'},
+  {de:'wissen',es:'saber',thema:4,type:'Verb'},
+  {de:'begeistert',es:'entusiasmado',thema:4,type:'Adjektiv/Adverb'},
+  {de:'zufrieden',es:'contento',thema:4,type:'Verb'},
+  {de:'wunderbar',es:'maravilloso',thema:4,type:'Adjektiv/Adverb'},
+  {de:'jährlich',es:'anual',thema:4,type:'Adjektiv/Adverb'},
+  {de:'offen',es:'abierto',thema:4,type:'Adjektiv/Adverb'},
+  {de:'regelmäßig',es:'regularmente',thema:4,type:'Adjektiv/Adverb'},
+  {de:'gut',es:'bien; a gusto',thema:4,type:'Adjektiv/Adverb'},
+  {de:'besser',es:'mejor; más a gusto',thema:4,type:'Adjektiv/Adverb'},
+  {de:'schauen / ansehen',es:'mirar; contemplar',thema:5,type:'Verb'},
+  {de:'wechseln',es:'cambiar',thema:5,type:'Verb'},
+  {de:'breit',es:'ancho',thema:5,type:'Adjektiv/Adverb'},
+  {de:'richtig',es:'correcto',thema:5,type:'Adjektiv/Adverb'},
+  {de:'auf keinen Fall',es:'de ninguna manera',thema:5,type:'Ausdruck'},
+  {de:'bis',es:'hasta',thema:5,type:'Adjektiv/Adverb'},
+  {de:'wohnen',es:'residir; vivir',thema:5,type:'Verb'},
+  {de:'das Haus',es:'casa',thema:5,type:'Nomen'},
+  {de:'die Wohnung',es:'piso',thema:5,type:'Nomen'},
+  {de:'die WG',es:'piso compartido',thema:5,type:'Nomen'},
+  {de:'der Bewohner',es:'habitante',thema:5,type:'Nomen'},
+  {de:'der Mitbewohner',es:'compañero de piso',thema:5,type:'Nomen'},
+  {de:'die Miete',es:'alquiler',thema:5,type:'Nomen'},
+  {de:'der Mieter',es:'inquilino',thema:5,type:'Nomen'},
+  {de:'der Vermieter',es:'casero',thema:5,type:'Nomen'},
+  {de:'mieten',es:'alquilar',thema:5,type:'Verb'},
+  {de:'der Eingang',es:'entrada',thema:5,type:'Nomen'},
+  {de:'die Badewanne',es:'bañera',thema:5,type:'Nomen'},
+  {de:'das Fenster',es:'ventana',thema:5,type:'Nomen'},
+  {de:'einziehen',es:'mudarse (entrar)',thema:5,type:'Verb'},
+  {de:'ausziehen',es:'mudarse (salir)',thema:5,type:'Verb'},
+  {de:'möblieren',es:'amueblar',thema:5,type:'Verb'},
+  {de:'die Größe',es:'tamaño',thema:5,type:'Nomen'},
+  {de:'das Bett',es:'cama',thema:5,type:'Nomen'},
+  {de:'der Schrank',es:'armario',thema:5,type:'Nomen'},
+  {de:'der Küchentisch',es:'mesa de cocina',thema:5,type:'Nomen'},
+  {de:'das Glas',es:'vidrio',thema:5,type:'Nomen'},
+  {de:'die Nachricht',es:'noticia',thema:5,type:'Nomen'},
+  {de:'der Stau',es:'atasco',thema:5,type:'Nomen'},
+  {de:'abholen',es:'recoger',thema:5,type:'Verb'},
+  {de:'öffnen',es:'abrir',thema:5,type:'Verb'},
+  {de:'anrufen',es:'llamar',thema:5,type:'Verb'},
+  {de:'benutzen',es:'usar',thema:5,type:'Verb'},
+  {de:'beschreiben',es:'describir',thema:5,type:'Verb'},
+  {de:'denken / glauben',es:'pensar; creer',thema:5,type:'Verb'},
+  {de:'sprechen',es:'hablar',thema:5,type:'Verb'},
+  {de:'stehen',es:'estar de pie',thema:5,type:'Verb'},
+  {de:'vergessen',es:'olvidar',thema:5,type:'Verb'},
+  {de:'verwenden',es:'usar; emplear',thema:5,type:'Verb'},
+  {de:'billig',es:'barato',thema:5,type:'Adjektiv/Adverb'},
+  {de:'groß',es:'grande',thema:5,type:'Adjektiv/Adverb'},
+  {de:'frei',es:'libre',thema:5,type:'Adjektiv/Adverb'},
+  {de:'gesund',es:'sano',thema:5,type:'Adjektiv/Adverb'},
+  {de:'krank',es:'enfermo',thema:5,type:'Adjektiv/Adverb'},
+  {de:'kalt',es:'frío',thema:5,type:'Adjektiv/Adverb'},
+  {de:'spät',es:'tarde',thema:5,type:'Adjektiv/Adverb'},
+  {de:'gestern',es:'ayer',thema:5,type:'Verb'},
+  {de:'lange',es:'mucho tiempo',thema:5,type:'Adjektiv/Adverb'},
+  {de:'vielleicht',es:'quizás',thema:5,type:'Adjektiv/Adverb'},
+  {de:'zu teuer',es:'demasiado caro',thema:5,type:'Ausdruck'},
+  {de:'die Kleidung',es:'ropa; vestimenta',thema:6,type:'Nomen'},
+  {de:'die Hose',es:'pantalón',thema:6,type:'Nomen'},
+  {de:'der Mantel',es:'abrigo',thema:6,type:'Nomen'},
+  {de:'die Jacke',es:'chaqueta',thema:6,type:'Nomen'},
+  {de:'der Anzug',es:'traje',thema:6,type:'Nomen'},
+  {de:'das Hemd',es:'camisa',thema:6,type:'Nomen'},
+  {de:'die Bluse',es:'blusa',thema:6,type:'Nomen'},
+  {de:'der Rock',es:'falda',thema:6,type:'Nomen'},
+  {de:'die Unterhose',es:'calzoncillos',thema:6,type:'Nomen'},
+  {de:'die Socke',es:'calcetín',thema:6,type:'Nomen'},
+  {de:'der Gürtel',es:'cinturón',thema:6,type:'Nomen'},
+  {de:'der Handschuh',es:'guante',thema:6,type:'Nomen'},
+  {de:'die Mütze',es:'gorro',thema:6,type:'Nomen'},
+  {de:'die Farbe',es:'color',thema:6,type:'Nomen'},
+  {de:'rot',es:'rojo',thema:6,type:'Adjektiv/Adverb'},
+  {de:'schwarz',es:'negro',thema:6,type:'Adjektiv/Adverb'},
+  {de:'das Leder',es:'piel; cuero',thema:6,type:'Nomen'},
+  {de:'die Wolle',es:'lana',thema:6,type:'Nomen'},
+  {de:'waschen',es:'lavar',thema:6,type:'Verb'},
+  {de:'die Wäsche',es:'colada',thema:6,type:'Nomen'},
+  {de:'die Waschmaschine',es:'lavadora',thema:6,type:'Nomen'},
+  {de:'das Waschpulver',es:'detergente',thema:6,type:'Nomen'},
+  {de:'trocknen',es:'secar',thema:6,type:'Verb'},
+  {de:'öffnen',es:'abrir',thema:6,type:'Verb'},
+  {de:'schließen',es:'cerrar',thema:6,type:'Verb'},
+  {de:'einlaufen',es:'encogerse',thema:6,type:'Verb'},
+  {de:'die Angst',es:'miedo',thema:6,type:'Nomen'},
+  {de:'die Beschreibung',es:'descripción',thema:6,type:'Nomen'},
+  {de:'der Tee',es:'té',thema:6,type:'Nomen'},
+  {de:'der Besitzer',es:'propietario',thema:6,type:'Nomen'},
+  {de:'die Lösung',es:'solución',thema:6,type:'Nomen'},
+  {de:'die Notiz',es:'apunte; nota',thema:6,type:'Nomen'},
+  {de:'der Platz',es:'plaza; sitio',thema:6,type:'Nomen'},
+  {de:'der Traum',es:'sueño',thema:6,type:'Nomen'},
+  {de:'die Tür',es:'puerta',thema:6,type:'Nomen'},
+  {de:'der Wunsch',es:'deseo',thema:6,type:'Nomen'},
+  {de:'die Zeile',es:'línea; fila',thema:6,type:'Nomen'},
+  {de:'anfangen',es:'empezar',thema:6,type:'Verb'},
+  {de:'aufpassen',es:'prestar atención',thema:6,type:'Verb'},
+  {de:'bedeuten',es:'significar',thema:6,type:'Verb'},
+  {de:'einladen',es:'invitar',thema:6,type:'Verb'},
+  {de:'sich entschuldigen',es:'disculparse',thema:6,type:'Verb'},
+  {de:'erklären',es:'explicar',thema:6,type:'Verb'},
+  {de:'fernsehen',es:'ver la tele',thema:6,type:'Verb'},
+  {de:'sagen',es:'decir',thema:6,type:'Verb'},
+  {de:'träumen',es:'soñar',thema:6,type:'Verb'},
+  {de:'vermuten',es:'sospechar; suponer',thema:6,type:'Verb'},
+  {de:'versuchen',es:'intentar',thema:6,type:'Verb'},
+  {de:'fertig',es:'listo',thema:6,type:'Adjektiv/Adverb'},
+  {de:'langsam',es:'despacio',thema:6,type:'Adjektiv/Adverb'},
+  {de:'das Verkehrsmittel',es:'medio de transporte',thema:7,type:'Nomen'},
+  {de:'die Bahn',es:'tren',thema:7,type:'Nomen'},
+  {de:'die Straßenbahn',es:'tranvía',thema:7,type:'Nomen'},
+  {de:'zu Fuß gehen',es:'ir a pie',thema:7,type:'Verb'},
+  {de:'abbiegen',es:'girar',thema:7,type:'Verb'},
+  {de:'aussteigen',es:'bajarse',thema:7,type:'Verb'},
+  {de:'der Bahnhof',es:'estación',thema:7,type:'Nomen'},
+  {de:'die Fahrkarte',es:'billete',thema:7,type:'Nomen'},
+  {de:'der Ort',es:'lugar',thema:7,type:'Nomen'},
+  {de:'die Ecke',es:'esquina',thema:7,type:'Nomen'},
+  {de:'das Gebäude',es:'edificio',thema:7,type:'Nomen'},
+  {de:'die Kirche',es:'iglesia',thema:7,type:'Nomen'},
+  {de:'die Regierung',es:'gobierno',thema:7,type:'Nomen'},
+  {de:'der Turm',es:'torre',thema:7,type:'Nomen'},
+  {de:'besichtigen',es:'visitar; inspeccionar',thema:7,type:'Verb'},
+  {de:'der Stadtplan',es:'plano de la ciudad',thema:7,type:'Nomen'},
+  {de:'der Weg',es:'camino',thema:7,type:'Nomen'},
+  {de:'die Kreuzung',es:'cruce',thema:7,type:'Nomen'},
+  {de:'der Platz',es:'plaza',thema:7,type:'Nomen'},
+  {de:'die Wegbeschreibung',es:'indicaciones',thema:7,type:'Nomen'},
+  {de:'geradeaus',es:'todo recto',thema:7,type:'Adjektiv/Adverb'},
+  {de:'rechts',es:'derecha',thema:7,type:'Adjektiv/Adverb'},
+  {de:'links',es:'izquierda',thema:7,type:'Adjektiv/Adverb'},
+  {de:'das Bild',es:'imagen',thema:7,type:'Nomen'},
+  {de:'der Künstler',es:'artista',thema:7,type:'Nomen'},
+  {de:'das Gemälde',es:'pintura',thema:7,type:'Nomen'},
+  {de:'die Blume',es:'flor',thema:7,type:'Nomen'},
+  {de:'die Ehe',es:'matrimonio',thema:7,type:'Nomen'},
+  {de:'die Einladung',es:'invitación',thema:7,type:'Nomen'},
+  {de:'das Einkaufszentrum',es:'centro comercial',thema:7,type:'Nomen'},
+  {de:'das Ende',es:'final',thema:7,type:'Nomen'},
+  {de:'der Fehler',es:'error',thema:7,type:'Nomen'},
+  {de:'die Gegenwart',es:'presente',thema:7,type:'Nomen'},
+  {de:'die Vergangenheit',es:'pasado',thema:7,type:'Nomen'},
+  {de:'die Zukunft',es:'futuro',thema:7,type:'Nomen'},
+  {de:'das Geld',es:'dinero',thema:7,type:'Nomen'},
+  {de:'das Geschenk',es:'regalo',thema:7,type:'Nomen'},
+  {de:'beenden',es:'terminar',thema:7,type:'Verb'},
+  {de:'danken',es:'agradecer',thema:7,type:'Verb'},
+  {de:'gehören',es:'pertenecer',thema:7,type:'Verb'},
+  {de:'heiraten',es:'casarse',thema:7,type:'Verb'},
+  {de:'leben',es:'vivir',thema:7,type:'Verb'},
+  {de:'sterben',es:'morir',thema:7,type:'Verb'},
+  {de:'unterrichten',es:'enseñar',thema:7,type:'Verb'},
+  {de:'einfach',es:'simple',thema:7,type:'Adjektiv/Adverb'},
+  {de:'lustig',es:'divertido',thema:7,type:'Adjektiv/Adverb'},
+  {de:'traurig',es:'triste',thema:7,type:'Adjektiv/Adverb'},
+  {de:'früher',es:'antes',thema:7,type:'Adjektiv/Adverb'},
+  {de:'etwas',es:'algo',thema:7,type:'Adjektiv/Adverb'},
+  {de:'das nächste Mal',es:'la próxima vez',thema:7,type:'Nomen'},
+  {de:'die Suppe',es:'sopa',thema:8,type:'Nomen'},
+  {de:'das Huhn',es:'pollo',thema:8,type:'Nomen'},
+  {de:'das Öl',es:'aceite',thema:8,type:'Nomen'},
+  {de:'die Sauce',es:'salsa',thema:8,type:'Nomen'},
+  {de:'die Torte',es:'tarta',thema:8,type:'Nomen'},
+  {de:'die Zitrone',es:'limón',thema:8,type:'Nomen'},
+  {de:'die Birne',es:'pera',thema:8,type:'Nomen'},
+  {de:'bitter',es:'amargo',thema:8,type:'Adjektiv/Adverb'},
+  {de:'salzig',es:'salado',thema:8,type:'Adjektiv/Adverb'},
+  {de:'süß',es:'dulce',thema:8,type:'Adjektiv/Adverb'},
+  {de:'scharf',es:'picante',thema:8,type:'Adjektiv/Adverb'},
+  {de:'sauer',es:'ácido',thema:8,type:'Adjektiv/Adverb'},
+  {de:'fettig',es:'graso',thema:8,type:'Adjektiv/Adverb'},
+  {de:'die Speise',es:'plato (comida)',thema:8,type:'Nomen'},
+  {de:'die Nachspeise',es:'postre',thema:8,type:'Nomen'},
+  {de:'die Speisekarte',es:'carta',thema:8,type:'Nomen'},
+  {de:'der Gast',es:'cliente',thema:8,type:'Nomen'},
+  {de:'die Rechnung',es:'cuenta',thema:8,type:'Nomen'},
+  {de:'das Trinkgeld',es:'propina',thema:8,type:'Nomen'},
+  {de:'geschlossen sein',es:'estar cerrado',thema:8,type:'Verb'},
+  {de:'offen sein',es:'estar abierto',thema:8,type:'Verb'},
+  {de:'bestellen',es:'pedir',thema:8,type:'Verb'},
+  {de:'genießen',es:'disfrutar',thema:8,type:'Verb'},
+  {de:'die Gabel',es:'tenedor',thema:8,type:'Nomen'},
+  {de:'das Messer',es:'cuchillo',thema:8,type:'Nomen'},
+  {de:'der Teller',es:'plato',thema:8,type:'Nomen'},
+  {de:'die Tasse',es:'taza',thema:8,type:'Nomen'},
+  {de:'das Glas',es:'vaso',thema:8,type:'Nomen'},
+  {de:'das Weinglas',es:'copa de vino',thema:8,type:'Nomen'},
+  {de:'der Topf',es:'olla',thema:8,type:'Nomen'},
+  {de:'das Gericht',es:'plato preparado',thema:8,type:'Nomen'},
+  {de:'die Zubereitung',es:'preparación',thema:8,type:'Nomen'},
+  {de:'die Ablehnung',es:'rechazo',thema:8,type:'Nomen'},
+  {de:'die Zustimmung',es:'aprobación',thema:8,type:'Nomen'},
+  {de:'das Gegenteil',es:'contrario',thema:8,type:'Nomen'},
+  {de:'die Hilfe',es:'ayuda',thema:8,type:'Nomen'},
+  {de:'die Kohlensäure',es:'gas',thema:8,type:'Nomen'},
+  {de:'das Lieblingsessen',es:'comida favorita',thema:8,type:'Nomen'},
+  {de:'die Station',es:'parada',thema:8,type:'Nomen'},
+  {de:'eröffnen',es:'inaugurar',thema:8,type:'Verb'},
+  {de:'lieben',es:'amar',thema:8,type:'Verb'},
+  {de:'getrennt',es:'separado',thema:8,type:'Adjektiv/Adverb'},
+  {de:'laut',es:'ruidoso',thema:8,type:'Adjektiv/Adverb'},
+  {de:'leise',es:'en voz baja',thema:8,type:'Adjektiv/Adverb'},
+  {de:'draußen',es:'fuera',thema:8,type:'Verb'},
+  {de:'drinnen',es:'dentro',thema:8,type:'Verb'},
+  {de:'überall',es:'en todas partes',thema:8,type:'Adjektiv/Adverb'},
+  {de:'ohne',es:'sin',thema:8,type:'Adjektiv/Adverb'},
+  {de:'was ist los?',es:'¿qué pasa?',thema:8,type:'Adjektiv/Adverb'},
+  {de:'es tut mir leid',es:'lo siento',thema:8,type:'Adjektiv/Adverb'},
+  {de:'die Tradition',es:'costumbre',thema:9,type:'Nomen'},
+  {de:'das Fest',es:'fiesta',thema:9,type:'Nomen'},
+  {de:'Weihnachten',es:'Navidad',thema:9,type:'Nomen'},
+  {de:'der Baum',es:'árbol',thema:9,type:'Nomen'},
+  {de:'der Heiligabend',es:'Nochebuena',thema:9,type:'Nomen'},
+  {de:'die Kerze',es:'vela',thema:9,type:'Nomen'},
+  {de:'Ostern',es:'Pascua',thema:9,type:'Nomen'},
+  {de:'das Neujahrsfest',es:'Año Nuevo',thema:9,type:'Nomen'},
+  {de:'Silvester',es:'Nochevieja',thema:9,type:'Nomen'},
+  {de:'die Geburt',es:'nacimiento',thema:9,type:'Nomen'},
+  {de:'der Tod',es:'muerte',thema:9,type:'Nomen'},
+  {de:'typisch sein für',es:'ser típico',thema:9,type:'Verb'},
+  {de:'die Absage',es:'rechazo',thema:9,type:'Nomen'},
+  {de:'die Zusage',es:'confirmación',thema:9,type:'Nomen'},
+  {de:'das Dorf',es:'pueblo',thema:9,type:'Nomen'},
+  {de:'das Feuer',es:'fuego',thema:9,type:'Nomen'},
+  {de:'das Gästezimmer',es:'habitación de invitados',thema:9,type:'Nomen'},
+  {de:'der Garten',es:'jardín',thema:9,type:'Nomen'},
+  {de:'das Geschäft',es:'tienda',thema:9,type:'Nomen'},
+  {de:'der Himmel',es:'cielo',thema:9,type:'Nomen'},
+  {de:'die Hoffnung',es:'esperanza',thema:9,type:'Nomen'},
+  {de:'die Krankheit',es:'enfermedad',thema:9,type:'Nomen'},
+  {de:'der Mond',es:'luna',thema:9,type:'Nomen'},
+  {de:'der Nachbar / die Nachbarin',es:'vecino',thema:9,type:'Nomen'},
+  {de:'der Teil',es:'parte',thema:9,type:'Nomen'},
+  {de:'das Zelt',es:'tienda de campaña',thema:9,type:'Nomen'},
+  {de:'vermuten',es:'suponer',thema:9,type:'Verb'},
+  {de:'brechen',es:'romper',thema:9,type:'Verb'},
+  {de:'reservieren',es:'reservar',thema:9,type:'Verb'},
+  {de:'sich erinnern an',es:'recordar',thema:9,type:'Verb'},
+  {de:'sprechen über',es:'hablar sobre',thema:9,type:'Verb'},
+  {de:'übernachten',es:'pasar la noche',thema:9,type:'Verb'},
+  {de:'verstecken',es:'esconder',thema:9,type:'Verb'},
+  {de:'vorhaben',es:'tener planes',thema:9,type:'Verb'},
+  {de:'vorschlagen',es:'proponer',thema:9,type:'Verb'},
+  {de:'zusammenhängen mit',es:'estar relacionado',thema:9,type:'Verb'},
+  {de:'unhöflich',es:'maleducado',thema:9,type:'Adjektiv/Adverb'},
+  {de:'gemeinsam',es:'en común',thema:9,type:'Adjektiv/Adverb'},
+  {de:'gemütlich',es:'acogedor',thema:9,type:'Adjektiv/Adverb'},
+  {de:'wahrscheinlich',es:'probablemente',thema:9,type:'Adjektiv/Adverb'},
+  {de:'wichtig',es:'importante',thema:9,type:'Adjektiv/Adverb'},
+  {de:'kaum',es:'apenas',thema:9,type:'Adjektiv/Adverb'},
+  {de:'manchmal',es:'a veces',thema:9,type:'Adjektiv/Adverb'},
+  {de:'mehrmals',es:'varias veces',thema:9,type:'Adjektiv/Adverb'},
+  {de:'unbedingt',es:'imprescindible',thema:9,type:'Adjektiv/Adverb'},
+  {de:'wem?',es:'¿a quién?',thema:9,type:'Adjektiv/Adverb'},
+  {de:'teilweise',es:'en parte',thema:9,type:'Adjektiv/Adverb'},
+  {de:'die Lage',es:'situación; ubicación',thema:10,type:'Nomen'},
+  {de:'das Viertel',es:'barrio',thema:10,type:'Nomen'},
+  {de:'der Verkehr',es:'tráfico',thema:10,type:'Nomen'},
+  {de:'die Verkehrsverbindung',es:'conexión de transporte',thema:10,type:'Nomen'},
+  {de:'die Haltestelle',es:'parada',thema:10,type:'Nomen'},
+  {de:'außerhalb',es:'fuera de',thema:10,type:'Adjektiv/Adverb'},
+  {de:'ruhig',es:'tranquilo',thema:10,type:'Adjektiv/Adverb'},
+  {de:'die Kaltmiete',es:'alquiler en frío',thema:10,type:'Nomen'},
+  {de:'die Nebenkosten',es:'gastos adicionales',thema:10,type:'Nomen'},
+  {de:'die Kaution',es:'fianza',thema:10,type:'Nomen'},
+  {de:'die Hausordnung',es:'reglamento de la casa',thema:10,type:'Nomen'},
+  {de:'der Mietvertrag',es:'contrato de alquiler',thema:10,type:'Nomen'},
+  {de:'ausfüllen',es:'rellenar',thema:10,type:'Verb'},
+  {de:'der Familienstand',es:'estado civil',thema:10,type:'Nomen'},
+  {de:'ledig',es:'soltero',thema:10,type:'Adjektiv/Adverb'},
+  {de:'verheiratet',es:'casado',thema:10,type:'Adjektiv/Adverb'},
+  {de:'geschieden',es:'divorciado',thema:10,type:'Verb'},
+  {de:'der Einzugstermin',es:'fecha de entrada',thema:10,type:'Nomen'},
+  {de:'das Hochhaus',es:'edificio comercial',thema:10,type:'Nomen'},
+  {de:'der Aufzug',es:'ascensor',thema:10,type:'Nomen'},
+  {de:'der Hof',es:'patio',thema:10,type:'Nomen'},
+  {de:'der Parkplatz',es:'aparcamiento',thema:10,type:'Nomen'},
+  {de:'die Mülltonne',es:'contenedor de basura',thema:10,type:'Nomen'},
+  {de:'der Abstellraum',es:'trastero',thema:10,type:'Nomen'},
+  {de:'das Schlafzimmer',es:'dormitorio',thema:10,type:'Nomen'},
+  {de:'die Wand',es:'pared',thema:10,type:'Nomen'},
+  {de:'der Kamin',es:'chimenea',thema:10,type:'Nomen'},
+  {de:'der Boden',es:'suelo',thema:10,type:'Nomen'},
+  {de:'die Decke',es:'techo',thema:10,type:'Nomen'},
+  {de:'die Steckdose',es:'enchufe',thema:10,type:'Nomen'},
+  {de:'der Süden',es:'sur',thema:10,type:'Nomen'},
+  {de:'der Norden',es:'norte',thema:10,type:'Nomen'},
+  {de:'der Abschied',es:'despedida',thema:10,type:'Nomen'},
+  {de:'das Allgemeine',es:'general',thema:10,type:'Nomen'},
+  {de:'die Höhe',es:'altura',thema:10,type:'Nomen'},
+  {de:'das Kaufhaus',es:'grandes almacenes',thema:10,type:'Nomen'},
+  {de:'der Lärm',es:'jaleo',thema:10,type:'Nomen'},
+  {de:'die Stelle',es:'puesto de trabajo',thema:10,type:'Nomen'},
+  {de:'der Müll',es:'basura',thema:10,type:'Nomen'},
+  {de:'die Seite',es:'lado',thema:10,type:'Nomen'},
+  {de:'die Sicherheit',es:'seguridad',thema:10,type:'Nomen'},
+  {de:'der Vorteil',es:'ventaja',thema:10,type:'Nomen'},
+  {de:'klingeln',es:'sonar (timbre)',thema:10,type:'Verb'},
+  {de:'teilen',es:'compartir',thema:10,type:'Verb'},
+  {de:'wirken',es:'parecer',thema:10,type:'Verb'},
+  {de:'flach',es:'plano',thema:10,type:'Adjektiv/Adverb'},
+  {de:'ab jetzt',es:'a partir de ahora',thema:10,type:'Ausdruck'},
+  {de:'mehrere',es:'varios',thema:10,type:'Adjektiv/Adverb'},
+  {de:'zwischen',es:'entre',thema:10,type:'Verb'},
+  {de:'das Gebäude',es:'edificio',thema:11,type:'Nomen'},
+  {de:'die Kneipe',es:'bar',thema:11,type:'Nomen'},
+  {de:'die Universität',es:'universidad',thema:11,type:'Nomen'},
+  {de:'das Studium',es:'estudios',thema:11,type:'Nomen'},
+  {de:'die Gebühr',es:'tasa',thema:11,type:'Nomen'},
+  {de:'das Wohnheim',es:'residencia',thema:11,type:'Nomen'},
+  {de:'das Hochdeutsch',es:'alemán estándar',thema:11,type:'Nomen'},
+  {de:'das Interview',es:'entrevista',thema:11,type:'Nomen'},
+  {de:'einräumen',es:'ordenar',thema:11,type:'Verb'},
+  {de:'ausräumen',es:'vaciar',thema:11,type:'Verb'},
+  {de:'der Alltag',es:'vida cotidiana',thema:11,type:'Nomen'},
+  {de:'der Besucher',es:'visitante',thema:11,type:'Nomen'},
+  {de:'die Erfahrung',es:'experiencia',thema:11,type:'Nomen'},
+  {de:'die Heizkosten',es:'costes de calefacción',thema:11,type:'Nomen'},
+  {de:'die Sparkasse',es:'caja de ahorros',thema:11,type:'Nomen'},
+  {de:'der Zeitpunkt',es:'momento',thema:11,type:'Nomen'},
+  {de:'anbieten',es:'ofrecer',thema:11,type:'Verb'},
+  {de:'abschließen',es:'terminar',thema:11,type:'Verb'},
+  {de:'klarmachen',es:'aclarar',thema:11,type:'Verb'},
+  {de:'sich erholen von',es:'recuperarse',thema:11,type:'Verb'},
+  {de:'sich erinnern',es:'recordar',thema:11,type:'Verb'},
+  {de:'sich erkälten',es:'resfriarse',thema:11,type:'Verb'},
+  {de:'erkennen',es:'reconocer',thema:11,type:'Verb'},
+  {de:'sich fühlen',es:'sentirse',thema:11,type:'Verb'},
+  {de:'hoffen',es:'esperar',thema:11,type:'Verb'},
+  {de:'kennenlernen',es:'conocer',thema:11,type:'Verb'},
+  {de:'klagen',es:'quejarse',thema:11,type:'Verb'},
+  {de:'meinen',es:'opinar',thema:11,type:'Verb'},
+  {de:'sich merken',es:'memorizar',thema:11,type:'Verb'},
+  {de:'sich sorgen',es:'preocuparse',thema:11,type:'Verb'},
+  {de:'sich verändern',es:'cambiar',thema:11,type:'Verb'},
+  {de:'verbessern',es:'mejorar',thema:11,type:'Verb'},
+  {de:'weggehen',es:'irse',thema:11,type:'Verb'},
+  {de:'gewöhnlich',es:'cotidiano',thema:11,type:'Adjektiv/Adverb'},
+  {de:'anstrengend',es:'agotador',thema:11,type:'Adjektiv/Adverb'},
+  {de:'ausländisch',es:'extranjero',thema:11,type:'Adjektiv/Adverb'},
+  {de:'einsam',es:'solo',thema:11,type:'Adjektiv/Adverb'},
+  {de:'gering',es:'escaso',thema:11,type:'Adjektiv/Adverb'},
+  {de:'nächster',es:'siguiente',thema:11,type:'Adjektiv/Adverb'},
+  {de:'außerdem',es:'además',thema:11,type:'Adjektiv/Adverb'},
+  {de:'inzwischen',es:'mientras tanto',thema:11,type:'Verb'},
+  {de:'meistens',es:'la mayoría de las veces',thema:11,type:'Adjektiv/Adverb'},
+  {de:'mindestens',es:'al menos',thema:11,type:'Adjektiv/Adverb'},
+  {de:'aktuell',es:'actualmente',thema:11,type:'Adjektiv/Adverb'},
+  {de:'einige',es:'algunos',thema:11,type:'Adjektiv/Adverb'},
+  {de:'schließlich',es:'al final',thema:11,type:'Adjektiv/Adverb'},
+  {de:'die Bank',es:'banco',thema:12,type:'Nomen'},
+  {de:'der Kunde',es:'cliente',thema:12,type:'Nomen'},
+  {de:'der Geldautomat',es:'cajero automático',thema:12,type:'Nomen'},
+  {de:'das Bargeld',es:'dinero en efectivo',thema:12,type:'Nomen'},
+  {de:'der Betrag',es:'cantidad',thema:12,type:'Nomen'},
+  {de:'die Quittung',es:'recibo',thema:12,type:'Nomen'},
+  {de:'das Konto',es:'cuenta',thema:12,type:'Nomen'},
+  {de:'die Kontonummer',es:'número de cuenta',thema:12,type:'Nomen'},
+  {de:'die Geheimzahl',es:'PIN',thema:12,type:'Nomen'},
+  {de:'einzahlen',es:'ingresar',thema:12,type:'Verb'},
+  {de:'ein Konto eröffnen',es:'abrir cuenta',thema:12,type:'Verb'},
+  {de:'sperren',es:'bloquear',thema:12,type:'Verb'},
+  {de:'kostenlos',es:'gratis',thema:12,type:'Adjektiv/Adverb'},
+  {de:'kurzfristig',es:'a corto plazo',thema:12,type:'Adjektiv/Adverb'},
+  {de:'die Karte einstecken',es:'introducir tarjeta',thema:12,type:'Nomen'},
+  {de:'PIN eingeben',es:'introducir PIN',thema:12,type:'Verb'},
+  {de:'die Karte herausnehmen',es:'sacar tarjeta',thema:12,type:'Nomen'},
+  {de:'die Anzeige',es:'pantalla',thema:12,type:'Nomen'},
+  {de:'anzeigen',es:'denunciar',thema:12,type:'Verb'},
+  {de:'der Dieb',es:'ladrón',thema:12,type:'Nomen'},
+  {de:'das Geschlecht',es:'sexo',thema:12,type:'Nomen'},
+  {de:'der Erfolg',es:'éxito',thema:12,type:'Nomen'},
+  {de:'der Fachbegriff',es:'tecnicismo',thema:12,type:'Nomen'},
+  {de:'die Firma',es:'empresa',thema:12,type:'Nomen'},
+  {de:'die Freiheit',es:'libertad',thema:12,type:'Nomen'},
+  {de:'der Richter',es:'juez',thema:12,type:'Nomen'},
+  {de:'der Treffpunkt',es:'punto de encuentro',thema:12,type:'Nomen'},
+  {de:'die Verwendung',es:'uso',thema:12,type:'Nomen'},
+  {de:'der Zweck',es:'objetivo',thema:12,type:'Nomen'},
+  {de:'abgeben',es:'entregar',thema:12,type:'Verb'},
+  {de:'raten',es:'aconsejar',thema:12,type:'Verb'},
+  {de:'Bescheid sagen',es:'avisar',thema:12,type:'Verb'},
+  {de:'betrügen',es:'engañar',thema:12,type:'Verb'},
+  {de:'einsammeln',es:'recoger',thema:12,type:'Verb'},
+  {de:'sich freuen',es:'alegrarse',thema:12,type:'Verb'},
+  {de:'merken',es:'notar',thema:12,type:'Verb'},
+  {de:'rauchen',es:'fumar',thema:12,type:'Verb'},
+  {de:'stimmen',es:'estar correcto',thema:12,type:'Verb'},
+  {de:'prüfen',es:'examinar',thema:12,type:'Verb'},
+  {de:'vereinbaren',es:'acordar',thema:12,type:'Verb'},
+  {de:'verlieren',es:'perder',thema:12,type:'Verb'},
+  {de:'vertrauen',es:'confiar',thema:12,type:'Verb'},
+  {de:'wachsen',es:'crecer',thema:12,type:'Verb'},
+  {de:'arm',es:'pobre',thema:12,type:'Adjektiv/Adverb'},
+  {de:'bekannt',es:'conocido',thema:12,type:'Adjektiv/Adverb'},
+  {de:'ganz',es:'completamente',thema:12,type:'Adjektiv/Adverb'},
+  {de:'genau',es:'exacto',thema:12,type:'Adjektiv/Adverb'},
+  {de:'plötzlich',es:'de repente',thema:12,type:'Adjektiv/Adverb'},
+  {de:'der Arm',es:'brazo',thema:13,type:'Nomen'},
+  {de:'das Auge',es:'ojo',thema:13,type:'Nomen'},
+  {de:'der Bauch',es:'vientre; barriga',thema:13,type:'Nomen'},
+  {de:'das Bein',es:'pierna',thema:13,type:'Nomen'},
+  {de:'der Finger',es:'dedo',thema:13,type:'Nomen'},
+  {de:'die Lunge',es:'pulmón',thema:13,type:'Nomen'},
+  {de:'der Mund',es:'boca',thema:13,type:'Nomen'},
+  {de:'der Rücken',es:'espalda',thema:13,type:'Nomen'},
+  {de:'der Körper',es:'cuerpo',thema:13,type:'Nomen'},
+  {de:'die Krankheit',es:'enfermedad',thema:13,type:'Nomen'},
+  {de:'die Gesundheit',es:'salud',thema:13,type:'Nomen'},
+  {de:'das Fieber',es:'fiebre',thema:13,type:'Nomen'},
+  {de:'der Schmerz',es:'dolor',thema:13,type:'Nomen'},
+  {de:'fehlen',es:'faltar',thema:13,type:'Verb'},
+  {de:'wehtun',es:'doler',thema:13,type:'Adjektiv/Adverb'},
+  {de:'der Patient',es:'paciente',thema:13,type:'Nomen'},
+  {de:'die Krankenversicherung',es:'seguro médico',thema:13,type:'Nomen'},
+  {de:'die Versichertenkarte',es:'tarjeta sanitaria',thema:13,type:'Nomen'},
+  {de:'versichert sein',es:'estar asegurado',thema:13,type:'Verb'},
+  {de:'der Raucher',es:'fumador',thema:13,type:'Nomen'},
+  {de:'die Behandlung',es:'tratamiento',thema:13,type:'Nomen'},
+  {de:'die Operation',es:'operación',thema:13,type:'Nomen'},
+  {de:'das Medikament',es:'medicamento',thema:13,type:'Nomen'},
+  {de:'der Tropfen',es:'gota',thema:13,type:'Nomen'},
+  {de:'die Dosierung',es:'dosificación',thema:13,type:'Nomen'},
+  {de:'die Wirkung',es:'efecto',thema:13,type:'Nomen'},
+  {de:'heilen',es:'curar',thema:13,type:'Verb'},
+  {de:'die Abteilung',es:'departamento',thema:13,type:'Nomen'},
+  {de:'die Dauer',es:'duración',thema:13,type:'Nomen'},
+  {de:'die Empfehlung',es:'recomendación',thema:13,type:'Nomen'},
+  {de:'die Entwicklung',es:'desarrollo',thema:13,type:'Nomen'},
+  {de:'der Dienst',es:'servicio',thema:13,type:'Nomen'},
+  {de:'die Spätschicht',es:'turno de tarde',thema:13,type:'Nomen'},
+  {de:'das Gerät',es:'aparato',thema:13,type:'Nomen'},
+  {de:'die Müdigkeit',es:'cansancio',thema:13,type:'Nomen'},
+  {de:'die Schwangerschaft',es:'embarazo',thema:13,type:'Nomen'},
+  {de:'der Termin',es:'cita',thema:13,type:'Nomen'},
+  {de:'die Vertretung',es:'sustitución',thema:13,type:'Nomen'},
+  {de:'sich bemühen',es:'esforzarse',thema:13,type:'Verb'},
+  {de:'sich ausruhen',es:'descansar',thema:13,type:'Verb'},
+  {de:'entdecken',es:'descubrir',thema:13,type:'Verb'},
+  {de:'passieren',es:'pasar',thema:13,type:'Verb'},
+  {de:'dauerhaft',es:'permanente',thema:13,type:'Adjektiv/Adverb'},
+  {de:'erfahren',es:'experimentado',thema:13,type:'Verb'},
+  {de:'häufig',es:'frecuente',thema:13,type:'Adjektiv/Adverb'},
+  {de:'notwendig',es:'necesario',thema:13,type:'Adjektiv/Adverb'},
+  {de:'täglich',es:'diario',thema:13,type:'Adjektiv/Adverb'},
+  {de:'tagsüber',es:'de día',thema:13,type:'Adjektiv/Adverb'},
+  {de:'eigen',es:'propio',thema:13,type:'Verb'},
+  {de:'der Wetterbericht',es:'parte meteorológico',thema:14,type:'Nomen'},
+  {de:'der Sturm',es:'tormenta',thema:14,type:'Nomen'},
+  {de:'der Nebel',es:'niebla',thema:14,type:'Nomen'},
+  {de:'der Schnee',es:'nieve',thema:14,type:'Nomen'},
+  {de:'scheinen',es:'brillar',thema:14,type:'Verb'},
+  {de:'stürmen',es:'haber tormenta',thema:14,type:'Verb'},
+  {de:'schneien',es:'nevar',thema:14,type:'Verb'},
+  {de:'sonnig',es:'soleado',thema:14,type:'Adjektiv/Adverb'},
+  {de:'klar',es:'despejado',thema:14,type:'Adjektiv/Adverb'},
+  {de:'regnerisch',es:'lluvioso',thema:14,type:'Adjektiv/Adverb'},
+  {de:'die Kleidung',es:'ropa',thema:14,type:'Nomen'},
+  {de:'die Jacke',es:'chaqueta',thema:14,type:'Nomen'},
+  {de:'der Ärmel',es:'manga',thema:14,type:'Nomen'},
+  {de:'der Ausschnitt',es:'escote',thema:14,type:'Nomen'},
+  {de:'der Rollkragen',es:'cuello alto',thema:14,type:'Nomen'},
+  {de:'die Größe',es:'talla',thema:14,type:'Nomen'},
+  {de:'die Handtasche',es:'bolso',thema:14,type:'Nomen'},
+  {de:'die Abteilung',es:'departamento',thema:14,type:'Nomen'},
+  {de:'die Umkleidekabine',es:'probador',thema:14,type:'Nomen'},
+  {de:'der Kassenzettel',es:'ticket',thema:14,type:'Nomen'},
+  {de:'das Wechselgeld',es:'cambio',thema:14,type:'Nomen'},
+  {de:'unbequem',es:'incómodo',thema:14,type:'Adjektiv/Adverb'},
+  {de:'bunt',es:'multicolor',thema:14,type:'Adjektiv/Adverb'},
+  {de:'schön',es:'bonito',thema:14,type:'Adjektiv/Adverb'},
+  {de:'hässlich',es:'feo',thema:14,type:'Adjektiv/Adverb'},
+  {de:'die Ware',es:'mercancía',thema:14,type:'Nomen'},
+  {de:'das Bierzelt',es:'carpa de cerveza',thema:14,type:'Nomen'},
+  {de:'das Volksfest',es:'fiesta popular',thema:14,type:'Nomen'},
+  {de:'die Schaukel',es:'columpio',thema:14,type:'Nomen'},
+  {de:'der Bürgermeister',es:'alcalde',thema:14,type:'Nomen'},
+  {de:'der Absatz',es:'párrafo',thema:14,type:'Nomen'},
+  {de:'die Bedeutung',es:'significado',thema:14,type:'Nomen'},
+  {de:'die Erinnerung',es:'memoria',thema:14,type:'Nomen'},
+  {de:'der Geschmack',es:'sabor',thema:14,type:'Nomen'},
+  {de:'die Hochzeit',es:'boda',thema:14,type:'Nomen'},
+  {de:'das Malbuch',es:'libro para colorear',thema:14,type:'Nomen'},
+  {de:'die Umgebung',es:'alrededores',thema:14,type:'Nomen'},
+  {de:'der Umsatz',es:'ventas',thema:14,type:'Nomen'},
+  {de:'entwickeln',es:'desarrollar',thema:14,type:'Verb'},
+  {de:'benutzen',es:'usar',thema:14,type:'Verb'},
+  {de:'warnen',es:'advertir',thema:14,type:'Verb'},
+  {de:'übersetzen',es:'traducir',thema:14,type:'Verb'},
+  {de:'ernst',es:'serio',thema:14,type:'Adjektiv/Adverb'},
+  {de:'fröhlich',es:'alegre',thema:14,type:'Adjektiv/Adverb'},
+  {de:'kaputt',es:'roto',thema:14,type:'Adjektiv/Adverb'},
+  {de:'unterschiedlich',es:'diferente',thema:14,type:'Adjektiv/Adverb'},
+  {de:'schließlich',es:'finalmente',thema:14,type:'Adjektiv/Adverb'},
+  {de:'mal so, mal so',es:'a veces sí / a veces no',thema:14,type:'Adjektiv/Adverb'},
+  {de:'vorne',es:'delante',thema:14,type:'Adjektiv/Adverb'},
+  {de:'zum ersten Mal',es:'por primera vez',thema:14,type:'Adjektiv/Adverb'},
+  {de:'die Übernachtung',es:'pernoctación',thema:15,type:'Nomen'},
+  {de:'der Gastgeber',es:'anfitrión',thema:15,type:'Nomen'},
+  {de:'die Fahrt',es:'viaje',thema:15,type:'Nomen'},
+  {de:'die Grenze',es:'frontera',thema:15,type:'Nomen'},
+  {de:'der Grenzübergang',es:'paso fronterizo',thema:15,type:'Nomen'},
+  {de:'die Maut',es:'peaje',thema:15,type:'Nomen'},
+  {de:'parken',es:'aparcar',thema:15,type:'Verb'},
+  {de:'das Parkhaus',es:'parking',thema:15,type:'Nomen'},
+  {de:'die Tankstelle',es:'gasolinera',thema:15,type:'Nomen'},
+  {de:'die Fahrkarte',es:'billete',thema:15,type:'Nomen'},
+  {de:'die Fahrkarte',es:'ticket',thema:15,type:'Nomen'},
+  {de:'die Dauerkarte',es:'abono',thema:15,type:'Nomen'},
+  {de:'die Entwertung',es:'cancelación',thema:15,type:'Nomen'},
+  {de:'der Spaziergang',es:'paseo',thema:15,type:'Nomen'},
+  {de:'die Vorstellung',es:'función',thema:15,type:'Nomen'},
+  {de:'der Hauptdarsteller',es:'protagonista',thema:15,type:'Nomen'},
+  {de:'der Flohmarkt',es:'mercadillo',thema:15,type:'Nomen'},
+  {de:'die Staatsoper',es:'ópera estatal',thema:15,type:'Nomen'},
+  {de:'abbiegen',es:'girar',thema:15,type:'Verb'},
+  {de:'folgen',es:'seguir',thema:15,type:'Verb'},
+  {de:'überqueren',es:'cruzar',thema:15,type:'Verb'},
+  {de:'der Moment',es:'momento',thema:15,type:'Nomen'},
+  {de:'der Besitzer',es:'propietario',thema:15,type:'Nomen'},
+  {de:'das Fernsehen',es:'televisión',thema:15,type:'Nomen'},
+  {de:'die Gelegenheit',es:'oportunidad',thema:15,type:'Nomen'},
+  {de:'die Beobachtung',es:'observación',thema:15,type:'Nomen'},
+  {de:'der Kiosk',es:'kiosco',thema:15,type:'Nomen'},
+  {de:'der Reisende',es:'viajero',thema:15,type:'Nomen'},
+  {de:'der Plan',es:'plan',thema:15,type:'Nomen'},
+  {de:'das Hobby',es:'afición',thema:15,type:'Nomen'},
+  {de:'verstehen',es:'entender',thema:15,type:'Verb'},
+  {de:'entscheiden',es:'decidir',thema:15,type:'Verb'},
+  {de:'einsteigen',es:'subir',thema:15,type:'Verb'},
+  {de:'sich melden',es:'avisar',thema:15,type:'Verb'},
+  {de:'nachdenken',es:'reflexionar',thema:15,type:'Verb'},
+  {de:'stammen aus',es:'proceder de',thema:15,type:'Verb'},
+  {de:'stattfinden',es:'tener lugar',thema:15,type:'Verb'},
+  {de:'verbinden',es:'conectar',thema:15,type:'Verb'},
+  {de:'anschließend',es:'a continuación',thema:15,type:'Adjektiv/Adverb'},
+  {de:'spannend',es:'emocionante',thema:15,type:'Adjektiv/Adverb'},
+  {de:'beliebig',es:'arbitrario',thema:15,type:'Adjektiv/Adverb'},
+  {de:'faul',es:'perezoso',thema:15,type:'Adjektiv/Adverb'},
+  {de:'gültig',es:'válido',thema:15,type:'Adjektiv/Adverb'},
+  {de:'golden',es:'dorado',thema:15,type:'Verb'},
+  {de:'kompliziert',es:'complicado',thema:15,type:'Adjektiv/Adverb'},
+  {de:'weltberühmt',es:'de fama mundial',thema:15,type:'Adjektiv/Adverb'},
+  {de:'kostenlos',es:'gratis',thema:15,type:'Adjektiv/Adverb'},
+  {de:'unterwegs',es:'de camino',thema:15,type:'Adjektiv/Adverb'},
+  {de:'übrigens',es:'por cierto',thema:15,type:'Adjektiv/Adverb'},
+  {de:'das heißt',es:'o sea',thema:15,type:'Nomen'},
+  {de:'die Ausbildung',es:'formación',thema:16,type:'Nomen'},
+  {de:'die duale Ausbildung',es:'formación dual',thema:16,type:'Nomen'},
+  {de:'die Berufsausbildung',es:'formación profesional',thema:16,type:'Nomen'},
+  {de:'der Auszubildende',es:'aprendiz',thema:16,type:'Nomen'},
+  {de:'der Unterricht',es:'clase',thema:16,type:'Nomen'},
+  {de:'das Schuljahr',es:'curso escolar',thema:16,type:'Nomen'},
+  {de:'das Abitur',es:'bachillerato',thema:16,type:'Nomen'},
+  {de:'arbeitslos',es:'desempleado',thema:16,type:'Adjektiv/Adverb'},
+  {de:'der Beruf',es:'profesión',thema:16,type:'Nomen'},
+  {de:'die Berufserfahrung',es:'experiencia laboral',thema:16,type:'Nomen'},
+  {de:'beruflich',es:'profesional',thema:16,type:'Adjektiv/Adverb'},
+  {de:'handwerklich',es:'artesanal',thema:16,type:'Adjektiv/Adverb'},
+  {de:'der Übersetzer',es:'traductor',thema:16,type:'Nomen'},
+  {de:'die Beratung',es:'asesoramiento',thema:16,type:'Nomen'},
+  {de:'das Praktikum',es:'prácticas',thema:16,type:'Nomen'},
+  {de:'das Gehalt',es:'salario',thema:16,type:'Nomen'},
+  {de:'das Einkommen',es:'ingresos',thema:16,type:'Nomen'},
+  {de:'die Pflege',es:'cuidado',thema:16,type:'Nomen'},
+  {de:'der Haushalt',es:'hogar',thema:16,type:'Nomen'},
+  {de:'die Bewegung',es:'movimiento',thema:16,type:'Nomen'},
+  {de:'die Analyse',es:'análisis',thema:16,type:'Nomen'},
+  {de:'die Einleitung',es:'introducción',thema:16,type:'Nomen'},
+  {de:'das Ende',es:'final',thema:16,type:'Nomen'},
+  {de:'berücksichtigen',es:'tener en cuenta',thema:16,type:'Verb'},
+  {de:'das Ergebnis',es:'resultado',thema:16,type:'Nomen'},
+  {de:'erarbeiten',es:'elaborar',thema:16,type:'Verb'},
+  {de:'die Gesellschaft',es:'sociedad',thema:16,type:'Nomen'},
+  {de:'die Medien',es:'medios',thema:16,type:'Nomen'},
+  {de:'die Politik',es:'política',thema:16,type:'Nomen'},
+  {de:'das Tagebuch',es:'diario',thema:16,type:'Nomen'},
+  {de:'sicher',es:'seguro',thema:16,type:'Adjektiv/Adverb'},
+  {de:'empfehlen',es:'recomendar',thema:16,type:'Verb'},
+  {de:'sich entscheiden',es:'decidirse',thema:16,type:'Verb'},
+  {de:'enttäuschen',es:'decepcionar',thema:16,type:'Verb'},
+  {de:'erwarten',es:'esperar',thema:16,type:'Verb'},
+  {de:'reichen',es:'ser suficiente',thema:16,type:'Verb'},
+  {de:'überrascht',es:'estar sorprendido',thema:16,type:'Adjektiv/Adverb'},
+  {de:'vergehen',es:'pasar',thema:16,type:'Verb'},
+  {de:'zuhören',es:'escuchar',thema:16,type:'Verb'},
+  {de:'abhängig',es:'dependiente',thema:16,type:'Adjektiv/Adverb'},
+  {de:'bisher',es:'hasta ahora',thema:16,type:'Adjektiv/Adverb'},
+  {de:'geduldig',es:'paciente',thema:16,type:'Adjektiv/Adverb'},
+  {de:'gleichzeitig',es:'simultáneamente',thema:16,type:'Adjektiv/Adverb'},
+  {de:'leicht',es:'ligero',thema:16,type:'Adjektiv/Adverb'},
+  {de:'schwer',es:'pesado',thema:16,type:'Adjektiv/Adverb'},
+  {de:'sinnvoll',es:'con sentido',thema:16,type:'Adjektiv/Adverb'},
+  {de:'verantwortlich',es:'responsable',thema:16,type:'Adjektiv/Adverb'},
+  {de:'neulich',es:'hace poco',thema:16,type:'Adjektiv/Adverb'},
+  {de:'die Bewerbung',es:'solicitud',thema:17,type:'Nomen'},
+  {de:'sich bewerben',es:'solicitar',thema:17,type:'Verb'},
+  {de:'das Vorstellungsgespräch',es:'entrevista de trabajo',thema:17,type:'Nomen'},
+  {de:'die Herstellung',es:'fabricación',thema:17,type:'Nomen'},
+  {de:'die Fabrik',es:'fábrica',thema:17,type:'Nomen'},
+  {de:'die Industrie',es:'industria',thema:17,type:'Nomen'},
+  {de:'der Stoff',es:'materia',thema:17,type:'Nomen'},
+  {de:'die Verpackung',es:'embalaje',thema:17,type:'Nomen'},
+  {de:'der Mitarbeiter',es:'trabajador',thema:17,type:'Nomen'},
+  {de:'beschäftigen',es:'emplear',thema:17,type:'Verb'},
+  {de:'der Verkauf',es:'venta',thema:17,type:'Nomen'},
+  {de:'die Arbeitszeit',es:'jornada laboral',thema:17,type:'Nomen'},
+  {de:'die Gleitzeit',es:'horario flexible',thema:17,type:'Nomen'},
+  {de:'die Schicht',es:'turno',thema:17,type:'Nomen'},
+  {de:'die Nachtschicht',es:'turno de noche',thema:17,type:'Nomen'},
+  {de:'die Überstunde',es:'hora extra',thema:17,type:'Nomen'},
+  {de:'der Schwerpunkt',es:'punto clave',thema:17,type:'Nomen'},
+  {de:'die Leistung',es:'rendimiento',thema:17,type:'Nomen'},
+  {de:'die Note',es:'nota',thema:17,type:'Nomen'},
+  {de:'die Kenntnisse',es:'conocimiento',thema:17,type:'Nomen'},
+  {de:'die Qualifikation',es:'competencia',thema:17,type:'Nomen'},
+  {de:'das Pflichtfach',es:'parte obligatoria',thema:17,type:'Nomen'},
+  {de:'abschließen',es:'terminar',thema:17,type:'Verb'},
+  {de:'der Absatz',es:'párrafo',thema:17,type:'Nomen'},
+  {de:'das Thema',es:'tema',thema:17,type:'Nomen'},
+  {de:'der Brief',es:'carta',thema:17,type:'Nomen'},
+  {de:'der Besitzer',es:'propietario',thema:17,type:'Nomen'},
+  {de:'die Eröffnung',es:'inauguración',thema:17,type:'Nomen'},
+  {de:'die Gründung',es:'fundación',thema:17,type:'Nomen'},
+  {de:'die Kontrolle',es:'control',thema:17,type:'Nomen'},
+  {de:'das Geschäft',es:'tienda',thema:17,type:'Nomen'},
+  {de:'der Rabatt',es:'descuento',thema:17,type:'Nomen'},
+  {de:'die Art',es:'tipo',thema:17,type:'Nomen'},
+  {de:'die Erhöhung',es:'aumento',thema:17,type:'Nomen'},
+  {de:'die Umgangssprache',es:'lenguaje coloquial',thema:17,type:'Nomen'},
+  {de:'die Voraussetzung',es:'condición',thema:17,type:'Nomen'},
+  {de:'verlassen',es:'abandonar',thema:17,type:'Verb'},
+  {de:'beifügen',es:'adjuntar',thema:17,type:'Verb'},
+  {de:'erleben',es:'experimentar',thema:17,type:'Verb'},
+  {de:'festlegen',es:'establecer',thema:17,type:'Verb'},
+  {de:'teilnehmen',es:'participar',thema:17,type:'Verb'},
+  {de:'überprüfen',es:'comprobar',thema:17,type:'Verb'},
+  {de:'vorbereiten',es:'preparar',thema:17,type:'Verb'},
+  {de:'allgemein',es:'general',thema:17,type:'Adjektiv/Adverb'},
+  {de:'erfolgreich',es:'exitoso',thema:17,type:'Adjektiv/Adverb'},
+  {de:'freiwillig',es:'voluntario',thema:17,type:'Adjektiv/Adverb'},
+  {de:'gleich',es:'igual',thema:17,type:'Adjektiv/Adverb'},
+  {de:'üblich',es:'habitual',thema:17,type:'Adjektiv/Adverb'},
+  {de:'vertraut',es:'familiar',thema:17,type:'Adjektiv/Adverb'},
+  {de:'zusätzlich',es:'adicional',thema:17,type:'Adjektiv/Adverb'},
+  {de:'die Landschaft',es:'paisaje',thema:18,type:'Nomen'},
+  {de:'das Meer',es:'mar',thema:18,type:'Nomen'},
+  {de:'die Insel',es:'isla',thema:18,type:'Nomen'},
+  {de:'der Strand',es:'playa',thema:18,type:'Nomen'},
+  {de:'die Luft',es:'aire',thema:18,type:'Nomen'},
+  {de:'die Pflanze',es:'planta',thema:18,type:'Nomen'},
+  {de:'das Schiff',es:'barco',thema:18,type:'Nomen'},
+  {de:'der Hafen',es:'puerto',thema:18,type:'Nomen'},
+  {de:'die Kreuzfahrt',es:'crucero',thema:18,type:'Nomen'},
+  {de:'die Ferne',es:'lejanía',thema:18,type:'Nomen'},
+  {de:'die Hochsaison',es:'temporada alta',thema:18,type:'Nomen'},
+  {de:'die Unterkunft',es:'alojamiento',thema:18,type:'Nomen'},
+  {de:'die Verpflegung',es:'alimentación',thema:18,type:'Nomen'},
+  {de:'der Wohnwagen',es:'caravana',thema:18,type:'Nomen'},
+  {de:'das Doppelzimmer',es:'habitación doble',thema:18,type:'Nomen'},
+  {de:'die Vollpension',es:'pensión completa',thema:18,type:'Nomen'},
+  {de:'das Buffet',es:'bufé',thema:18,type:'Nomen'},
+  {de:'sich entspannen',es:'relajar',thema:18,type:'Verb'},
+  {de:'das Erlebnis',es:'experiencia',thema:18,type:'Nomen'},
+  {de:'faulenzen',es:'vaguear',thema:18,type:'Verb'},
+  {de:'klettern',es:'escalar',thema:18,type:'Verb'},
+  {de:'segeln',es:'navegar',thema:18,type:'Verb'},
+  {de:'springen',es:'saltar',thema:18,type:'Verb'},
+  {de:'der Aufbau',es:'montaje',thema:18,type:'Nomen'},
+  {de:'der Abbau',es:'desmontaje',thema:18,type:'Nomen'},
+  {de:'das Ereignis',es:'acontecimiento',thema:18,type:'Nomen'},
+  {de:'der Geist',es:'espíritu',thema:18,type:'Nomen'},
+  {de:'der Hunger',es:'hambre',thema:18,type:'Nomen'},
+  {de:'das Zentrum',es:'centro',thema:18,type:'Nomen'},
+  {de:'das Nichts',es:'la nada',thema:18,type:'Nomen'},
+  {de:'der Unsinn',es:'tontería',thema:18,type:'Nomen'},
+  {de:'der Rand',es:'borde',thema:18,type:'Nomen'},
+  {de:'die Sendung',es:'programa',thema:18,type:'Nomen'},
+  {de:'die Spur',es:'pista',thema:18,type:'Nomen'},
+  {de:'die Versorgung',es:'abastecimiento',thema:18,type:'Nomen'},
+  {de:'ankommen',es:'llegar',thema:18,type:'Verb'},
+  {de:'fliegen',es:'volar',thema:18,type:'Verb'},
+  {de:'sich lohnen',es:'merecer la pena',thema:18,type:'Verb'},
+  {de:'schreien',es:'gritar',thema:18,type:'Verb'},
+  {de:'aushalten',es:'aguantar',thema:18,type:'Verb'},
+  {de:'jung',es:'joven',thema:18,type:'Adjektiv/Adverb'},
+  {de:'weit',es:'lejos',thema:18,type:'Adjektiv/Adverb'},
+  {de:'kühl',es:'fresco',thema:18,type:'Adjektiv/Adverb'},
+  {de:'klar',es:'claro',thema:18,type:'Adjektiv/Adverb'},
+  {de:'vielfältig',es:'variado',thema:18,type:'Adjektiv/Adverb'},
+  {de:'danach',es:'después',thema:18,type:'Adjektiv/Adverb'},
+  {de:'nirgendwo',es:'en ninguna parte',thema:18,type:'Adjektiv/Adverb'},
+  {de:'sogar',es:'incluso',thema:18,type:'Adjektiv/Adverb'},
+  {de:'sonst',es:'por lo demás',thema:18,type:'Adjektiv/Adverb'},
+  {de:'gern',es:'a gusto',thema:18,type:'Verb'},
+  {de:'das Reisebüro',es:'agencia de viajes',thema:19,type:'Nomen'},
+  {de:'der Pass',es:'pasaporte',thema:19,type:'Nomen'},
+  {de:'der Personalausweis',es:'DNI',thema:19,type:'Nomen'},
+  {de:'das Ausland',es:'extranjero',thema:19,type:'Nomen'},
+  {de:'der Aufenthalt',es:'estancia',thema:19,type:'Nomen'},
+  {de:'die Verbindung',es:'conexión',thema:19,type:'Nomen'},
+  {de:'die Abfahrt',es:'salida',thema:19,type:'Nomen'},
+  {de:'landen',es:'aterrizar',thema:19,type:'Verb'},
+  {de:'die Reservierung',es:'reserva',thema:19,type:'Nomen'},
+  {de:'stornieren',es:'anular',thema:19,type:'Verb'},
+  {de:'der Flughafen',es:'aeropuerto',thema:19,type:'Nomen'},
+  {de:'das Gate',es:'puerta de embarque',thema:19,type:'Nomen'},
+  {de:'das Gleis',es:'andén',thema:19,type:'Nomen'},
+  {de:'das Gepäck',es:'equipaje',thema:19,type:'Nomen'},
+  {de:'der Koffer',es:'maleta',thema:19,type:'Nomen'},
+  {de:'der Rucksack',es:'mochila',thema:19,type:'Nomen'},
+  {de:'das Regierungssystem',es:'sistema de gobierno',thema:19,type:'Nomen'},
+  {de:'der Staat',es:'estado',thema:19,type:'Nomen'},
+  {de:'das Bundesland',es:'estado federado',thema:19,type:'Nomen'},
+  {de:'die Gemeinde',es:'municipio',thema:19,type:'Nomen'},
+  {de:'der Abgeordnete',es:'diputado',thema:19,type:'Nomen'},
+  {de:'demokratisch',es:'democrático',thema:19,type:'Adjektiv/Adverb'},
+  {de:'die Bevölkerung',es:'población',thema:19,type:'Nomen'},
+  {de:'der Einwohner',es:'habitante',thema:19,type:'Nomen'},
+  {de:'der Fluss',es:'río',thema:19,type:'Nomen'},
+  {de:'die Wut',es:'enfado',thema:19,type:'Nomen'},
+  {de:'die Aktivität',es:'actividad',thema:19,type:'Nomen'},
+  {de:'die Information',es:'información',thema:19,type:'Nomen'},
+  {de:'der Blick',es:'vista',thema:19,type:'Nomen'},
+  {de:'die Hälfte',es:'mitad',thema:19,type:'Nomen'},
+  {de:'praktisch',es:'en la práctica',thema:19,type:'Adjektiv/Adverb'},
+  {de:'die Schrift',es:'carta / escrito',thema:19,type:'Nomen'},
+  {de:'sich anmelden',es:'registrarse',thema:19,type:'Verb'},
+  {de:'bestätigen',es:'confirmar',thema:19,type:'Verb'},
+  {de:'bilden',es:'formar',thema:19,type:'Verb'},
+  {de:'enden',es:'terminar',thema:19,type:'Verb'},
+  {de:'fließen',es:'fluir',thema:19,type:'Verb'},
+  {de:'geschehen',es:'ocurrir',thema:19,type:'Verb'},
+  {de:'neugierig sein',es:'tener curiosidad',thema:19,type:'Verb'},
+  {de:'leihen',es:'pedir prestado',thema:19,type:'Verb'},
+  {de:'reagieren',es:'reaccionar',thema:19,type:'Verb'},
+  {de:'stören',es:'molestar',thema:19,type:'Verb'},
+  {de:'verlängern',es:'prolongar',thema:19,type:'Verb'},
+  {de:'zusammenfassen',es:'resumir',thema:19,type:'Verb'},
+  {de:'nötig',es:'necesario',thema:19,type:'Adjektiv/Adverb'},
+  {de:'unbekannt',es:'desconocido',thema:19,type:'Adjektiv/Adverb'},
+  {de:'unsicher',es:'inseguro',thema:19,type:'Adjektiv/Adverb'},
+  {de:'verschieden',es:'diferente',thema:19,type:'Verb'},
+  {de:'ungefähr',es:'aproximadamente',thema:19,type:'Adjektiv/Adverb'},
+  {de:'hiermit',es:'por la presente',thema:19,type:'Adjektiv/Adverb'},
+  {de:'danach',es:'después',thema:20,type:'Adjektiv/Adverb'},
+  {de:'der Unfall',es:'accidente',thema:20,type:'Nomen'},
+  {de:'der Verkehrsunfall',es:'accidente de tráfico',thema:20,type:'Nomen'},
+  {de:'handeln',es:'actuar',thema:20,type:'Verb'},
+  {de:'überholen',es:'adelantar',thema:20,type:'Verb'},
+  {de:'gerade',es:'recto',thema:20,type:'Adjektiv/Adverb'},
+  {de:'erreichbar',es:'alcanzable',thema:20,type:'Adjektiv/Adverb'},
+  {de:'der Rettungswagen',es:'ambulancia',thema:20,type:'Nomen'},
+  {de:'Jahre alt',es:'edad',thema:20,type:'Verb'},
+  {de:'versichern',es:'asegurar',thema:20,type:'Verb'},
+  {de:'sich wundern',es:'sorprenderse',thema:20,type:'Verb'},
+  {de:'feststellen',es:'constatar',thema:20,type:'Verb'},
+  {de:'wütend',es:'enfadado',thema:20,type:'Adjektiv/Adverb'},
+  {de:'wechseln auf',es:'cambiar a',thema:20,type:'Verb'},
+  {de:'die Gegenfahrbahn',es:'carril contrario',thema:20,type:'Nomen'},
+  {de:'verursachen',es:'causar',thema:20,type:'Verb'},
+  {de:'die Rücksichtslosigkeit',es:'chulería',thema:20,type:'Nomen'},
+  {de:'der Zusammenstoß',es:'colisión',thema:20,type:'Nomen'},
+  {de:'die Folge',es:'consecuencia',thema:20,type:'Nomen'},
+  {de:'kontinuierlich',es:'continuo',thema:20,type:'Adjektiv/Adverb'},
+  {de:'die Rippe',es:'costilla',thema:20,type:'Nomen'},
+  {de:'schuldig',es:'culpable',thema:20,type:'Adjektiv/Adverb'},
+  {de:'Erste Hilfe leisten',es:'primeros auxilios',thema:20,type:'Verb'},
+  {de:'die Aussage',es:'declaración',thema:20,type:'Nomen'},
+  {de:'die Richtung',es:'dirección',thema:20,type:'Nomen'},
+  {de:'der Streit',es:'discusión',thema:20,type:'Nomen'},
+  {de:'einschlafen',es:'quedarse dormido',thema:20,type:'Verb'},
+  {de:'der Schuldige',es:'culpable',thema:20,type:'Nomen'},
+  {de:'der Verletzte',es:'herido',thema:20,type:'Nomen'},
+  {de:'der Verrückte',es:'loco',thema:20,type:'Nomen'},
+  {de:'der Tote',es:'muerto',thema:20,type:'Nomen'},
+  {de:'der Notfall',es:'emergencia',thema:20,type:'Nomen'},
+  {de:'der Zustand',es:'estado',thema:20,type:'Nomen'},
+  {de:'beteiligt sein',es:'estar implicado',thema:20,type:'Verb'},
+  {de:'ausweichen',es:'esquivar',thema:20,type:'Verb'},
+  {de:'bremsen',es:'frenar',thema:20,type:'Verb'},
+  {de:'die Bremse',es:'freno',thema:20,type:'Nomen'},
+  {de:'wütend',es:'furioso',thema:20,type:'Adjektiv/Adverb'},
+  {de:'die Wunde',es:'herida',thema:20,type:'Nomen'},
+  {de:'berichten',es:'informar',thema:20,type:'Verb'},
+  {de:'die Strafe',es:'multa',thema:20,type:'Nomen'},
+  {de:'die Haut',es:'piel',thema:20,type:'Nomen'},
+  {de:'die Brücke',es:'puente',thema:20,type:'Nomen'},
+  {de:'sich verspäten',es:'llegar tarde',thema:20,type:'Verb'},
+  {de:'brechen',es:'romper',thema:20,type:'Verb'},
+  {de:'übersehen',es:'pasar por alto',thema:20,type:'Verb'},
+  {de:'überraschen',es:'sorprender',thema:20,type:'Verb'},
+  {de:'schuld sein an',es:'tener la culpa',thema:20,type:'Verb'},
+  {de:'der Zeuge',es:'testigo',thema:20,type:'Nomen'},
+  {de:'die Ansicht',es:'aspecto',thema:21,type:'Nomen'},
+  {de:'die Fassade',es:'fachada',thema:21,type:'Nomen'},
+  {de:'die Runde',es:'vuelta',thema:21,type:'Nomen'},
+  {de:'der Ausbildungsgang',es:'carrera',thema:21,type:'Nomen'},
+  {de:'der Designer',es:'diseñador',thema:21,type:'Nomen'},
+  {de:'das Management',es:'gestión',thema:21,type:'Nomen'},
+  {de:'die Medien',es:'medios',thema:21,type:'Nomen'},
+  {de:'das Schauspiel',es:'teatro',thema:21,type:'Nomen'},
+  {de:'der Schauspieler',es:'actor',thema:21,type:'Nomen'},
+  {de:'die Bühne',es:'escenario',thema:21,type:'Nomen'},
+  {de:'das Kapitel',es:'capítulo',thema:21,type:'Nomen'},
+  {de:'der Sänger',es:'cantante',thema:21,type:'Nomen'},
+  {de:'das Argument',es:'argumento',thema:21,type:'Nomen'},
+  {de:'der Bart',es:'barba',thema:21,type:'Nomen'},
+  {de:'die Branche',es:'sector',thema:21,type:'Nomen'},
+  {de:'das Abendessen',es:'cena',thema:21,type:'Nomen'},
+  {de:'das Engagement',es:'compromiso',thema:21,type:'Nomen'},
+  {de:'die Fläche',es:'superficie',thema:21,type:'Nomen'},
+  {de:'die Form',es:'forma',thema:21,type:'Nomen'},
+  {de:'der Frühaufsteher',es:'madrugador',thema:21,type:'Nomen'},
+  {de:'das Gesicht',es:'cara',thema:21,type:'Nomen'},
+  {de:'die Schönheit',es:'belleza',thema:21,type:'Nomen'},
+  {de:'die Verteidigung',es:'defensa',thema:21,type:'Nomen'},
+  {de:'ausbilden',es:'formar',thema:21,type:'Verb'},
+  {de:'begleiten',es:'acompañar',thema:21,type:'Verb'},
+  {de:'schützen',es:'proteger',thema:21,type:'Verb'},
+  {de:'besorgt sein',es:'preocuparse',thema:21,type:'Adjektiv/Adverb'},
+  {de:'einfallen',es:'ocurrir (venir a la mente)',thema:21,type:'Verb'},
+  {de:'erwischen',es:'pillar',thema:21,type:'Verb'},
+  {de:'fliehen',es:'huir',thema:21,type:'Verb'},
+  {de:'sich konzentrieren auf',es:'concentrarse',thema:21,type:'Verb'},
+  {de:'bekommen',es:'recibir',thema:21,type:'Verb'},
+  {de:'orientiert sein an',es:'orientarse',thema:21,type:'Verb'},
+  {de:'recht haben',es:'tener razón',thema:21,type:'Verb'},
+  {de:'retten',es:'salvar',thema:21,type:'Verb'},
+  {de:'trennen',es:'separar',thema:21,type:'Verb'},
+  {de:'treten',es:'pisar',thema:21,type:'Verb'},
+  {de:'unternehmen',es:'emprender',thema:21,type:'Verb'},
+  {de:'verpassen',es:'perderse',thema:21,type:'Verb'},
+  {de:'verschwinden',es:'desaparecer',thema:21,type:'Verb'},
+  {de:'zurückkommen',es:'volver',thema:21,type:'Verb'},
+  {de:'blond',es:'rubio',thema:21,type:'Adjektiv/Adverb'},
+  {de:'ehemalig',es:'antiguo',thema:21,type:'Adjektiv/Adverb'},
+  {de:'einzig',es:'único',thema:21,type:'Adjektiv/Adverb'},
+  {de:'hart',es:'duro',thema:21,type:'Adjektiv/Adverb'},
+  {de:'aktuell',es:'actual',thema:21,type:'Adjektiv/Adverb'},
+  {de:'die Post',es:'correos',thema:22,type:'Nomen'},
+  {de:'das Postamt',es:'oficina de correos',thema:22,type:'Nomen'},
+  {de:'der Briefträger',es:'cartero',thema:22,type:'Nomen'},
+  {de:'der Einschreibebrief',es:'carta certificada',thema:22,type:'Nomen'},
+  {de:'senden',es:'enviar',thema:22,type:'Verb'},
+  {de:'die Sendung',es:'envío',thema:22,type:'Nomen'},
+  {de:'der Absender',es:'remitente',thema:22,type:'Nomen'},
+  {de:'der Empfänger',es:'destinatario',thema:22,type:'Nomen'},
+  {de:'die Zustellung',es:'entrega',thema:22,type:'Nomen'},
+  {de:'einwerfen',es:'echar (al buzón)',thema:22,type:'Verb'},
+  {de:'das Haustier',es:'mascota',thema:22,type:'Nomen'},
+  {de:'der Beleg',es:'comprobante',thema:22,type:'Nomen'},
+  {de:'die Beschwerde',es:'queja',thema:22,type:'Nomen'},
+  {de:'das Geheimnis',es:'secreto',thema:22,type:'Nomen'},
+  {de:'das Heimweh',es:'nostalgia',thema:22,type:'Nomen'},
+  {de:'das Inland',es:'interior del país',thema:22,type:'Nomen'},
+  {de:'die Panne',es:'avería',thema:22,type:'Nomen'},
+  {de:'die Reaktion',es:'reacción',thema:22,type:'Nomen'},
+  {de:'die Strafe',es:'penalización',thema:22,type:'Nomen'},
+  {de:'der Verlag',es:'editorial',thema:22,type:'Nomen'},
+  {de:'der Verlobte',es:'prometido',thema:22,type:'Nomen'},
+  {de:'der Wert',es:'valor',thema:22,type:'Nomen'},
+  {de:'die Zeitschrift',es:'revista',thema:22,type:'Nomen'},
+  {de:'der Fernseher',es:'televisor',thema:22,type:'Nomen'},
+  {de:'die Europäische Union',es:'Unión Europea',thema:22,type:'Nomen'},
+  {de:'die Garantie',es:'garantía',thema:22,type:'Nomen'},
+  {de:'die Mitteilung',es:'mensaje',thema:22,type:'Nomen'},
+  {de:'die Webseite',es:'página web',thema:22,type:'Nomen'},
+  {de:'der Werktag',es:'día laborable',thema:22,type:'Nomen'},
+  {de:'abstimmen mit',es:'coordinar',thema:22,type:'Verb'},
+  {de:'angeben',es:'indicar',thema:22,type:'Verb'},
+  {de:'sich beschweren über',es:'quejarse',thema:22,type:'Verb'},
+  {de:'einkaufen',es:'comprar',thema:22,type:'Verb'},
+  {de:'betreffen',es:'afectar',thema:22,type:'Verb'},
+  {de:'sich kümmern um',es:'ocuparse',thema:22,type:'Verb'},
+  {de:'realisieren',es:'darse cuenta',thema:22,type:'Verb'},
+  {de:'verfolgen',es:'perseguir',thema:22,type:'Verb'},
+  {de:'verreisen',es:'viajar',thema:22,type:'Verb'},
+  {de:'versprechen',es:'prometer',thema:22,type:'Verb'},
+  {de:'verstärken',es:'reforzar',thema:22,type:'Verb'},
+  {de:'emotional',es:'emocional',thema:22,type:'Adjektiv/Adverb'},
+  {de:'ordentlich',es:'ordenado',thema:22,type:'Adjektiv/Adverb'},
+  {de:'pünktlich',es:'puntual',thema:22,type:'Adjektiv/Adverb'},
+  {de:'tot',es:'muerto',thema:22,type:'Adjektiv/Adverb'},
+  {de:'damals',es:'entonces',thema:22,type:'Adjektiv/Adverb'},
+  {de:'solche',es:'tal',thema:22,type:'Adjektiv/Adverb'},
+  {de:'in Ordnung sein',es:'estar en orden',thema:22,type:'Verb'},
+  {de:'die Hochschule',es:'escuela superior',thema:23,type:'Nomen'},
+  {de:'der Bachelor',es:'grado',thema:23,type:'Nomen'},
+  {de:'die Promotion',es:'doctorado',thema:23,type:'Nomen'},
+  {de:'die Aufnahmeprüfung',es:'prueba de acceso',thema:23,type:'Nomen'},
+  {de:'die Lehre',es:'enseñanza',thema:23,type:'Nomen'},
+  {de:'die Wissenschaft',es:'ciencia',thema:23,type:'Nomen'},
+  {de:'sich immatrikulieren',es:'matricularse',thema:23,type:'Verb'},
+  {de:'die Germanistik',es:'filología alemana',thema:23,type:'Nomen'},
+  {de:'Jura',es:'derecho',thema:23,type:'Nomen'},
+  {de:'der Analytiker',es:'analista',thema:23,type:'Nomen'},
+  {de:'der Dolmetscher',es:'intérprete',thema:23,type:'Nomen'},
+  {de:'die Kunst',es:'arte',thema:23,type:'Nomen'},
+  {de:'das Instrument',es:'instrumento',thema:23,type:'Nomen'},
+  {de:'die Begabung',es:'talento',thema:23,type:'Nomen'},
+  {de:'das Berufsleben',es:'vida profesional',thema:23,type:'Nomen'},
+  {de:'die Besonderheit',es:'característica',thema:23,type:'Nomen'},
+  {de:'die Fähigkeit',es:'capacidad',thema:23,type:'Nomen'},
+  {de:'die Jugend',es:'juventud',thema:23,type:'Nomen'},
+  {de:'der Lebensweg',es:'trayectoria',thema:23,type:'Nomen'},
+  {de:'die Leidenschaft',es:'pasión',thema:23,type:'Nomen'},
+  {de:'die Praxis',es:'práctica',thema:23,type:'Nomen'},
+  {de:'die Theorie',es:'teoría',thema:23,type:'Nomen'},
+  {de:'der Vortrag',es:'conferencia',thema:23,type:'Nomen'},
+  {de:'prüfen',es:'comprobar',thema:23,type:'Verb'},
+  {de:'überlegen',es:'pensar',thema:23,type:'Verb'},
+  {de:'verwandeln',es:'convertir',thema:23,type:'Verb'},
+  {de:'anerkannt',es:'reconocido',thema:23,type:'Adjektiv/Adverb'},
+  {de:'üblich',es:'habitual',thema:23,type:'Adjektiv/Adverb'},
+  {de:'künstlerisch',es:'artístico',thema:23,type:'Adjektiv/Adverb'},
+  {de:'pädagogisch',es:'pedagógico',thema:23,type:'Adjektiv/Adverb'},
+  {de:'theoretisch',es:'teórico',thema:23,type:'Adjektiv/Adverb'},
+  {de:'praxisorientiert',es:'práctico',thema:23,type:'Adjektiv/Adverb'},
+  {de:'selbstständig',es:'independiente',thema:23,type:'Adjektiv/Adverb'},
+  {de:'wegen',es:'debido a',thema:23,type:'Verb'},
+  {de:'zuerst',es:'en primer lugar',thema:23,type:'Adjektiv/Adverb'},
+  {de:'auf diese Weise',es:'de esta manera',thema:23,type:'Ausdruck'},
+  {de:'in der Regel',es:'por regla general',thema:23,type:'Ausdruck'},
+  {de:'die Psychologie',es:'psicología',thema:23,type:'Nomen'},
+  {de:'der Oberarzt',es:'médico jefe',thema:23,type:'Nomen'},
+  {de:'die Wärme',es:'calor',thema:23,type:'Nomen'},
+  {de:'der Kompass',es:'brújula',thema:23,type:'Nomen'},
+  {de:'das Unternehmen',es:'empresa',thema:23,type:'Nomen'},
+  {de:'aufwachsen',es:'crecer',thema:23,type:'Verb'},
+  {de:'fürchten',es:'temer',thema:23,type:'Verb'},
+  {de:'gesamt',es:'total',thema:23,type:'Adjektiv/Adverb'},
+  {de:'gleichzeitig',es:'al mismo tiempo',thema:23,type:'Adjektiv/Adverb'},
+  {de:'der Bauernhof',es:'granja',thema:24,type:'Nomen'},
+  {de:'der Stall',es:'establo',thema:24,type:'Nomen'},
+  {de:'die Weide',es:'prado',thema:24,type:'Nomen'},
+  {de:'anbauen',es:'cultivar',thema:24,type:'Verb'},
+  {de:'biologisch',es:'biológico',thema:24,type:'Adjektiv/Adverb'},
+  {de:'ökologisch',es:'ecológico',thema:24,type:'Adjektiv/Adverb'},
+  {de:'die Umwelt',es:'medio ambiente',thema:24,type:'Nomen'},
+  {de:'der Umweltschutz',es:'protección ambiental',thema:24,type:'Nomen'},
+  {de:'ernten',es:'cosechar',thema:24,type:'Verb'},
+  {de:'füttern',es:'alimentar',thema:24,type:'Verb'},
+  {de:'die Aufgabe',es:'misión',thema:24,type:'Nomen'},
+  {de:'das Mitglied',es:'miembro',thema:24,type:'Nomen'},
+  {de:'die Stiftung',es:'fundación',thema:24,type:'Nomen'},
+  {de:'freiwillig',es:'voluntario',thema:24,type:'Adjektiv/Adverb'},
+  {de:'der Esel',es:'burro',thema:24,type:'Nomen'},
+  {de:'das Huhn',es:'pollo',thema:24,type:'Nomen'},
+  {de:'die Kuh',es:'vaca',thema:24,type:'Nomen'},
+  {de:'die Ziege',es:'cabra',thema:24,type:'Nomen'},
+  {de:'fressen',es:'comer (animal)',thema:24,type:'Verb'},
+  {de:'der Zivildienst',es:'servicio civil',thema:24,type:'Nomen'},
+  {de:'gemeinnützig',es:'sin ánimo de lucro',thema:24,type:'Adjektiv/Adverb'},
+  {de:'die Anfrage',es:'consulta',thema:24,type:'Nomen'},
+  {de:'der Betreuer',es:'cuidador',thema:24,type:'Nomen'},
+  {de:'die Betreuung',es:'cuidado',thema:24,type:'Nomen'},
+  {de:'bewerten',es:'evaluar',thema:24,type:'Verb'},
+  {de:'der Entschluss',es:'decisión',thema:24,type:'Nomen'},
+  {de:'die Erwartung',es:'expectativa',thema:24,type:'Nomen'},
+  {de:'der Fachmann',es:'experto',thema:24,type:'Nomen'},
+  {de:'die Freundschaft',es:'amistad',thema:24,type:'Nomen'},
+  {de:'die Handarbeit',es:'manualidad',thema:24,type:'Nomen'},
+  {de:'die Lebensweise',es:'forma de vida',thema:24,type:'Nomen'},
+  {de:'der Strom',es:'corriente eléctrica',thema:24,type:'Nomen'},
+  {de:'das Taschengeld',es:'dinero de bolsillo',thema:24,type:'Nomen'},
+  {de:'unterbringen',es:'alojar',thema:24,type:'Verb'},
+  {de:'vermarkten',es:'comercializar',thema:24,type:'Verb'},
+  {de:'verpflegen',es:'alimentar',thema:24,type:'Verb'},
+  {de:'das Modell',es:'modelo',thema:24,type:'Nomen'},
+  {de:'der Zusammenhang',es:'relación',thema:24,type:'Nomen'},
+  {de:'beurteilen',es:'juzgar',thema:24,type:'Verb'},
+  {de:'sich entschließen zu',es:'decidirse',thema:24,type:'Verb'},
+  {de:'erhalten',es:'recibir',thema:24,type:'Verb'},
+  {de:'gewohnt sein',es:'estar acostumbrado',thema:24,type:'Verb'},
+  {de:'schweigen',es:'callarse',thema:24,type:'Verb'},
+  {de:'sich verlassen auf',es:'confiar',thema:24,type:'Verb'},
+  {de:'dankbar',es:'agradecido',thema:24,type:'Adjektiv/Adverb'},
+  {de:'die Begrüßung',es:'saludo',thema:25,type:'Nomen'},
+  {de:'die Geste',es:'gesto',thema:25,type:'Nomen'},
+  {de:'der Handschlag',es:'apretón de manos',thema:25,type:'Nomen'},
+  {de:'der Kuss',es:'beso',thema:25,type:'Nomen'},
+  {de:'nicken',es:'asentir',thema:25,type:'Verb'},
+  {de:'die Umarmung',es:'abrazo',thema:25,type:'Nomen'},
+  {de:'winken',es:'hacer señas',thema:25,type:'Verb'},
+  {de:'der Small Talk',es:'conversación trivial',thema:25,type:'Nomen'},
+  {de:'der Ausdruck',es:'expresión',thema:25,type:'Nomen'},
+  {de:'die Redewendung',es:'frase hecha',thema:25,type:'Nomen'},
+  {de:'wörtlich',es:'literalmente',thema:25,type:'Adjektiv/Adverb'},
+  {de:'nachschlagen',es:'consultar',thema:25,type:'Verb'},
+  {de:'übertragen',es:'transmitir',thema:25,type:'Verb'},
+  {de:'der Anlass',es:'motivo',thema:25,type:'Nomen'},
+  {de:'der Empfang',es:'recepción',thema:25,type:'Nomen'},
+  {de:'die Kälte',es:'frío',thema:25,type:'Nomen'},
+  {de:'die Leitung',es:'dirección',thema:25,type:'Nomen'},
+  {de:'die Panik',es:'pánico',thema:25,type:'Nomen'},
+  {de:'das Pech',es:'mala suerte',thema:25,type:'Nomen'},
+  {de:'antworten',es:'responder',thema:25,type:'Verb'},
+  {de:'begründen',es:'justificar',thema:25,type:'Verb'},
+  {de:'inserieren',es:'poner anuncio',thema:25,type:'Verb'},
+  {de:'vermeiden',es:'evitar',thema:25,type:'Verb'},
+  {de:'deprimiert',es:'deprimido',thema:25,type:'Adjektiv/Adverb'},
+  {de:'vornehm',es:'distinguido',thema:25,type:'Adjektiv/Adverb'},
+  {de:'sich begrüßen',es:'saludarse',thema:25,type:'Verb'},
+  {de:'der Wangenkuss',es:'beso en la mejilla',thema:25,type:'Nomen'},
+  {de:'die Korrektur',es:'corrección',thema:25,type:'Nomen'},
+  {de:'der Auszug',es:'extracto',thema:25,type:'Nomen'},
+  {de:'die Fortsetzung',es:'continuación',thema:25,type:'Nomen'},
+  {de:'das Meeting',es:'reunión',thema:25,type:'Nomen'},
+  {de:'der Mut',es:'valor',thema:25,type:'Nomen'},
+  {de:'der Ratgeber',es:'guía',thema:25,type:'Nomen'},
+  {de:'die Schwierigkeit',es:'dificultad',thema:25,type:'Nomen'},
+  {de:'der Sekt',es:'champán',thema:25,type:'Nomen'},
+  {de:'die Umgangsformen',es:'modales',thema:25,type:'Nomen'},
+  {de:'die Ursache',es:'causa',thema:25,type:'Nomen'},
+  {de:'das Verständnis',es:'comprensión',thema:25,type:'Nomen'},
+  {de:'das Vertrauen',es:'confianza',thema:25,type:'Nomen'},
+  {de:'abhängen von',es:'depender',thema:25,type:'Verb'},
+  {de:'sich beschäftigen mit',es:'ocuparse',thema:25,type:'Verb'},
+  {de:'üben',es:'practicar',thema:25,type:'Verb'},
+  {de:'unangenehm',es:'desagradable',thema:25,type:'Adjektiv/Adverb'},
+  {de:'formell',es:'formal',thema:25,type:'Adjektiv/Adverb'},
+  {de:'hochachtungsvoll',es:'atentamente',thema:25,type:'Adjektiv/Adverb'},
+  {de:'ausgezeichnet',es:'excelente',thema:25,type:'Adjektiv/Adverb'},
+  {de:'gegenseitig',es:'mutuamente',thema:25,type:'Adjektiv/Adverb'},
+  {de:'teilweise',es:'parcialmente',thema:25,type:'Adjektiv/Adverb'},
+  {de:'überhaupt nicht',es:'en absoluto',thema:25,type:'Adjektiv/Adverb'},
+  {de:'ungefähr',es:'aproximadamente',thema:25,type:'Adjektiv/Adverb'},
+  {de:'der Arbeitsvertrag',es:'contrato laboral',thema:26,type:'Nomen'},
+  {de:'der Arbeitnehmer',es:'empleado',thema:26,type:'Nomen'},
+  {de:'das Verhältnis',es:'relación',thema:26,type:'Nomen'},
+  {de:'die Arbeitszeit',es:'tiempo de trabajo',thema:26,type:'Nomen'},
+  {de:'die Stelle',es:'puesto',thema:26,type:'Nomen'},
+  {de:'die Geschäftsführung',es:'dirección',thema:26,type:'Nomen'},
+  {de:'der Lohn',es:'salario',thema:26,type:'Nomen'},
+  {de:'die Frist',es:'plazo',thema:26,type:'Nomen'},
+  {de:'unterschreiben',es:'firmar',thema:26,type:'Verb'},
+  {de:'einstellen',es:'contratar',thema:26,type:'Verb'},
+  {de:'tätig sein als',es:'trabajar como',thema:26,type:'Adjektiv/Adverb'},
+  {de:'das Werk',es:'fábrica',thema:26,type:'Nomen'},
+  {de:'der Prozess',es:'proceso',thema:26,type:'Nomen'},
+  {de:'das Passwort',es:'contraseña',thema:26,type:'Nomen'},
+  {de:'der Anspruch',es:'derecho',thema:26,type:'Nomen'},
+  {de:'der Antrag',es:'solicitud',thema:26,type:'Nomen'},
+  {de:'der Urlaubsantrag',es:'vacaciones',thema:26,type:'Nomen'},
+  {de:'das Infobrett',es:'tablón',thema:26,type:'Nomen'},
+  {de:'die Brille',es:'gafas',thema:26,type:'Nomen'},
+  {de:'die Lesebrille',es:'gafas de lectura',thema:26,type:'Nomen'},
+  {de:'gemäß',es:'según',thema:26,type:'Adjektiv/Adverb'},
+  {de:'die Herkunft',es:'origen',thema:26,type:'Nomen'},
+  {de:'die Kraft',es:'fuerza',thema:26,type:'Nomen'},
+  {de:'der Krieg',es:'guerra',thema:26,type:'Nomen'},
+  {de:'der Laptop',es:'ordenador portátil',thema:26,type:'Nomen'},
+  {de:'die Nachfrage',es:'demanda',thema:26,type:'Nomen'},
+  {de:'der Sand',es:'arena',thema:26,type:'Nomen'},
+  {de:'die Verwaltung',es:'administración',thema:26,type:'Nomen'},
+  {de:'die Wanderung',es:'excursión',thema:26,type:'Nomen'},
+  {de:'die Zusammenfassung',es:'resumen',thema:26,type:'Nomen'},
+  {de:'achten auf',es:'atender',thema:26,type:'Verb'},
+  {de:'auszahlen',es:'pagar',thema:26,type:'Verb'},
+  {de:'durchlesen',es:'leer completamente',thema:26,type:'Verb'},
+  {de:'lassen',es:'dejar',thema:26,type:'Verb'},
+  {de:'verschieben',es:'posponer',thema:26,type:'Verb'},
+  {de:'sorgen für',es:'cuidar de',thema:26,type:'Verb'},
+  {de:'bedecken',es:'cubrir',thema:26,type:'Verb'},
+  {de:'vertreten',es:'representar',thema:26,type:'Verb'},
+  {de:'zukommen lassen',es:'hacer llegar',thema:26,type:'Verb'},
+  {de:'zulassen',es:'permitir',thema:26,type:'Verb'},
+  {de:'vollständig',es:'completo',thema:26,type:'Adjektiv/Adverb'},
+  {de:'schriftlich',es:'por escrito',thema:26,type:'Adjektiv/Adverb'},
+  {de:'zuständig',es:'responsable',thema:26,type:'Adjektiv/Adverb'},
+  {de:'beziehungsweise',es:'respectivamente',thema:26,type:'Adjektiv/Adverb'},
+  {de:'anschließend',es:'a continuación',thema:26,type:'Adjektiv/Adverb'},
+  {de:'der Zeitraum',es:'período',thema:27,type:'Nomen'},
+  {de:'die Revolution',es:'revolución',thema:27,type:'Nomen'},
+  {de:'die Nation',es:'nación',thema:27,type:'Nomen'},
+  {de:'die Hauptstadt',es:'capital',thema:27,type:'Nomen'},
+  {de:'die Weltwirtschaftskrise',es:'crisis económica mundial',thema:27,type:'Nomen'},
+  {de:'die Macht',es:'poder',thema:27,type:'Nomen'},
+  {de:'die Zerstörung',es:'destrucción',thema:27,type:'Nomen'},
+  {de:'das Opfer',es:'víctima',thema:27,type:'Nomen'},
+  {de:'die Flucht',es:'huida',thema:27,type:'Nomen'},
+  {de:'umkommen',es:'morir',thema:27,type:'Verb'},
+  {de:'die Mauer',es:'muro',thema:27,type:'Nomen'},
+  {de:'die Teilung',es:'división',thema:27,type:'Nomen'},
+  {de:'die Wiedervereinigung',es:'reunificación',thema:27,type:'Nomen'},
+  {de:'der Schriftsteller',es:'escritor',thema:27,type:'Nomen'},
+  {de:'das Blut',es:'sangre',thema:27,type:'Nomen'},
+  {de:'die Blüte',es:'floración',thema:27,type:'Nomen'},
+  {de:'der Charme',es:'encanto',thema:27,type:'Nomen'},
+  {de:'das Denkmal',es:'monumento',thema:27,type:'Nomen'},
+  {de:'die Entdeckung',es:'descubrimiento',thema:27,type:'Nomen'},
+  {de:'der Erfinder',es:'inventor',thema:27,type:'Nomen'},
+  {de:'die Galerie',es:'galería',thema:27,type:'Nomen'},
+  {de:'der Imbiss',es:'comida rápida',thema:27,type:'Nomen'},
+  {de:'das Jahrzehnt',es:'década',thema:27,type:'Nomen'},
+  {de:'der Kindergarten',es:'guardería',thema:27,type:'Nomen'},
+  {de:'die Krise',es:'crisis',thema:27,type:'Nomen'},
+  {de:'der Ruhm',es:'fama',thema:27,type:'Nomen'},
+  {de:'das Schicksal',es:'destino',thema:27,type:'Nomen'},
+  {de:'die Staatsbürgerschaft',es:'ciudadanía',thema:27,type:'Nomen'},
+  {de:'das Schwimmbad',es:'piscina',thema:27,type:'Nomen'},
+  {de:'der Verlust',es:'pérdida',thema:27,type:'Nomen'},
+  {de:'die Multiplikation',es:'multiplicación',thema:27,type:'Nomen'},
+  {de:'die Volkshochschule',es:'escuela popular',thema:27,type:'Nomen'},
+  {de:'der Vorhang',es:'cortina',thema:27,type:'Nomen'},
+  {de:'die Wahrheit',es:'verdad',thema:27,type:'Nomen'},
+  {de:'die Wirklichkeit',es:'realidad',thema:27,type:'Nomen'},
+  {de:'in Wirklichkeit',es:'en realidad',thema:27,type:'Ausdruck'},
+  {de:'der Zahn',es:'diente',thema:27,type:'Nomen'},
+  {de:'anziehen',es:'ponerse ropa',thema:27,type:'Verb'},
+  {de:'sich vorstellen',es:'imaginar',thema:27,type:'Verb'},
+  {de:'erfinden',es:'inventar',thema:27,type:'Verb'},
+  {de:'gehören zu',es:'formar parte',thema:27,type:'Verb'},
+  {de:'umbauen',es:'reconstruir',thema:27,type:'Verb'},
+  {de:'verstecken',es:'ocultar',thema:27,type:'Verb'},
+  {de:'wiedererkennen',es:'reconocer',thema:27,type:'Verb'},
+  {de:'chaotisch',es:'caótico',thema:27,type:'Adjektiv/Adverb'},
+  {de:'tatsächlich',es:'realmente',thema:27,type:'Adjektiv/Adverb'},
+  {de:'während',es:'mientras',thema:27,type:'Adjektiv/Adverb'},
+  {de:'der Einwanderer',es:'inmigrante',thema:28,type:'Nomen'},
+  {de:'die Ausreise',es:'salida',thema:28,type:'Nomen'},
+  {de:'die Rückkehr',es:'regreso',thema:28,type:'Nomen'},
+  {de:'der Flüchtling',es:'refugiado',thema:28,type:'Nomen'},
+  {de:'die Heimat',es:'patria',thema:28,type:'Nomen'},
+  {de:'das Heimweh',es:'morriña',thema:28,type:'Nomen'},
+  {de:'jeder Zweite',es:'uno de cada dos',thema:28,type:'Adjektiv/Adverb'},
+  {de:'doppelt',es:'doble',thema:28,type:'Adjektiv/Adverb'},
+  {de:'die Absicht',es:'intención',thema:28,type:'Nomen'},
+  {de:'die Armut',es:'pobreza',thema:28,type:'Nomen'},
+  {de:'die Umfrage',es:'encuesta',thema:28,type:'Nomen'},
+  {de:'die Chance',es:'oportunidad',thema:28,type:'Nomen'},
+  {de:'das Risiko',es:'riesgo',thema:28,type:'Nomen'},
+  {de:'die Entscheidung',es:'decisión',thema:28,type:'Nomen'},
+  {de:'die Erlaubnis',es:'permiso',thema:28,type:'Nomen'},
+  {de:'die Fachkraft',es:'especialista',thema:28,type:'Nomen'},
+  {de:'das Gesetz',es:'ley',thema:28,type:'Nomen'},
+  {de:'die Herausforderung',es:'reto',thema:28,type:'Nomen'},
+  {de:'die Klarheit',es:'claridad',thema:28,type:'Nomen'},
+  {de:'das Klima',es:'clima',thema:28,type:'Nomen'},
+  {de:'der Koch',es:'cocinero',thema:28,type:'Nomen'},
+  {de:'die Lebenshaltung',es:'nivel de vida',thema:28,type:'Nomen'},
+  {de:'der Kurs',es:'curso',thema:28,type:'Nomen'},
+  {de:'das Niveau',es:'nivel',thema:28,type:'Nomen'},
+  {de:'das Lohnniveau',es:'nivel salarial',thema:28,type:'Nomen'},
+  {de:'die Lebensumstände',es:'circunstancia',thema:28,type:'Nomen'},
+  {de:'die Zuversicht',es:'confianza',thema:28,type:'Nomen'},
+  {de:'gelingen',es:'lograr',thema:28,type:'Verb'},
+  {de:'wichtig finden',es:'valorar',thema:28,type:'Verb'},
+  {de:'sich Mut machen',es:'animarse',thema:28,type:'Verb'},
+  {de:'Fragen stellen',es:'preguntar',thema:28,type:'Verb'},
+  {de:'vermissen',es:'echar de menos',thema:28,type:'Verb'},
+  {de:'organisieren',es:'gestionar',thema:28,type:'Verb'},
+  {de:'weitergehen',es:'continuar',thema:28,type:'Verb'},
+  {de:'bürokratisch',es:'burocrático',thema:28,type:'Adjektiv/Adverb'},
+  {de:'mittelalterlich',es:'medieval',thema:28,type:'Adjektiv/Adverb'},
+  {de:'sichtbar',es:'visible',thema:28,type:'Adjektiv/Adverb'},
+  {de:'umfassend',es:'completo',thema:28,type:'Adjektiv/Adverb'},
+  {de:'am Anfang',es:'al principio',thema:28,type:'Ausdruck'},
+  {de:'woanders',es:'en otro lugar',thema:28,type:'Adjektiv/Adverb'},
+  {de:'lüften',es:'ventilar',thema:28,type:'Verb'},
+  {de:'sich entspannen',es:'relajarse',thema:28,type:'Verb'},
+  {de:'einheimisch',es:'nativo',thema:28,type:'Adjektiv/Adverb'},
+  {de:'geheimnisvoll',es:'misterioso',thema:28,type:'Adjektiv/Adverb'},
+  {de:'mental',es:'mental',thema:28,type:'Adjektiv/Adverb'},
+  {de:'sogenannt',es:'llamado',thema:28,type:'Adjektiv/Adverb'},
+  {de:'kürzlich',es:'recientemente',thema:28,type:'Adjektiv/Adverb'},
+  {de:'das System',es:'sistema',thema:29,type:'Nomen'},
+  {de:'die Staatsform',es:'forma de estado',thema:29,type:'Nomen'},
+  {de:'die Bundesrepublik',es:'república federal',thema:29,type:'Nomen'},
+  {de:'der Bundestag',es:'parlamento',thema:29,type:'Nomen'},
+  {de:'repräsentativ',es:'representativo',thema:29,type:'Adjektiv/Adverb'},
+  {de:'der Kanzler',es:'canciller',thema:29,type:'Nomen'},
+  {de:'der Präsident',es:'presidente',thema:29,type:'Nomen'},
+  {de:'die Sitzung',es:'sesión',thema:29,type:'Nomen'},
+  {de:'der Minister',es:'ministro',thema:29,type:'Nomen'},
+  {de:'das Bundesland',es:'estado federado',thema:29,type:'Nomen'},
+  {de:'der Politiker',es:'político',thema:29,type:'Nomen'},
+  {de:'das Grundgesetz',es:'constitución',thema:29,type:'Nomen'},
+  {de:'das Gericht',es:'tribunal',thema:29,type:'Nomen'},
+  {de:'wählen',es:'votar',thema:29,type:'Verb'},
+  {de:'die Wahl',es:'elección',thema:29,type:'Nomen'},
+  {de:'die Mehrheit',es:'mayoría',thema:29,type:'Nomen'},
+  {de:'mit Mehrheit',es:'por mayoría',thema:29,type:'Ausdruck'},
+  {de:'einheitlich',es:'uniforme',thema:29,type:'Adjektiv/Adverb'},
+  {de:'das Verhältnis',es:'proporción',thema:29,type:'Nomen'},
+  {de:'der Wähler',es:'elector',thema:29,type:'Nomen'},
+  {de:'die Partei',es:'partido',thema:29,type:'Nomen'},
+  {de:'der Stimmzettel',es:'papeleta',thema:29,type:'Nomen'},
+  {de:'die Stimme',es:'voto',thema:29,type:'Nomen'},
+  {de:'ungültig',es:'no válido',thema:29,type:'Adjektiv/Adverb'},
+  {de:'die Hochrechnung',es:'estimación',thema:29,type:'Nomen'},
+  {de:'der Sitz',es:'escaño',thema:29,type:'Nomen'},
+  {de:'koalieren',es:'coalición',thema:29,type:'Verb'},
+  {de:'wahlberechtigt',es:'con derecho a voto',thema:29,type:'Adjektiv/Adverb'},
+  {de:'die Abbildung',es:'imagen',thema:29,type:'Nomen'},
+  {de:'der Zuhörer',es:'oyente',thema:29,type:'Nomen'},
+  {de:'die Änderung',es:'cambio',thema:29,type:'Nomen'},
+  {de:'die Aufmerksamkeit',es:'atención',thema:29,type:'Nomen'},
+  {de:'eine Entscheidung treffen',es:'tomar decisión',thema:29,type:'Verb'},
+  {de:'der Gedanke',es:'idea',thema:29,type:'Nomen'},
+  {de:'sich Gedanken machen über',es:'reflexionar',thema:29,type:'Verb'},
+  {de:'die Anzahl',es:'cantidad',thema:29,type:'Nomen'},
+  {de:'die Gewalt',es:'violencia',thema:29,type:'Nomen'},
+  {de:'die Initiative',es:'iniciativa',thema:29,type:'Nomen'},
+  {de:'die Mischung',es:'mezcla',thema:29,type:'Nomen'},
+  {de:'das Prinzip',es:'principio',thema:29,type:'Nomen'},
+  {de:'die Treue',es:'lealtad',thema:29,type:'Nomen'}
+];
+
+const themaNames = {
+  1:'Zeit & Natur',
+  2:'Essen & Einkaufen',
+  3:'Familie & Alltag',
+  4:'Hobbys & Freizeit',
+  5:'Wohnen',
+  6:'Kleidung & Haushalt',
+  7:'Stadt & Kultur',
+  8:'Im Restaurant',
+  9:'Feste & Traditionen',
+  10:'Wohnung & Umzug',
+  11:'Studium & Alltag',
+  12:'Bank & Geld',
+  13:'Gesundheit',
+  14:'Wetter & Mode',
+  15:'Reisen & Mobilität',
+  16:'Ausbildung & Beruf',
+  17:'Bewerbung & Arbeit',
+  18:'Urlaub',
+  19:'Reise & Politik',
+  20:'Unfall & Notfall',
+  21:'Kunst & Aussehen',
+  22:'Post & Kommunikation',
+  23:'Hochschule & Kunst',
+  24:'Landleben & Ehrenamt',
+  25:'Umgangsformen',
+  26:'Arbeitsvertrag',
+  27:'Geschichte',
+  28:'Migration',
+  29:'Politik & Wahlen'
+};
+const allThemas  = [...new Set(words.map(w=>w.thema))].sort((a,b)=>a-b);
+const allTypes   = [...new Set(words.map(w=>w.type))];
+
+let session=[], isFlipped=false;
+let selThemas=new Set(), selTypes=new Set();
+let savedThemas=new Set(), savedTypes=new Set();
+let activeMode = 'write';
+// Estadísticas independientes por modo
+const modeState = {
+  write: { idx:0, hits:0, seen:0, racha:0 },
+  cards: { idx:0, hits:0, seen:0, racha:0 },
+  mc:    { idx:0, hits:0, seen:0, racha:0 },
+};
+function ms() { return modeState[activeMode]; }
+
+// ── Navegación ──────────────────────────────────────────
+function goScreen(id) {
+  ['s-home','s-simple','s-advanced','s-practice'].forEach(s=>{
+    document.getElementById(s).style.display = s===id ? 'flex' : 'none';
+  });
+  if (id==='s-simple')   buildSimple();
+  if (id==='s-advanced') buildAdvanced();
+}
+function goHome() { goScreen('s-home'); buildHome(); }
+
+// ── Home ────────────────────────────────────────────────
+function buildHome() {
+  const total = words.length;
+  const themes = allThemas.length;
+  const types  = allTypes.length;
+  document.getElementById('homeStats').innerHTML = `
+    <div class="stat-box"><div class="stat-n">${total}</div><div class="stat-l">palabras</div></div>
+    <div class="stat-box"><div class="stat-n">${themes}</div><div class="stat-l">temas</div></div>
+    <div class="stat-box"><div class="stat-n">${types}</div><div class="stat-l">tipos</div></div>
+    <div class="stat-box"><div class="stat-n">35%</div><div class="stat-l">progreso</div></div>`;
+  document.getElementById('homeBar').style.width = '35%';
+  document.getElementById('homeBarLabel').textContent = '7 de 20 palabras dominadas';
+
+  const lvls = ['A1','A2','B1','B2','C1','C2'];
+  document.getElementById('sidebarLevels').innerHTML = lvls.map(l=>{
+    const n = words.filter(w=>w.lvl===l).length;
+    return n ? `<div class="sidebar-stat"><span>${l}</span><span>${n} palabras</span></div>` : '';
+  }).join('');
+}
+
+// ── Tema completo ───────────────────────────────────────
+function buildSimple() {
+  document.getElementById('themaGrid').innerHTML = allThemas.map(th=>{
+    const cnt  = words.filter(w=>w.thema===th).length;
+    const name = themaNames[th]||'';
+    return `<div class="thema-card" onclick="startSession(new Set([${th}]),new Set(),'Thema ${th} — ${name}','Todas las palabras del Thema ${th}')">
+      <div class="t-num">Thema ${th}</div>
+      <div class="t-name">${name}</div>
+      <div class="t-cnt">${cnt} palabras</div>
+    </div>`;
+  }).join('');
+}
+
+// ── Avanzado ────────────────────────────────────────────
+function buildAdvanced() {
+  selThemas.clear(); selTypes.clear();
+  document.getElementById('themaChips').innerHTML = allThemas.map(th=>
+    `<div class="chip" data-th="${th}" onclick="toggleThema(${th},this)">Thema ${th} — ${themaNames[th]||''}</div>`
+  ).join('');
+  document.getElementById('typeChips').innerHTML = allTypes.map(t=>
+    `<div class="chip" data-type="${t}" onclick="toggleType('${t}',this)">${t}</div>`
+  ).join('');
+  updateAdvSummary();
+}
+function toggleThema(th,el) {
+  selThemas.has(th)?selThemas.delete(th):selThemas.add(th);
+  el.classList.toggle('sel',selThemas.has(th));
+  updateAdvSummary();
+}
+function toggleType(t,el) {
+  selTypes.has(t)?selTypes.delete(t):selTypes.add(t);
+  el.classList.toggle('sel',selTypes.has(t));
+  updateAdvSummary();
+}
+function updateAdvSummary() {
+  const btn = document.getElementById('btnStart');
+  const sum = document.getElementById('advSummary');
+  if (!selThemas.size) { sum.innerHTML='Selecciona al menos un tema.'; btn.disabled=true; return; }
+  const cnt = words.filter(w=>selThemas.has(w.thema)&&(selTypes.size===0||selTypes.has(w.type))).length;
+  const ts  = [...selThemas].map(t=>`<strong>Thema ${t}</strong>`).join(', ');
+  const tps = selTypes.size ? [...selTypes].map(t=>`<strong>${t}</strong>`).join(', ') : '<strong>todos los tipos</strong>';
+  sum.innerHTML = `${cnt} palabras seleccionadas de ${ts} · ${tps}.`;
+  btn.disabled = cnt===0;
+}
+function startAdvanced() {
+  const lbl = [...selThemas].map(t=>`Thema ${t}`).join(' + ');
+  const sub = selTypes.size ? [...selTypes].join(', ') : 'Todas las palabras';
+  startSession(new Set(selThemas), new Set(selTypes), lbl, sub);
+}
+
+// ── Sesión ───────────────────────────────────────────────
+function shuffle(arr) {
+  for (let i=arr.length-1;i>0;i--) { const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; }
+  return arr;
+}
+
+function startSession(themas, types, title, sub) {
+  session = shuffle(words.filter(w=>themas.has(w.thema)&&(types.size===0||types.has(w.type))));
+  savedThemas=themas; savedTypes=types;
+  // Reset todos los modos
+  ['write','cards','mc'].forEach(m => { modeState[m]={idx:0,hits:0,seen:0,racha:0}; });
+  isFlipped=false;
+  document.getElementById('practiceTitle').textContent = title;
+  document.getElementById('practiceSub').textContent   = sub;
+  goScreen('s-practice');
+  activeMode='write';
+  switchTab('write');
+  updateStats();
+}
+
+function restartSession(mode) {
+  const m = mode||'write';
+  session = shuffle([...session]);
+  // Solo reset el modo actual
+  modeState[m]={idx:0,hits:0,seen:0,racha:0};
+  isFlipped=false;
+  updateStats();
+  switchTab(m);
+}
+
+// ── Stats por modo ───────────────────────────────────────
+function updateStats() {
+  const s = ms();
+  const t = session.length;
+  document.getElementById('pTotal').textContent = t;
+  document.getElementById('pDom').textContent   = s.hits;
+  document.getElementById('pRacha').textContent = s.racha;
+  document.getElementById('pPct').textContent   = s.seen>0?Math.round(s.hits/s.seen*100)+'%':'—';
+  const p = t>0?Math.round(s.idx/t*100):0;
+  document.getElementById('pBar').style.width   = p+'%';
+  document.getElementById('pBarLabel').textContent = `${s.idx} de ${t} palabras`;
+
+  // Sidebar: resumen por modo
+  const modeInfo = [
+    {key:'write', icon:'✏️', name:'Escribir'},
+    {key:'cards', icon:'🃏', name:'Tarjetas'},
+    {key:'mc',    icon:'🎯', name:'Test'},
+  ];
+  const anyActivity = modeInfo.some(m=>modeState[m.key].seen>0);
+  document.getElementById('sessionSidebar').innerHTML = `
+    <div class="sidebar-stat"><span>Palabras totales</span><span>${t}</span></div>
+    <hr style="margin:10px 0;border-color:#f0f0f0">
+    ${modeInfo.map(m=>{
+      const ms2=modeState[m.key];
+      const pct=ms2.seen>0?Math.round(ms2.hits/ms2.seen*100)+'%':'—';
+      const activeStyle=activeMode===m.key?'background:#f0fafa;':'';
+      return `<div style="padding:8px 0 8px;border-bottom:1px solid #f0f0f0;${activeStyle}">
+        <div style="font-size:12px;font-weight:700;color:#1b1b1b;margin-bottom:4px">${m.icon} ${m.name}</div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;color:#5e5e5e">
+          <span>Acertadas</span><span style="color:#3AA9AB;font-weight:700">${ms2.hits}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;color:#5e5e5e">
+          <span>Falladas</span><span style="color:${ms2.seen-ms2.hits>0?'#e76f51':'#a4a4a4'};font-weight:700">${ms2.seen-ms2.hits}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;color:#5e5e5e">
+          <span>% Acierto</span><span style="font-weight:700">${pct}</span>
+        </div>
+      </div>`;
+    }).join('')}
+    ${!anyActivity?'<div style="font-size:13px;color:#a4a4a4;margin-top:8px">Sin actividad todavía.</div>':''}
+  `;
+}
+
+// ── MODO 1: ESCRIBIR ─────────────────────────────────────
+function renderWrite() {
+  const s     = modeState.write;
+  const empty = document.getElementById('writeEmpty');
+  if (s.idx >= session.length) {
+    ['w-de','w-input','w-feedback','w-check','w-next','w-counter']
+      .forEach(id => { const el=document.getElementById(id); if(el) el.style.display='none'; });
+    document.getElementById('w-badges').style.display='none';
+    empty.style.display=''; return;
+  }
+  empty.style.display='none';
+  ['w-de','w-input','w-check'].forEach(id=>{ const el=document.getElementById(id); if(el) el.style.display=''; });
+  document.getElementById('w-badges').style.display='flex';
+  const w = session[s.idx];
+  document.getElementById('w-de').textContent     = w.de;
+  document.getElementById('w-type').textContent   = w.type;
+  document.getElementById('w-thema').textContent  = `Lektion ${w.thema}`;
+  document.getElementById('w-counter').textContent= `${s.idx+1} / ${session.length}`;
+  const inp = document.getElementById('w-input');
+  inp.value=''; inp.className='write-input'; inp.disabled=false; inp.style.display='';
+  const fb = document.getElementById('w-feedback');
+  fb.style.display='none'; fb.className='write-feedback';
+  document.getElementById('w-check').style.display='';
+  document.getElementById('w-next').style.display='none';
+  setTimeout(()=>inp.focus(), 50);
+}
+
+function normalize(s) {
+  return s.toLowerCase()
+    .replace(/[áàä]/g,'a').replace(/[éèë]/g,'e')
+    .replace(/[íìï]/g,'i').replace(/[óòö]/g,'o')
+    .replace(/[úùü]/g,'u').replace(/ñ/g,'n')
+    .replace(/[^a-z0-9\s\/]/g,'').trim();
+}
+
+function checkWrite() {
+  const s = modeState.write;
+  if (s.idx >= session.length) return;
+  const w   = session[s.idx];
+  const inp = document.getElementById('w-input');
+  const fb  = document.getElementById('w-feedback');
+  const userVal = inp.value.trim();
+  if (!userVal) { inp.focus(); return; }
+
+  const correct = w.es.split('/').map(c=>c.trim());
+  const isOk = correct.some(c => normalize(userVal) === normalize(c));
+
+  s.seen++;
+  if (isOk) {
+    s.hits++; s.racha++;
+    inp.className = 'write-input correct';
+    fb.className  = 'write-feedback correct';
+    fb.textContent = `✓ Correcto — ${w.es}`;
+  } else {
+    s.racha=0;
+    inp.className = 'write-input wrong';
+    fb.className  = 'write-feedback wrong';
+    fb.textContent = `✗ La respuesta correcta es: ${w.es}`;
+  }
+  fb.style.display = '';
+  inp.disabled = true;
+  document.getElementById('w-check').style.display='none';
+  document.getElementById('w-next').style.display='';
+  updateStats();
+}
+
+function nextWrite() {
+  modeState.write.idx++;
+  renderWrite();
+}
+
+// ── MODO 2: TARJETAS ─────────────────────────────────────
+function renderCard() {
+  const s       = modeState.cards;
+  const empty   = document.getElementById('cardEmpty');
+  const cardArea= document.getElementById('cardArea');
+  if (s.idx>=session.length) { cardArea.style.display='none'; empty.style.display=''; return; }
+  cardArea.style.display=''; empty.style.display='none';
+  const w = session[s.idx];
+  document.getElementById('c-de').textContent    = w.de;
+  document.getElementById('c-es').textContent    = w.es;
+  document.getElementById('c-cat').textContent   = `${w.type} · Lektion ${w.thema}`;
+  document.getElementById('c-thema').textContent = `Lektion ${w.thema}`;
+  document.getElementById('c-type').textContent  = w.type;
+  document.getElementById('c-counter').textContent = `${s.idx+1} / ${session.length}`;
+  document.getElementById('flashcard').classList.remove('flipped');
+  isFlipped=false;
+}
+function flipCard() {
+  isFlipped=!isFlipped;
+  document.getElementById('flashcard').classList.toggle('flipped',isFlipped);
+}
+function markCard(ok) {
+  const s = modeState.cards;
+  if (s.idx>=session.length) return;
+  s.seen++; if(ok){s.hits++;s.racha++;}else{s.racha=0;}
+  s.idx++; renderCard(); updateStats();
+}
+
+// ── MODO 3: MÚLTIPLE OPCIÓN ──────────────────────────────
+function renderMC() {
+  const s     = modeState.mc;
+  const empty = document.getElementById('mcEmpty');
+  const opts  = document.getElementById('mc-options');
+  if (s.idx >= session.length) {
+    opts.innerHTML=''; empty.style.display='';
+    document.getElementById('mc-de').textContent='';
+    document.getElementById('mc-badges').style.display='none';
+    return;
+  }
+  empty.style.display='none';
+  document.getElementById('mc-badges').style.display='flex';
+  document.getElementById('mc-next').style.display='none';
+
+  const w = session[s.idx];
+  document.getElementById('mc-de').textContent    = w.de;
+  document.getElementById('mc-type').textContent  = w.type;
+  document.getElementById('mc-thema').textContent = `Lektion ${w.thema}`;
+  document.getElementById('mc-counter').textContent = `${s.idx+1} / ${session.length}`;
+
+  const otherEs = words.filter(x=>x.es !== w.es).map(x=>x.es);
+  shuffle(otherEs);
+  const distractors = [...new Set(otherEs)].slice(0, 3);
+  const options = shuffle([w.es, ...distractors]);
+
+  opts.innerHTML = options.map(opt => `
+    <button class="mc-opt" onclick="selectMC(this,'${opt.replace(/'/g,"\\'")}','${w.es.replace(/'/g,"\\'")}')">
+      ${opt}
+    </button>`).join('');
+}
+
+function selectMC(btn, chosen, correct) {
+  const s    = modeState.mc;
+  const opts = document.querySelectorAll('.mc-opt');
+  opts.forEach(b => b.disabled=true);
+  const isOk = normalize(chosen) === normalize(correct);
+  s.seen++;
+  if (isOk) { s.hits++; s.racha++; btn.classList.add('correct'); }
+  else {
+    s.racha=0; btn.classList.add('wrong');
+    opts.forEach(b => { if(normalize(b.textContent.trim())===normalize(correct)) b.classList.add('reveal'); });
+  }
+  document.getElementById('mc-next').style.display='';
+  updateStats();
+}
+
+function nextMC() {
+  modeState.mc.idx++;
+  renderMC();
+}
+
+// ── Lista ────────────────────────────────────────────────
+function buildWordTable() {
+  document.getElementById('wordTableBody').innerHTML = session.map(w=>`
+    <tr>
+      <td class="td-de">${w.de}</td>
+      <td>${w.es}</td>
+      <td>${w.type}</td>
+      <td>Lektion ${w.thema}</td>
+    </tr>`).join('');
+}
+
+// ── Cambiar tab ───────────────────────────────────────────
+function switchTab(tab) {
+  const tabs = ['write','cards','mc','list'];
+  tabs.forEach(t => {
+    document.getElementById('view-'+t).style.display = t===tab?'':'none';
+    document.getElementById('tab-'+t).className = 'tab-btn'+(t===tab?' active':'');
+  });
+  // Cambiar modo activo (sin resetear stats)
+  if (tab !== 'list') activeMode = tab;
+  updateStats();
+  if (tab==='write') renderWrite();
+  if (tab==='cards') renderCard();
+  if (tab==='mc')    renderMC();
+  if (tab==='list')  buildWordTable();
+}
+
+// ── Init ─────────────────────────────────────────────────
+buildHome();
+setTimeout(()=>document.getElementById('homeBar').style.width='35%',300);
+</script>
+</body>
+</html>
