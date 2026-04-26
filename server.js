@@ -72,6 +72,37 @@ function getConfigError() {
   return `Faltan variables de entorno: ${missingEnv.join(", ")}`;
 }
 
+async function fetchAllVocabulario() {
+  const pageSize = 1000;
+  let from = 0;
+  const rows = [];
+
+  while (true) {
+    const { data, error } = await supabase
+      .from("vocabulario")
+      .select("id,de,es,artikel,type,thema,thema_id")
+      .eq("is_active", true)
+      .order("thema_id", { ascending: true, nullsFirst: false })
+      .order("thema", { ascending: true, nullsFirst: false })
+      .order("de", { ascending: true })
+      .range(from, from + pageSize - 1);
+
+    if (error) {
+      throw error;
+    }
+
+    rows.push(...(data || []));
+
+    if (!data || data.length < pageSize) {
+      break;
+    }
+
+    from += pageSize;
+  }
+
+  return rows;
+}
+
 app.get("/api/health", (req, res) => {
   const configError = getConfigError();
 
@@ -90,19 +121,11 @@ app.get("/api/vocabulario", async (req, res) => {
       return res.status(500).json({ error: configError });
     }
 
-    const { data, error } = await supabase
-      .from("vocabulario")
-      .select("id,de,es,artikel,type,thema,thema_id")
-      .eq("is_active", true)
-      .order("thema_id", { ascending: true, nullsFirst: false })
-      .order("thema", { ascending: true, nullsFirst: false })
-      .order("de", { ascending: true });
-
-    if (error) {
-      console.error("Error Supabase:", error);
+    const data = await fetchAllVocabulario();
+    if (!data) {
       return res.status(500).json({
         error: "Error al obtener vocabulario",
-        details: error.message
+        details: "No se recibieron datos"
       });
     }
 
@@ -118,7 +141,10 @@ app.get("/api/vocabulario", async (req, res) => {
     res.json({ palabras });
   } catch (error) {
     console.error("Error servidor:", error);
-    res.status(500).json({ error: "Error interno" });
+    res.status(500).json({
+      error: "Error interno",
+      details: error?.message || "Unknown error"
+    });
   }
 });
 
