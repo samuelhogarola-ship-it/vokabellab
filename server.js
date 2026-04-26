@@ -23,6 +23,43 @@ const supabase = missingEnv.length === 0
     })
   : null;
 
+function normalizeType(type) {
+  const value = (type || "").trim().toLowerCase();
+
+  if (!value) return "Vocabulario";
+  if (value === "nomen" || value === "noun") return "Nomen";
+  if (value === "verb") return "Verb";
+  if (value === "ausdruck" || value === "expression") return "Ausdruck";
+  if (
+    value === "adjektiv/adverb" ||
+    value === "adjektiv" ||
+    value === "adverb" ||
+    value === "adjective"
+  ) {
+    return "Adjektiv/Adverb";
+  }
+
+  return type;
+}
+
+function buildDisplayWord(item) {
+  const de = (item.de || "").trim();
+  const artikel = (item.artikel || "").trim();
+  const normalizedType = normalizeType(item.type);
+
+  if (!de) return "";
+  if (!artikel || normalizedType !== "Nomen") return de;
+
+  const lowered = de.toLowerCase();
+  const articlePrefix = `${artikel.toLowerCase()} `;
+
+  if (lowered.startsWith(articlePrefix)) {
+    return de;
+  }
+
+  return `${artikel} ${de}`.trim();
+}
+
 function getConfigError() {
   if (missingEnv.length === 0) return null;
   return `Faltan variables de entorno: ${missingEnv.join(", ")}`;
@@ -48,7 +85,11 @@ app.get("/api/vocabulario", async (req, res) => {
 
     const { data, error } = await supabase
       .from("vocabulario")
-      .select("id,german,word_type,spanish,example_sentence_de,level,article");
+      .select("id,de,es,artikel,type,thema,thema_id")
+      .eq("is_active", true)
+      .order("thema_id", { ascending: true, nullsFirst: false })
+      .order("thema", { ascending: true, nullsFirst: false })
+      .order("de", { ascending: true });
 
     if (error) {
       console.error("Error Supabase:", error);
@@ -59,11 +100,12 @@ app.get("/api/vocabulario", async (req, res) => {
     }
 
     const palabras = (data || []).map((item) => ({
-      aleman: [item.article, item.german].filter(Boolean).join(" ").trim(),
-      espanol: item.spanish || "",
-      categoria: item.word_type || "Vocabulario",
-      frase: item.example_sentence_de || "",
-      nivel: item.level || ""
+      id: item.id,
+      de: buildDisplayWord(item),
+      es: item.es || "",
+      type: normalizeType(item.type),
+      thema: Number(item.thema_id ?? item.thema) || 0,
+      lvl: ""
     }));
 
     res.json({ palabras });

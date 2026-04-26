@@ -1,0 +1,7 @@
+node_modules/
+.DS_Store
+.claude/
+.env
+.env.*
+supabase/.temp/
+supabase/.DS_Store

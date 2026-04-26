@@ -1,0 +1,1 @@
+-- Deprecated: keep this migration as a no-op.
