@@ -3,5 +3,6 @@ node_modules/
 .claude/
 .env
 .env.*
+!.env.example
 supabase/.temp/
 supabase/.DS_Store

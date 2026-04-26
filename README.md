@@ -1,93 +1,98 @@
-# VokabelLab
+# Vokabel Lab
 
-Repositorio de trabajo de **VokabelLab**, centrado en vocabulario, ejercicios y conexión con Supabase.
+Aplicacion de vocabulario de aleman con:
 
-## Estado actual
+- landing y practica en `index.html`
+- backend minimo en `server.js`
+- base de datos en Supabase
 
-Este repositorio ya fue separado de **imKontext** y ahora queda dedicado únicamente a **VokabelLab**.
+## Estructura del proyecto
 
-Su función actual es servir como base ligera para seguir iterando sobre:
+Este repositorio esta preparado como **una sola Node app**.
 
-- el frontend actual de VokabelLab
-- la conexión con Supabase
-- el backend mínimo necesario para exponer vocabulario
-- futuras mejoras visuales y funcionales
-
-## Qué contiene ahora
-
-Actualmente el repositorio conserva una estructura mínima:
+Archivos clave en la raiz:
 
 - `package.json`
+- `package-lock.json`
 - `server.js`
-- copia de seguridad del HTML actual de VokabelLab para seguir trabajándolo directamente
+- `index.html`
+- `logo.png`
 
-## Frontend
+No requiere carpeta `frontend/`.
 
-El frontend actual de VokabelLab sigue apoyándose en una base simple:
+## Como funciona
 
-- archivo principal en `index.html`
-- estilos todavía incrustados o pendientes de separarse mejor
-- estructura visual en proceso de actualización
+`server.js` sirve tanto el frontend como la API:
 
-Se ha subido una **copia de seguridad del HTML actual** para poder seguir iterando directamente sobre ella cada vez que se hagan cambios.
-
-## Backend
-
-El backend actual es una base mínima con **Node.js**, **Express** y **Supabase**.
-
-Incluye actualmente:
-
+- `GET /`
 - `GET /api/health`
 - `GET /api/vocabulario`
 
-### `GET /api/health`
-Comprueba si el servidor está corriendo y si Supabase está configurado correctamente.
+El frontend llama a `/api/vocabulario` y renderiza:
 
-### `GET /api/vocabulario`
-Consulta la tabla `vocabulario` en Supabase y transforma los datos al formato que utiliza el frontend.
+- `Thema`
+- `Nomen`
+- `Verb`
+- `Ausdruck`
+- `Adjektiv/Adverb`
 
-Formato devuelto:
+## Variables de entorno
 
-- `aleman`
-- `espanol`
-- `categoria`
-- `frase`
-- `nivel`
+Copia `.env.example` a `.env` en desarrollo y define:
 
-## Base de datos
+- `SUPABASE_URL`
+- `SUPABASE_ANON_KEY`
 
-La base de datos está en **Supabase**.
+Opcional:
 
-La tabla usada actualmente por el backend es:
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `PORT`
 
-- `vocabulario`
+## Esquema actual de Supabase
 
-Campos consultados:
+Tabla principal:
+
+- `public.vocabulario`
+
+Campos usados por la app:
 
 - `id`
-- `german`
-- `word_type`
-- `spanish`
-- `example_sentence_de`
-- `level`
-- `article`
+- `de`
+- `es`
+- `artikel`
+- `type`
+- `thema`
+- `thema_id`
+- `is_active`
 
-## Stack actual
+La API filtra por `is_active = true`.
 
-```json
-{
-  "name": "aleman-backend",
-  "version": "1.0.0",
-  "type": "module",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js"
-  },
-  "dependencies": {
-    "@supabase/supabase-js": "^2.49.8",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.18.2"
-  }
-}
+## Desarrollo local
+
+Instalar dependencias:
+
+```bash
+npm install
 ```
+
+Arrancar:
+
+```bash
+npm start
+```
+
+## Deploy en Hostinger
+
+Despliega esta app como **Node app desde la raiz del repositorio**.
+
+No uses scripts del estilo:
+
+```bash
+cd frontend && npm install
+```
+
+porque este proyecto no tiene estructura separada de frontend/backend.
+
+Guia rapida:
+
+- `HOSTINGER_DEPLOY.md`
