@@ -23,14 +23,6 @@
       font-size: 16px;
     }
 
-    /* ── TOP BAR ── */
-    .topbar {
-      text-align: center;
-      padding: 8px 20px;
-      font-size: 13px;
-      color: #5e5e5e;
-      border-bottom: 1px solid #ebebeb;
-    }
 
     /* ── NAVBAR ── */
     nav {
@@ -40,21 +32,42 @@
     }
     .nav-inner {
       max-width: 1100px; margin: 0 auto;
-      display: flex; align-items: center; justify-content: center;
-      padding: 0 24px; height: 54px; gap: 6px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px; height: 56px;
     }
-    .nav-inner a, .nav-inner button {
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; color: #1b1b1b; flex-shrink: 0;
+    }
+    .nav-logo img { height: 36px; width: auto; }
+    .nav-logo span {
       font-family: 'Lato', sans-serif;
-      font-size: 12px; font-weight: 700;
-      letter-spacing: 1.5px; text-transform: uppercase;
-      color: #1b1b1b; text-decoration: none;
+      font-size: 14px; font-weight: 700; color: #1b1b1b;
+    }
+    .nav-links {
+      display: flex; align-items: center; gap: 0;
+    }
+    .nav-links a, .nav-links button {
+      font-family: 'Lato', sans-serif;
+      font-size: 13px; font-weight: 400;
+      color: #5e5e5e; text-decoration: none;
       background: none; border: none; cursor: pointer;
-      padding: 8px 14px;
+      padding: 4px 2px;
       transition: color .15s;
     }
-    .nav-inner a:hover, .nav-inner button:hover { color: #3AA9AB; }
-    .nav-inner .nav-active { color: #3AA9AB; }
-    .nav-sep { color: #ddd; font-size: 11px; }
+    .nav-links a:hover, .nav-links button:hover { color: #1b1b1b; }
+    .nav-links .nav-active { color: #1b1b1b; font-weight: 600; }
+    .nav-sep { color: #ccc; font-size: 13px; padding: 0 8px; }
+    .nav-right { flex-shrink: 0; }
+    .nav-streak-btn {
+      font-family: 'Lato', sans-serif;
+      font-size: 13px; font-weight: 600;
+      background: #1b1b1b; color: #ffffff;
+      border: none; border-radius: 999px;
+      padding: 8px 18px; cursor: pointer;
+      transition: background .15s;
+    }
+    .nav-streak-btn:hover { background: #3AA9AB; }
 
     /* ── LAYOUT ── */
     .page { max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px; display: flex; gap: 48px; }
@@ -94,18 +107,6 @@
     .t-cnt  { font-size: 12px; color: #a4a4a4; }
 
     /* ── MODE CARDS ── */
-    .mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: #e8e8e8; border: 1px solid #e8e8e8; margin-bottom: 40px; }
-    @media (max-width: 500px) { .mode-grid { grid-template-columns: 1fr; } }
-    .mode-card {
-      background: #fff; padding: 32px 28px;
-      cursor: pointer; transition: background .15s;
-    }
-    .mode-card:hover { background: #f6f6f6; }
-    .mode-icon { font-size: 28px; margin-bottom: 12px; }
-    .mode-label { font-family: 'Cabin', sans-serif; font-size: 17px; font-weight: 700; color: #1b1b1b; margin-bottom: 8px; }
-    .mode-desc  { font-size: 14px; color: #5e5e5e; line-height: 1.6; }
-    .mode-tag   { display: inline-block; margin-top: 12px; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #3AA9AB; }
-
     /* ── CHIP / FILTER ── */
     .filter-label { font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #5e5e5e; margin-bottom: 10px; }
     .chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
@@ -284,14 +285,19 @@
     .hero-actions {
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 16px;
       margin-top: 4px;
     }
-    .hero-note {
+    .hero-action-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .hero-action-desc {
       font-size: 12px;
-      letter-spacing: .6px;
-      text-transform: uppercase;
       color: #759091;
+      line-height: 1.4;
+      max-width: 160px;
     }
     .hero-card {
       position: relative;
@@ -404,21 +410,28 @@
 </head>
 <body>
 
-<!-- TOP BAR -->
-<div class="topbar">www.vokabellab.com &nbsp;|&nbsp; Laboratorio de vocabulario alemán</div>
 
 <!-- NAVBAR -->
 <nav>
   <div class="nav-inner">
-    <a href="#">Inicio</a>
-    <span class="nav-sep">|</span>
-    <button class="nav-active" onclick="goHome()">Práctica Alemán</button>
-    <span class="nav-sep">|</span>
-    <a href="#">Blog</a>
-    <span class="nav-sep">|</span>
-    <a href="#">Sobre mí</a>
-    <span class="nav-sep">|</span>
-    <a href="#">Servicios</a>
+    <a class="nav-logo" href="#">
+      <img src="logo.png" alt="Vokabel Lab">
+      <span>Vokabel Lab</span>
+    </a>
+    <div class="nav-links">
+      <a href="#">Samuel Coach de alemán</a>
+      <span class="nav-sep">·</span>
+      <a href="#">Vokabel Lab</a>
+      <span class="nav-sep">·</span>
+      <a href="#">der die das</a>
+      <span class="nav-sep">·</span>
+      <button class="nav-active" onclick="goHome()">Página principal</button>
+      <span class="nav-sep">·</span>
+      <a href="#">Dashboard</a>
+    </div>
+    <div class="nav-right">
+      <button class="nav-streak-btn" id="navStreakBtn">Racha x0</button>
+    </div>
   </div>
 </nav>
 
@@ -434,10 +447,15 @@
           <h1>Tu laboratorio de vocabulario en formato pop-up</h1>
           <p>Repasa por temas, mezcla tipos de palabra y convierte cada clase en una sesión rápida, visual y bastante más divertida de estudiar.</p>
           <div class="hero-actions">
-            <button class="btn btn-teal" onclick="goScreen('s-simple')">Entrar al laboratorio</button>
-            <button class="btn btn-outline" onclick="goScreen('s-advanced')">Abrir modo avanzado</button>
+            <div class="hero-action-item">
+              <button class="btn btn-teal" onclick="goScreen('s-simple')">Entrar al laboratorio</button>
+              <span class="hero-action-desc">Selecciona un Thema y practica todas sus palabras de una vez.</span>
+            </div>
+            <div class="hero-action-item">
+              <button class="btn btn-outline" onclick="goScreen('s-advanced')">Abrir modo avanzado</button>
+              <span class="hero-action-desc">Combina temas y filtra por tipo de palabra: verbos, sustantivos, adjetivos…</span>
+            </div>
           </div>
-          <div class="hero-note">Práctica visual, tarjetas, escritura y test en una sola pantalla.</div>
         </div>
         <div class="hero-card">
           <div class="hero-card-shadow"></div>
@@ -445,25 +463,6 @@
         </div>
       </div>
     </section>
-    <h1 class="section-heading">Práctica de vocabulario</h1>
-    <p class="section-sub">Elige cómo quieres repasar el vocabulario de tus clases de alemán.</p>
-    <hr>
-
-    <div class="mode-grid">
-      <div class="mode-card" onclick="goScreen('s-simple')">
-        <div class="mode-icon">📖</div>
-        <div class="mode-label">Tema completo</div>
-        <div class="mode-desc">Selecciona un Thema y practica todas sus palabras de una vez.</div>
-        <span class="mode-tag">Rápido y directo →</span>
-      </div>
-      <div class="mode-card" onclick="goScreen('s-advanced')">
-        <div class="mode-icon">🎯</div>
-        <div class="mode-label">Modo avanzado</div>
-        <div class="mode-desc">Combina varios temas y filtra por tipo de palabra: verbos, sustantivos, adjetivos…</div>
-        <span class="mode-tag">Control total →</span>
-      </div>
-    </div>
-
     <div class="filter-label">Tu progreso</div>
     <div class="stats-row" id="homeStats"></div>
     <div class="prog-wrap"><div class="prog-fill" id="homeBar" style="width:0"></div></div>
