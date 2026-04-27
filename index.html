@@ -96,15 +96,18 @@
     /* ── THEMA GRID ── */
     .thema-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1px; background: #e8e8e8; border: 1px solid #e8e8e8; margin-bottom: 32px; }
     .thema-card {
-      background: #fff; padding: 24px 20px;
-      cursor: pointer; transition: background .15s;
+      background: #fff; padding: 18px 16px;
+      border-top: 3px solid var(--tc, #3AA9AB);
+      cursor: pointer; transition: background .15s, box-shadow .15s;
       text-align: left;
     }
-    .thema-card:hover { background: #f6f6f6; }
+    .thema-card:hover { background: #fafafa; box-shadow: inset 0 -2px 0 var(--tc, #3AA9AB); }
     .thema-card.sel   { background: #f0fafa; }
-    .t-num  { font-family: 'Cabin', sans-serif; font-size: 13px; font-weight: 700; color: #3AA9AB; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
-    .t-name { font-family: 'Cabin', sans-serif; font-size: 15px; font-weight: 700; color: #1b1b1b; margin-bottom: 4px; }
+    .t-num  { font-family: 'Cabin', sans-serif; font-size: 11px; font-weight: 700; color: var(--tc, #3AA9AB); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+    .t-name { font-family: 'Cabin', sans-serif; font-size: 15px; font-weight: 700; color: #1b1b1b; margin-bottom: 6px; }
+    .t-footer { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
     .t-cnt  { font-size: 12px; color: #a4a4a4; }
+    .t-pill { font-size: 10px; font-weight: 700; letter-spacing: .3px; padding: 2px 7px; border-radius: 999px; white-space: nowrap; }
 
     /* ── MODE CARDS ── */
     /* ── CHIP / FILTER ── */
@@ -836,13 +839,21 @@ function buildSimple() {
     return;
   }
 
-  themaGrid.innerHTML = allThemas.map(th=>{
-    const cnt  = words.filter(w=>w.thema===th).length;
-    const name = themaNames[th]||'';
-    return `<div class="thema-card" onclick="startSession(new Set([${th}]),new Set(),'Thema ${th} — ${name}','Todas las palabras del Thema ${th}')">
+  const TC = ['#3AA9AB','#4A90D9','#E07AB0','#F0A030','#8B5CF6'];
+  themaGrid.innerHTML = allThemas.map((th, i)=>{
+    const cnt   = words.filter(w=>w.thema===th).length;
+    const name  = themaNames[th]||'';
+    const color = TC[i % TC.length];
+    const [label, bg, fg] = cnt >= 45 ? ['completo','#dcfce7','#15803d']
+                          : cnt >= 35 ? ['casi','#fef9c3','#854d0e']
+                          :             ['corto','#fce7f3','#be185d'];
+    return `<div class="thema-card" style="--tc:${color}" onclick="startSession(new Set([${th}]),new Set(),'Thema ${th} — ${name}','Todas las palabras del Thema ${th}')">
       <div class="t-num">Thema ${th}</div>
       <div class="t-name">${name}</div>
-      <div class="t-cnt">${cnt} palabras</div>
+      <div class="t-footer">
+        <span class="t-cnt">${cnt} palabras</span>
+        <span class="t-pill" style="background:${bg};color:${fg}">${label}</span>
+      </div>
     </div>`;
   }).join('');
 }
