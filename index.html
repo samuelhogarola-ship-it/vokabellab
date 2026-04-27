@@ -183,13 +183,39 @@
     .c-ex     { font-size: 13px; font-style: italic; opacity: .9; line-height: 1.5; }
     .c-type   { font-size: 11px; opacity: .75; margin-top: 6px; letter-spacing: 1px; text-transform: uppercase; }
 
-    /* ── CARD NAV ── */
-    .card-nav { display: flex; gap: 12px; justify-content: center; align-items: center; margin-bottom: 32px; }
-    .btn-no  { border: 1px solid #1b1b1b; background: #fff; color: #1b1b1b; }
-    .btn-no:hover  { background: #1b1b1b; color: #fff; }
-    .btn-yes { background: #3AA9AB; color: #fff; border: 1px solid #3AA9AB; }
-    .btn-yes:hover { background: #2C8182; border-color: #2C8182; }
-    .c-counter { font-size: 13px; color: #a4a4a4; min-width: 60px; text-align: center; }
+    /* ── RATING BUTTONS ── */
+    .rating-wrap { margin-bottom: 32px; }
+    .c-counter { font-size: 12px; color: #a4a4a4; text-align: center; margin-bottom: 10px; }
+    .rating-row {
+      display: flex; gap: 8px; justify-content: center;
+      opacity: .28; pointer-events: none;
+      transition: opacity .25s;
+    }
+    .rating-row.visible { opacity: 1; pointer-events: all; }
+    .rating-btn {
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+      padding: 10px 14px; border: none; border-radius: 10px;
+      cursor: pointer; min-width: 68px;
+      transition: transform .12s, filter .12s;
+    }
+    .rating-btn:hover { transform: translateY(-3px); filter: brightness(.94); }
+    .r-emoji { font-size: 20px; line-height: 1; }
+    .r-label { font-size: 11px; font-weight: 700; letter-spacing: .3px; }
+    .r-bad     { background: #fce7e7; color: #b91c1c; }
+    .r-ok      { background: #fef9c3; color: #92400e; }
+    .r-good    { background: #dcfce7; color: #15803d; }
+    .r-perfect { background: #e0f2fe; color: #0369a1; }
+
+    /* ── ROUND SUMMARY ── */
+    .round-summary { text-align: center; padding: 24px 0 32px; }
+    .sum-title { font-family: 'Cabin', sans-serif; font-size: 20px; font-weight: 700; color: #1b1b1b; margin-bottom: 6px; }
+    .sum-stats { font-size: 13px; color: #5e5e5e; margin-bottom: 22px; }
+    .sum-grid  { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; max-width: 500px; margin: 0 auto 28px; }
+    .sum-chip  { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 4px; font-family: 'Cabin', sans-serif; }
+    .sum-chip.r0 { background: #fce7e7; color: #b91c1c; }
+    .sum-chip.r1 { background: #fef9c3; color: #92400e; }
+    .sum-chip.r2 { background: #dcfce7; color: #15803d; }
+    .sum-chip.r3 { background: #e0f2fe; color: #0369a1; }
 
     /* ── WORD LIST ── */
     .word-table { width: 100%; border-collapse: collapse; }
@@ -619,18 +645,35 @@
             </div>
           </div>
         </div>
-        <div class="card-nav">
-          <button class="btn btn-no"  onclick="markCard(false)">✗ No lo sé</button>
-          <span   class="c-counter"   id="c-counter"></span>
-          <button class="btn btn-yes" onclick="markCard(true)">✓ Lo sé</button>
+        <div class="rating-wrap">
+          <div class="c-counter" id="c-counter"></div>
+          <div class="rating-row" id="rating-row">
+            <button class="rating-btn r-bad"     onclick="markCard(0)"><span class="r-emoji">😞</span><span class="r-label">Mal</span></button>
+            <button class="rating-btn r-ok"      onclick="markCard(1)"><span class="r-emoji">😐</span><span class="r-label">Regular</span></button>
+            <button class="rating-btn r-good"    onclick="markCard(2)"><span class="r-emoji">😊</span><span class="r-label">Bien</span></button>
+            <button class="rating-btn r-perfect" onclick="markCard(3)"><span class="r-emoji">🌟</span><span class="r-label">Perfecto</span></button>
+          </div>
         </div>
       </div>
+
+      <!-- Resumen de ronda -->
+      <div id="round-summary" class="round-summary" style="display:none">
+        <div class="sum-title">Ronda <span id="sum-round"></span> completada</div>
+        <div class="sum-stats"><span id="sum-known"></span> sabidas · <span id="sum-retry"></span> por repasar</div>
+        <div class="sum-grid" id="sum-grid"></div>
+        <div class="btn-row" style="justify-content:center">
+          <button class="btn btn-teal"    id="round-next-btn" onclick="nextRound()">Siguiente ronda</button>
+          <button class="btn btn-outline" onclick="goHome()">Inicio</button>
+        </div>
+      </div>
+
+      <!-- Completado total -->
       <div class="empty" id="cardEmpty" style="display:none">
         <div class="empty-icon">🎉</div>
-        <div class="empty-text">¡Runde abgeschlossen!</div>
-        <div class="empty-sub" style="margin-bottom:24px">Has completado todas las tarjetas.</div>
+        <div class="empty-text">¡Alle Karten bekannt!</div>
+        <div class="empty-sub" style="margin-bottom:24px">Has superado todas las tarjetas.</div>
         <div class="btn-row" style="justify-content:center">
-          <button class="btn btn-teal" onclick="restartSession('cards')">Repetir</button>
+          <button class="btn btn-teal" onclick="restartSession('cards')">Repetir desde cero</button>
           <button class="btn btn-outline" onclick="goHome()">Inicio</button>
         </div>
       </div>
@@ -922,7 +965,8 @@ function startSession(themas, types, title, sub) {
   session = shuffle(words.filter(w=>themas.has(w.thema)&&(types.size===0||types.has(w.type))));
   savedThemas=themas; savedTypes=types;
   // Reset todos los modos
-  ['write','cards','mc'].forEach(m => { modeState[m]={idx:0,hits:0,seen:0,racha:0}; });
+  ['write','mc'].forEach(m => { modeState[m]={idx:0,hits:0,seen:0,racha:0}; });
+  modeState.cards = { idx:0, hits:0, seen:0, racha:0, queue:[...session], done:[], round:1 };
   isFlipped=false;
   document.getElementById('practiceTitle').textContent = title;
   document.getElementById('practiceSub').textContent   = sub;
@@ -936,7 +980,11 @@ function restartSession(mode) {
   const m = mode||'write';
   session = shuffle([...session]);
   // Solo reset el modo actual
-  modeState[m]={idx:0,hits:0,seen:0,racha:0};
+  if (m==='cards') {
+    modeState.cards = { idx:0, hits:0, seen:0, racha:0, queue:shuffle([...session]), done:[], round:1 };
+  } else {
+    modeState[m]={idx:0,hits:0,seen:0,racha:0};
+  }
   isFlipped=false;
   updateStats();
   switchTab(m);
@@ -950,9 +998,12 @@ function updateStats() {
   document.getElementById('pDom').textContent   = s.hits;
   document.getElementById('pRacha').textContent = s.racha;
   document.getElementById('pPct').textContent   = s.seen>0?Math.round(s.hits/s.seen*100)+'%':'—';
-  const p = t>0?Math.round(s.idx/t*100):0;
+  const prog = activeMode==='cards' ? s.hits : s.idx;
+  const p = t>0?Math.round(prog/t*100):0;
   document.getElementById('pBar').style.width   = p+'%';
-  document.getElementById('pBarLabel').textContent = `${s.idx} de ${t} palabras`;
+  document.getElementById('pBarLabel').textContent = activeMode==='cards'
+    ? `${s.hits} de ${t} palabras dominadas`
+    : `${s.idx} de ${t} palabras`;
 
   // Sidebar: resumen por modo
   const modeInfo = [
@@ -1058,30 +1109,70 @@ function nextWrite() {
 
 // ── MODO 2: TARJETAS ─────────────────────────────────────
 function renderCard() {
-  const s       = modeState.cards;
-  const empty   = document.getElementById('cardEmpty');
-  const cardArea= document.getElementById('cardArea');
-  if (s.idx>=session.length) { cardArea.style.display='none'; empty.style.display=''; return; }
-  cardArea.style.display=''; empty.style.display='none';
-  const w = session[s.idx];
-  document.getElementById('c-de').textContent    = w.de;
-  document.getElementById('c-es').textContent    = w.es;
-  document.getElementById('c-cat').textContent   = `${w.type} · Thema ${w.thema}`;
-  document.getElementById('c-thema').textContent = `Thema ${w.thema}`;
-  document.getElementById('c-type').textContent  = w.type;
-  document.getElementById('c-counter').textContent = `${s.idx+1} / ${session.length}`;
+  const s        = modeState.cards;
+  const empty    = document.getElementById('cardEmpty');
+  const cardArea = document.getElementById('cardArea');
+  const roundSum = document.getElementById('round-summary');
+  if (s.idx >= s.queue.length) {
+    cardArea.style.display = 'none';
+    const unknowns = s.done.filter(d => d.rating < 2);
+    if (unknowns.length === 0) {
+      roundSum.style.display = 'none'; empty.style.display = '';
+    } else {
+      empty.style.display = 'none'; showRoundSummary();
+    }
+    return;
+  }
+  cardArea.style.display = ''; empty.style.display = 'none'; roundSum.style.display = 'none';
+  const w = s.queue[s.idx];
+  document.getElementById('c-de').textContent      = w.de;
+  document.getElementById('c-es').textContent      = w.es;
+  document.getElementById('c-cat').textContent     = `${w.type} · Thema ${w.thema}`;
+  document.getElementById('c-thema').textContent   = `Thema ${w.thema}`;
+  document.getElementById('c-type').textContent    = w.type;
+  document.getElementById('c-counter').textContent = `${s.idx+1} / ${s.queue.length}`;
   document.getElementById('flashcard').classList.remove('flipped');
-  isFlipped=false;
+  document.getElementById('rating-row').classList.remove('visible');
+  isFlipped = false;
 }
 function flipCard() {
-  isFlipped=!isFlipped;
-  document.getElementById('flashcard').classList.toggle('flipped',isFlipped);
+  isFlipped = !isFlipped;
+  document.getElementById('flashcard').classList.toggle('flipped', isFlipped);
+  document.getElementById('rating-row').classList.toggle('visible', isFlipped);
 }
-function markCard(ok) {
+function markCard(rating) {
   const s = modeState.cards;
-  if (s.idx>=session.length) return;
-  s.seen++; if(ok){s.hits++;s.racha++;}else{s.racha=0;}
-  s.idx++; renderCard(); updateStats();
+  if (s.idx >= s.queue.length) return;
+  const w = s.queue[s.idx];
+  s.done.push({ word: w, rating });
+  s.seen++;
+  if (rating >= 2) { s.hits++; s.racha++; } else { s.racha = 0; }
+  s.idx++;
+  renderCard(); updateStats();
+}
+function showRoundSummary() {
+  const s = modeState.cards;
+  const known   = s.done.filter(d => d.rating >= 2);
+  const unknown = s.done.filter(d => d.rating < 2);
+  document.getElementById('sum-round').textContent = s.round;
+  document.getElementById('sum-known').textContent = known.length;
+  document.getElementById('sum-retry').textContent = unknown.length;
+  document.getElementById('sum-grid').innerHTML = s.done.map(d =>
+    `<span class="sum-chip r${d.rating}">${d.word.de}</span>`
+  ).join('');
+  const nb = document.getElementById('round-next-btn');
+  nb.textContent = `Siguiente ronda (${unknown.length} palabras)`;
+  document.getElementById('round-summary').style.display = '';
+}
+function nextRound() {
+  const s = modeState.cards;
+  const retry = s.done.filter(d => d.rating < 2).map(d => d.word);
+  s.queue = shuffle(retry);
+  s.idx   = 0;
+  s.done  = [];
+  s.round++;
+  document.getElementById('round-summary').style.display = 'none';
+  renderCard();
 }
 
 // ── MODO 3: MÚLTIPLE OPCIÓN ──────────────────────────────
