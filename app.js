@@ -158,16 +158,14 @@ async function goScreen(id) {
   });
 
   if (id === 's-simple') {
-    buildSimple();
-    await ensureWordsLoaded();
-    await ensurePracticeRuntime();
+    if (!hasLoadedWords()) buildSimple();
+    await Promise.all([ensureWordsLoaded(), ensurePracticeRuntime()]);
     if (document.getElementById(id).style.display === 'flex') buildSimple();
   }
 
   if (id === 's-advanced') {
-    buildAdvanced();
-    await ensureWordsLoaded();
-    await ensurePracticeRuntime();
+    if (!hasLoadedWords()) buildAdvanced();
+    await Promise.all([ensureWordsLoaded(), ensurePracticeRuntime()]);
     if (document.getElementById(id).style.display === 'flex') buildAdvanced();
   }
 }
