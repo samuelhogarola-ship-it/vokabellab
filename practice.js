@@ -182,12 +182,13 @@ function markCard(ok) {
   const s = modeState.cards;
   if (s.idx >= session.length) return;
   s.seen++;
-  if (ok) {
+  if (ok === true) {
     s.hits++;
     s.racha++;
-  } else {
+  } else if (ok === false) {
     s.racha = 0;
   }
+  // ok === null → unsure: seen++ but no hit, racha unchanged
   s.idx++;
   renderCard();
   updateStats();

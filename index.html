@@ -229,9 +229,12 @@
           </div>
         </div>
         <div class="card-nav">
-          <button class="btn btn-no"  onclick="markCard(false)">✗ No lo sé</button>
-          <span   class="c-counter"   id="c-counter"></span>
-          <button class="btn btn-yes" onclick="markCard(true)">✓ Lo sé</button>
+          <button class="btn btn-no"    onclick="markCard(false)">✗ No lo sé</button>
+          <button class="btn btn-maybe" onclick="markCard(null)">~ No estoy seguro</button>
+          <button class="btn btn-yes"   onclick="markCard(true)">✓ Lo sé</button>
+        </div>
+        <div style="text-align:center;margin-top:6px">
+          <span class="c-counter" id="c-counter"></span>
         </div>
       </div>
       <div class="empty" id="cardEmpty" style="display:none">

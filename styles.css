@@ -232,6 +232,8 @@
     .card-nav { display: flex; gap: 12px; justify-content: center; align-items: center; margin-bottom: 32px; }
     .btn-no  { border: 1px solid #1b1b1b; background: #fff; color: #1b1b1b; }
     .btn-no:hover  { background: #1b1b1b; color: #fff; }
+    .btn-maybe { border: 1px solid #a4a4a4; background: #fff; color: #5e5e5e; }
+    .btn-maybe:hover { border-color: #5e5e5e; color: #1b1b1b; }
     .btn-yes { background: #3AA9AB; color: #fff; border: 1px solid #3AA9AB; }
     .btn-yes:hover { background: #2C8182; border-color: #2C8182; }
     .c-counter { font-size: 13px; color: #a4a4a4; min-width: 60px; text-align: center; }
