@@ -40,21 +40,95 @@
     }
     .nav-inner {
       max-width: 1100px; margin: 0 auto;
-      display: flex; align-items: center; justify-content: center;
-      padding: 0 24px; height: 54px; gap: 6px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 24px; gap: 16px;
     }
-    .nav-inner a, .nav-inner button {
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      flex-shrink: 0; text-decoration: none;
+      color: #1b1b1b;
+    }
+    .nav-logo img { height: 34px; width: auto; }
+    .nav-logo span {
+      font-family: 'Lato', sans-serif;
+      font-size: 14px; font-weight: 700;
+      letter-spacing: .4px;
+      color: #1b1b1b;
+    }
+    .nav-links {
+      display: flex; align-items: center; justify-content: center;
+      flex-wrap: wrap; gap: 0;
+      min-width: 0; flex: 1;
+    }
+    .nav-links a, .nav-links button, .nav-dashboard {
       font-family: 'Lato', sans-serif;
       font-size: 12px; font-weight: 700;
-      letter-spacing: 1.5px; text-transform: uppercase;
+      letter-spacing: 1.1px; text-transform: uppercase;
       color: #1b1b1b; text-decoration: none;
       background: none; border: none; cursor: pointer;
-      padding: 8px 14px;
+      padding: 8px 10px;
       transition: color .15s;
     }
-    .nav-inner a:hover, .nav-inner button:hover { color: #3AA9AB; }
-    .nav-inner .nav-active { color: #3AA9AB; }
+    .nav-links a:hover, .nav-links button:hover { color: #3AA9AB; }
+    .nav-links .nav-active { color: #3AA9AB; }
+    .nav-right { flex-shrink: 0; }
+    .nav-streak-btn {
+      font-family: 'Lato', sans-serif;
+      font-size: 12px; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase;
+      color: #ffffff;
+      background: #1b1b1b;
+      border: none;
+      border-radius: 999px;
+      padding: 10px 16px;
+      cursor: default;
+    }
+    .nav-dashboard {
+      color: #a4a4a4;
+      cursor: default;
+      position: relative;
+    }
+    .nav-dashboard::after {
+      content: 'Coming soon';
+      display: inline-block;
+      margin-left: 6px;
+      font-size: 10px;
+      letter-spacing: .6px;
+      text-transform: none;
+      color: #a4a4a4;
+    }
     .nav-sep { color: #ddd; font-size: 11px; }
+    @media (max-width: 900px) {
+      .nav-inner {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 12px 18px;
+      }
+      .nav-logo,
+      .nav-right {
+        justify-content: center;
+        display: flex;
+      }
+      .nav-links {
+        justify-content: center;
+        row-gap: 4px;
+      }
+      .nav-sep {
+        display: none;
+      }
+    }
+    @media (max-width: 560px) {
+      .nav-links a, .nav-links button, .nav-dashboard {
+        width: 100%;
+        text-align: center;
+        padding: 6px 8px;
+      }
+      .nav-dashboard::after {
+        display: block;
+        margin-left: 0;
+        margin-top: 4px;
+      }
+    }
 
     /* ── LAYOUT ── */
     .page { max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px; display: flex; gap: 48px; }
@@ -410,15 +484,22 @@
 <!-- NAVBAR -->
 <nav>
   <div class="nav-inner">
-    <a href="#">Inicio</a>
-    <span class="nav-sep">|</span>
-    <button class="nav-active" onclick="goHome()">Práctica Alemán</button>
-    <span class="nav-sep">|</span>
-    <a href="#">Blog</a>
-    <span class="nav-sep">|</span>
-    <a href="#">Sobre mí</a>
-    <span class="nav-sep">|</span>
-    <a href="#">Servicios</a>
+    <a class="nav-logo" href="https://www.vokabellab.com/" aria-label="Ir a Vokabel Lab">
+      <img src="./logo.png" alt="Logo de Vokabel Lab"/>
+      <span>Vokabel Lab</span>
+    </a>
+    <div class="nav-links">
+      <a href="https://www.samuelcoachdealeman.com/" target="_blank" rel="noreferrer">Samuel Coach de alemán</a>
+      <span class="nav-sep">|</span>
+      <a href="https://www.vokabellab.com/" class="nav-active">Vokabel Lab</a>
+      <span class="nav-sep">|</span>
+      <a href="https://derdiedas.vokabellab.com/" target="_blank" rel="noreferrer">der die das</a>
+      <span class="nav-sep">|</span>
+      <span class="nav-dashboard" aria-disabled="true">Dashboard</span>
+    </div>
+    <div class="nav-right">
+      <button class="nav-streak-btn" type="button" aria-label="Racha actual">Racha x0</button>
+    </div>
   </div>
 </nav>
 
@@ -678,8 +759,9 @@
 <script>
 // ── DATOS (vendrán de tu BD) ────────────────────────────
 let words = [];
-let isLoadingWords = true;
+let isLoadingWords = false;
 let loadWordsError = null;
+let loadWordsPromise = null;
 
 const themaNames = {
   1:'Zeit & Natur',
@@ -712,6 +794,46 @@ const themaNames = {
   28:'Migration',
   29:'Politik & Wahlen'
 };
+
+const defaultSummary = {
+  totalWords: 0,
+  totalThemas: Object.keys(themaNames).length,
+  totalTypes: 4,
+  lastUpdated: null,
+  source: 'default'
+};
+
+function readStoredSummary() {
+  try {
+    const raw = localStorage.getItem('vokabel-summary');
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (typeof parsed.totalWords !== 'number') return null;
+    return { ...defaultSummary, ...parsed };
+  } catch (error) {
+    return null;
+  }
+}
+
+function saveStoredSummary(summary) {
+  try {
+    localStorage.setItem('vokabel-summary', JSON.stringify(summary));
+  } catch (error) {
+    // Safari private mode puede bloquear storage; no hacemos nada.
+  }
+}
+
+let summaryState = readStoredSummary() || { ...defaultSummary, source: 'default' };
+
+function setSummaryState(partial) {
+  summaryState = { ...summaryState, ...partial };
+  saveStoredSummary(summaryState);
+}
+
+function hasLoadedWords() {
+  return Array.isArray(words) && words.length > 0;
+}
+
 function getAllThemas() {
   return [...new Set(words.map(w => w.thema).filter(Boolean))].sort((a, b) => a - b);
 }
@@ -720,126 +842,189 @@ function getAllTypes() {
   return [...new Set(words.map(w => w.type).filter(Boolean))].sort();
 }
 
-let session=[], isFlipped=false;
-let selThemas=new Set(), selTypes=new Set();
-let savedThemas=new Set(), savedTypes=new Set();
+let session = [], isFlipped = false;
+let selThemas = new Set(), selTypes = new Set();
+let savedThemas = new Set(), savedTypes = new Set();
 let activeMode = 'write';
-// Estadísticas independientes por modo
+
 const modeState = {
   write: { idx:0, hits:0, seen:0, racha:0 },
   cards: { idx:0, hits:0, seen:0, racha:0 },
   mc:    { idx:0, hits:0, seen:0, racha:0 },
 };
+
 function ms() { return modeState[activeMode]; }
 
-// ── Navegación ──────────────────────────────────────────
-function goScreen(id) {
-  ['s-home','s-simple','s-advanced','s-practice'].forEach(s=>{
-    document.getElementById(s).style.display = s===id ? 'flex' : 'none';
+async function goScreen(id) {
+  ['s-home','s-simple','s-advanced','s-practice'].forEach(s => {
+    document.getElementById(s).style.display = s === id ? 'flex' : 'none';
   });
-  if (id==='s-simple')   buildSimple();
-  if (id==='s-advanced') buildAdvanced();
+
+  if (id === 's-simple') {
+    buildSimple();
+    await ensureWordsLoaded();
+    if (document.getElementById(id).style.display === 'flex') buildSimple();
+  }
+
+  if (id === 's-advanced') {
+    buildAdvanced();
+    await ensureWordsLoaded();
+    if (document.getElementById(id).style.display === 'flex') buildAdvanced();
+  }
 }
-function goHome() { goScreen('s-home'); buildHome(); }
 
-async function loadWords() {
-  isLoadingWords = true;
-  loadWordsError = null;
+function goHome() {
+  goScreen('s-home');
+  buildHome();
+}
 
+async function loadSummary() {
   try {
-    const response = await fetch('/api/vocabulario');
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
-    }
+    const response = await fetch('/api/resumen');
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
     const payload = await response.json();
-    words = Array.isArray(payload.palabras) ? payload.palabras : [];
+    setSummaryState({
+      totalWords: Number(payload.totalWords) || 0,
+      totalThemas: Number(payload.totalThemas) || defaultSummary.totalThemas,
+      totalTypes: Number(payload.totalTypes) || defaultSummary.totalTypes,
+      lastUpdated: payload.lastUpdated || new Date().toISOString(),
+      source: payload.source || 'server'
+    });
   } catch (error) {
-    console.error('Error cargando vocabulario:', error);
-    loadWordsError = 'No se pudo cargar el vocabulario desde Supabase.';
-    words = [];
+    console.error('Error cargando resumen:', error);
   } finally {
-    isLoadingWords = false;
     buildHome();
   }
 }
 
-// ── Home ────────────────────────────────────────────────
+async function loadWords(force = false) {
+  if (!force && hasLoadedWords()) return words;
+  if (!force && loadWordsPromise) return loadWordsPromise;
+
+  isLoadingWords = true;
+  loadWordsError = null;
+  buildHome();
+
+  loadWordsPromise = (async () => {
+    try {
+      const response = await fetch('/api/vocabulario');
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+      const payload = await response.json();
+      words = Array.isArray(payload.palabras) ? payload.palabras : [];
+
+      setSummaryState({
+        totalWords: words.length,
+        totalThemas: getAllThemas().length || summaryState.totalThemas,
+        totalTypes: getAllTypes().length || summaryState.totalTypes,
+        lastUpdated: payload.cachedAt || new Date().toISOString(),
+        source: payload.cached ? 'cached-words' : 'words'
+      });
+
+      return words;
+    } catch (error) {
+      console.error('Error cargando vocabulario:', error);
+      loadWordsError = 'No se pudo cargar el vocabulario desde Supabase.';
+      words = [];
+      throw error;
+    } finally {
+      isLoadingWords = false;
+      loadWordsPromise = null;
+      buildHome();
+    }
+  })();
+
+  return loadWordsPromise;
+}
+
+async function ensureWordsLoaded() {
+  if (hasLoadedWords()) return words;
+  try {
+    return await loadWords();
+  } catch (error) {
+    return [];
+  }
+}
+
+function formatSummaryTimestamp(value) {
+  if (!value) return 'sin medicion reciente';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return 'sin medicion reciente';
+  return date.toLocaleString('es-ES', {
+    day: '2-digit',
+    month: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+}
+
 function buildHome() {
-  const allThemas = getAllThemas();
-  const allTypes  = getAllTypes();
+  const allThemas = hasLoadedWords() ? getAllThemas() : [];
+  const allTypes = hasLoadedWords() ? getAllTypes() : [];
   const homeStats = document.getElementById('homeStats');
 
-  if (isLoadingWords) {
-    homeStats.innerHTML = `
-      <div class="stat-box"><div class="stat-n">…</div><div class="stat-l">cargando</div></div>
-      <div class="stat-box"><div class="stat-n">…</div><div class="stat-l">temas</div></div>
-      <div class="stat-box"><div class="stat-n">…</div><div class="stat-l">tipos</div></div>
-      <div class="stat-box"><div class="stat-n">—</div><div class="stat-l">progreso</div></div>`;
-    document.getElementById('homeBar').style.width = '0';
-    document.getElementById('homeBarLabel').textContent = 'Cargando vocabulario...';
-    document.getElementById('sidebarLevels').innerHTML = '<div class="sidebar-stat"><span>Estado</span><span>Cargando</span></div>';
-    return;
-  }
+  const total = hasLoadedWords() ? words.length : summaryState.totalWords;
+  const themes = hasLoadedWords() ? allThemas.length : summaryState.totalThemas;
+  const types = hasLoadedWords() ? allTypes.length : summaryState.totalTypes;
 
-  if (loadWordsError) {
+  if (loadWordsError && !hasLoadedWords()) {
     homeStats.innerHTML = `
-      <div class="stat-box"><div class="stat-n">0</div><div class="stat-l">palabras</div></div>
-      <div class="stat-box"><div class="stat-n">0</div><div class="stat-l">temas</div></div>
-      <div class="stat-box"><div class="stat-n">0</div><div class="stat-l">tipos</div></div>
+      <div class="stat-box"><div class="stat-n">${total}</div><div class="stat-l">palabras</div></div>
+      <div class="stat-box"><div class="stat-n">${themes}</div><div class="stat-l">temas</div></div>
+      <div class="stat-box"><div class="stat-n">${types}</div><div class="stat-l">tipos</div></div>
       <div class="stat-box"><div class="stat-n">!</div><div class="stat-l">error</div></div>`;
-    document.getElementById('homeBar').style.width = '0';
-    document.getElementById('homeBarLabel').textContent = loadWordsError;
-    document.getElementById('sidebarLevels').innerHTML = '<div class="sidebar-stat"><span>Error</span><span>Sin conexión</span></div>';
+    document.getElementById('homeBar').style.width = total ? '100%' : '0';
+    document.getElementById('homeBarLabel').textContent = `${loadWordsError} Mostrando la ultima medicion guardada.`;
+    document.getElementById('sidebarLevels').innerHTML = `
+      <div class="sidebar-stat"><span>Ultimo recuento</span><span>${total}</span></div>
+      <div class="sidebar-stat"><span>Actualizado</span><span>${formatSummaryTimestamp(summaryState.lastUpdated)}</span></div>`;
     return;
   }
 
-  const total = words.length;
-  const themes = allThemas.length;
-  const types  = allTypes.length;
   homeStats.innerHTML = `
     <div class="stat-box"><div class="stat-n">${total}</div><div class="stat-l">palabras</div></div>
     <div class="stat-box"><div class="stat-n">${themes}</div><div class="stat-l">temas</div></div>
     <div class="stat-box"><div class="stat-n">${types}</div><div class="stat-l">tipos</div></div>
-    <div class="stat-box"><div class="stat-n">${total ? '100%' : '—'}</div><div class="stat-l">catálogo</div></div>`;
+    <div class="stat-box"><div class="stat-n">${total ? '100%' : '—'}</div><div class="stat-l">catalogo</div></div>`;
   document.getElementById('homeBar').style.width = total ? '100%' : '0';
-  document.getElementById('homeBarLabel').textContent = total
-    ? `${total} palabras listas desde Supabase`
-    : 'No hay vocabulario cargado todavía';
 
-  const wordsWithLevel = words.filter(w => w.lvl);
-  if (wordsWithLevel.length) {
-    const lvls = ['A1','A2','B1','B2','C1','C2'];
-    document.getElementById('sidebarLevels').innerHTML = lvls.map(l=>{
-      const n = words.filter(w=>w.lvl===l).length;
-      return n ? `<div class="sidebar-stat"><span>${l}</span><span>${n} palabras</span></div>` : '';
-    }).join('');
+  if (isLoadingWords && !hasLoadedWords()) {
+    document.getElementById('homeBarLabel').textContent = `Catalogo visible al instante. Preparando las ${total} palabras para practicar...`;
+  } else if (hasLoadedWords()) {
+    document.getElementById('homeBarLabel').textContent = `${total} palabras listas para practicar`;
+  } else if (summaryState.lastUpdated) {
+    document.getElementById('homeBarLabel').textContent = `${total} palabras segun la ultima medicion guardada`;
   } else {
+    document.getElementById('homeBarLabel').textContent = 'Cargando resumen del catalogo...';
+  }
+
+  if (hasLoadedWords()) {
     document.getElementById('sidebarLevels').innerHTML = allTypes.map(type => {
       const n = words.filter(w => w.type === type).length;
       return `<div class="sidebar-stat"><span>${type}</span><span>${n} palabras</span></div>`;
     }).join('');
+  } else {
+    document.getElementById('sidebarLevels').innerHTML = `
+      <div class="sidebar-stat"><span>Palabras activas</span><span>${total}</span></div>
+      <div class="sidebar-stat"><span>Temas disponibles</span><span>${themes}</span></div>
+      <div class="sidebar-stat"><span>Tipos disponibles</span><span>${types}</span></div>
+      <div class="sidebar-stat"><span>Actualizado</span><span>${formatSummaryTimestamp(summaryState.lastUpdated)}</span></div>`;
   }
 }
 
-// ── Tema completo ───────────────────────────────────────
 function buildSimple() {
-  const allThemas = getAllThemas();
   const themaGrid = document.getElementById('themaGrid');
 
-  if (isLoadingWords) {
-    themaGrid.innerHTML = '<div class="thema-card">Cargando temas...</div>';
+  if (!hasLoadedWords()) {
+    themaGrid.innerHTML = '<div class="thema-card">Preparando temas...</div>';
     return;
   }
 
-  if (loadWordsError) {
-    themaGrid.innerHTML = `<div class="thema-card">${loadWordsError}</div>`;
-    return;
-  }
-
-  themaGrid.innerHTML = allThemas.map(th=>{
-    const cnt  = words.filter(w=>w.thema===th).length;
-    const name = themaNames[th]||'';
+  const allThemas = getAllThemas();
+  themaGrid.innerHTML = allThemas.map(th => {
+    const cnt = words.filter(w => w.thema === th).length;
+    const name = themaNames[th] || '';
     return `<div class="thema-card" onclick="startSession(new Set([${th}]),new Set(),'Thema ${th} — ${name}','Todas las palabras del Thema ${th}')">
       <div class="t-num">Thema ${th}</div>
       <div class="t-name">${name}</div>
@@ -848,158 +1033,164 @@ function buildSimple() {
   }).join('');
 }
 
-// ── Avanzado ────────────────────────────────────────────
 function buildAdvanced() {
-  const allThemas = getAllThemas();
-  const allTypes = getAllTypes();
+  selThemas.clear();
+  selTypes.clear();
 
-  selThemas.clear(); selTypes.clear();
-  if (isLoadingWords) {
-    document.getElementById('themaChips').innerHTML = '<div class="chip">Cargando...</div>';
+  if (!hasLoadedWords()) {
+    document.getElementById('themaChips').innerHTML = '<div class="chip">Preparando temas...</div>';
     document.getElementById('typeChips').innerHTML = '';
     document.getElementById('advSummary').textContent = 'Cargando vocabulario desde Supabase...';
     document.getElementById('btnStart').disabled = true;
     return;
   }
-  if (loadWordsError) {
-    document.getElementById('themaChips').innerHTML = '';
-    document.getElementById('typeChips').innerHTML = '';
-    document.getElementById('advSummary').textContent = loadWordsError;
-    document.getElementById('btnStart').disabled = true;
-    return;
-  }
-  document.getElementById('themaChips').innerHTML = allThemas.map(th=>
-    `<div class="chip" data-th="${th}" onclick="toggleThema(${th},this)">Thema ${th} — ${themaNames[th]||''}</div>`
+
+  const allThemas = getAllThemas();
+  const allTypes = getAllTypes();
+
+  document.getElementById('themaChips').innerHTML = allThemas.map(th =>
+    `<div class="chip" data-th="${th}" onclick="toggleThema(${th},this)">Thema ${th} — ${themaNames[th] || ''}</div>`
   ).join('');
-  document.getElementById('typeChips').innerHTML = allTypes.map(t=>
+  document.getElementById('typeChips').innerHTML = allTypes.map(t =>
     `<div class="chip" data-type="${t}" onclick="toggleType('${t}',this)">${t}</div>`
   ).join('');
   updateAdvSummary();
 }
-function toggleThema(th,el) {
-  selThemas.has(th)?selThemas.delete(th):selThemas.add(th);
-  el.classList.toggle('sel',selThemas.has(th));
+
+function toggleThema(th, el) {
+  selThemas.has(th) ? selThemas.delete(th) : selThemas.add(th);
+  el.classList.toggle('sel', selThemas.has(th));
   updateAdvSummary();
 }
-function toggleType(t,el) {
-  selTypes.has(t)?selTypes.delete(t):selTypes.add(t);
-  el.classList.toggle('sel',selTypes.has(t));
+
+function toggleType(t, el) {
+  selTypes.has(t) ? selTypes.delete(t) : selTypes.add(t);
+  el.classList.toggle('sel', selTypes.has(t));
   updateAdvSummary();
 }
+
 function updateAdvSummary() {
   const btn = document.getElementById('btnStart');
   const sum = document.getElementById('advSummary');
-  if (!selThemas.size) { sum.innerHTML='Selecciona al menos un tema.'; btn.disabled=true; return; }
-  const cnt = words.filter(w=>selThemas.has(w.thema)&&(selTypes.size===0||selTypes.has(w.type))).length;
-  const ts  = [...selThemas].map(t=>`<strong>Thema ${t}</strong>`).join(', ');
-  const tps = selTypes.size ? [...selTypes].map(t=>`<strong>${t}</strong>`).join(', ') : '<strong>todos los tipos</strong>';
+  if (!selThemas.size) {
+    sum.innerHTML = 'Selecciona al menos un tema.';
+    btn.disabled = true;
+    return;
+  }
+  const cnt = words.filter(w => selThemas.has(w.thema) && (selTypes.size === 0 || selTypes.has(w.type))).length;
+  const ts = [...selThemas].map(t => `<strong>Thema ${t}</strong>`).join(', ');
+  const tps = selTypes.size ? [...selTypes].map(t => `<strong>${t}</strong>`).join(', ') : '<strong>todos los tipos</strong>';
   sum.innerHTML = `${cnt} palabras seleccionadas de ${ts} · ${tps}.`;
-  btn.disabled = cnt===0;
+  btn.disabled = cnt === 0;
 }
+
 function startAdvanced() {
-  const lbl = [...selThemas].map(t=>`Thema ${t}`).join(' + ');
+  const lbl = [...selThemas].map(t => `Thema ${t}`).join(' + ');
   const sub = selTypes.size ? [...selTypes].join(', ') : 'Todas las palabras';
   startSession(new Set(selThemas), new Set(selTypes), lbl, sub);
 }
 
-// ── Sesión ───────────────────────────────────────────────
 function shuffle(arr) {
-  for (let i=arr.length-1;i>0;i--) { const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; }
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
   return arr;
 }
 
 function startSession(themas, types, title, sub) {
-  session = shuffle(words.filter(w=>themas.has(w.thema)&&(types.size===0||types.has(w.type))));
-  savedThemas=themas; savedTypes=types;
-  // Reset todos los modos
-  ['write','cards','mc'].forEach(m => { modeState[m]={idx:0,hits:0,seen:0,racha:0}; });
-  isFlipped=false;
+  session = shuffle(words.filter(w => themas.has(w.thema) && (types.size === 0 || types.has(w.type))));
+  savedThemas = themas;
+  savedTypes = types;
+  ['write', 'cards', 'mc'].forEach(m => { modeState[m] = { idx:0, hits:0, seen:0, racha:0 }; });
+  isFlipped = false;
   document.getElementById('practiceTitle').textContent = title;
-  document.getElementById('practiceSub').textContent   = sub;
+  document.getElementById('practiceSub').textContent = sub;
   goScreen('s-practice');
-  activeMode='write';
+  activeMode = 'write';
   switchTab('write');
   updateStats();
 }
 
 function restartSession(mode) {
-  const m = mode||'write';
+  const m = mode || 'write';
   session = shuffle([...session]);
-  // Solo reset el modo actual
-  modeState[m]={idx:0,hits:0,seen:0,racha:0};
-  isFlipped=false;
+  modeState[m] = { idx:0, hits:0, seen:0, racha:0 };
+  isFlipped = false;
   updateStats();
   switchTab(m);
 }
 
-// ── Stats por modo ───────────────────────────────────────
 function updateStats() {
   const s = ms();
   const t = session.length;
   document.getElementById('pTotal').textContent = t;
-  document.getElementById('pDom').textContent   = s.hits;
+  document.getElementById('pDom').textContent = s.hits;
   document.getElementById('pRacha').textContent = s.racha;
-  document.getElementById('pPct').textContent   = s.seen>0?Math.round(s.hits/s.seen*100)+'%':'—';
-  const p = t>0?Math.round(s.idx/t*100):0;
-  document.getElementById('pBar').style.width   = p+'%';
+  document.getElementById('pPct').textContent = s.seen > 0 ? Math.round(s.hits / s.seen * 100) + '%' : '—';
+  const p = t > 0 ? Math.round(s.idx / t * 100) : 0;
+  document.getElementById('pBar').style.width = p + '%';
   document.getElementById('pBarLabel').textContent = `${s.idx} de ${t} palabras`;
 
-  // Sidebar: resumen por modo
   const modeInfo = [
     {key:'write', icon:'✏️', name:'Escribir'},
     {key:'cards', icon:'🃏', name:'Tarjetas'},
-    {key:'mc',    icon:'🎯', name:'Test'},
+    {key:'mc', icon:'🎯', name:'Test'},
   ];
-  const anyActivity = modeInfo.some(m=>modeState[m.key].seen>0);
+  const anyActivity = modeInfo.some(m => modeState[m.key].seen > 0);
   document.getElementById('sessionSidebar').innerHTML = `
     <div class="sidebar-stat"><span>Palabras totales</span><span>${t}</span></div>
     <hr style="margin:10px 0;border-color:#f0f0f0">
-    ${modeInfo.map(m=>{
-      const ms2=modeState[m.key];
-      const pct=ms2.seen>0?Math.round(ms2.hits/ms2.seen*100)+'%':'—';
-      const activeStyle=activeMode===m.key?'background:#f0fafa;':'';
+    ${modeInfo.map(m => {
+      const state = modeState[m.key];
+      const pct = state.seen > 0 ? Math.round(state.hits / state.seen * 100) + '%' : '—';
+      const activeStyle = activeMode === m.key ? 'background:#f0fafa;' : '';
       return `<div style="padding:8px 0 8px;border-bottom:1px solid #f0f0f0;${activeStyle}">
         <div style="font-size:12px;font-weight:700;color:#1b1b1b;margin-bottom:4px">${m.icon} ${m.name}</div>
         <div style="display:flex;justify-content:space-between;font-size:13px;color:#5e5e5e">
-          <span>Acertadas</span><span style="color:#3AA9AB;font-weight:700">${ms2.hits}</span>
+          <span>Acertadas</span><span style="color:#3AA9AB;font-weight:700">${state.hits}</span>
         </div>
         <div style="display:flex;justify-content:space-between;font-size:13px;color:#5e5e5e">
-          <span>Falladas</span><span style="color:${ms2.seen-ms2.hits>0?'#e76f51':'#a4a4a4'};font-weight:700">${ms2.seen-ms2.hits}</span>
+          <span>Falladas</span><span style="color:${state.seen - state.hits > 0 ? '#e76f51' : '#a4a4a4'};font-weight:700">${state.seen - state.hits}</span>
         </div>
         <div style="display:flex;justify-content:space-between;font-size:13px;color:#5e5e5e">
           <span>% Acierto</span><span style="font-weight:700">${pct}</span>
         </div>
       </div>`;
     }).join('')}
-    ${!anyActivity?'<div style="font-size:13px;color:#a4a4a4;margin-top:8px">Sin actividad todavía.</div>':''}
+    ${!anyActivity ? '<div style="font-size:13px;color:#a4a4a4;margin-top:8px">Sin actividad todavia.</div>' : ''}
   `;
 }
 
-// ── MODO 1: ESCRIBIR ─────────────────────────────────────
 function renderWrite() {
-  const s     = modeState.write;
+  const s = modeState.write;
   const empty = document.getElementById('writeEmpty');
   if (s.idx >= session.length) {
     ['w-de','w-input','w-feedback','w-check','w-next','w-counter']
-      .forEach(id => { const el=document.getElementById(id); if(el) el.style.display='none'; });
-    document.getElementById('w-badges').style.display='none';
-    empty.style.display=''; return;
+      .forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
+    document.getElementById('w-badges').style.display = 'none';
+    empty.style.display = '';
+    return;
   }
-  empty.style.display='none';
-  ['w-de','w-input','w-check'].forEach(id=>{ const el=document.getElementById(id); if(el) el.style.display=''; });
-  document.getElementById('w-badges').style.display='flex';
+  empty.style.display = 'none';
+  ['w-de','w-input','w-check'].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = ''; });
+  document.getElementById('w-badges').style.display = 'flex';
   const w = session[s.idx];
-  document.getElementById('w-de').textContent     = w.de;
-  document.getElementById('w-type').textContent   = w.type;
-  document.getElementById('w-thema').textContent  = `Thema ${w.thema}`;
-  document.getElementById('w-counter').textContent= `${s.idx+1} / ${session.length}`;
+  document.getElementById('w-de').textContent = w.de;
+  document.getElementById('w-type').textContent = w.type;
+  document.getElementById('w-thema').textContent = `Thema ${w.thema}`;
+  document.getElementById('w-counter').textContent = `${s.idx + 1} / ${session.length}`;
   const inp = document.getElementById('w-input');
-  inp.value=''; inp.className='write-input'; inp.disabled=false; inp.style.display='';
+  inp.value = '';
+  inp.className = 'write-input';
+  inp.disabled = false;
+  inp.style.display = '';
   const fb = document.getElementById('w-feedback');
-  fb.style.display='none'; fb.className='write-feedback';
-  document.getElementById('w-check').style.display='';
-  document.getElementById('w-next').style.display='none';
-  setTimeout(()=>inp.focus(), 50);
+  fb.style.display = 'none';
+  fb.className = 'write-feedback';
+  document.getElementById('w-check').style.display = '';
+  document.getElementById('w-next').style.display = 'none';
+  setTimeout(() => inp.focus(), 50);
 }
 
 function normalize(s) {
@@ -1007,37 +1198,41 @@ function normalize(s) {
     .replace(/[áàä]/g,'a').replace(/[éèë]/g,'e')
     .replace(/[íìï]/g,'i').replace(/[óòö]/g,'o')
     .replace(/[úùü]/g,'u').replace(/ñ/g,'n')
-    .replace(/[^a-z0-9\s\/]/g,'').trim();
+    .replace(/[^a-z0-9\s/]/g,'').trim();
 }
 
 function checkWrite() {
   const s = modeState.write;
   if (s.idx >= session.length) return;
-  const w   = session[s.idx];
+  const w = session[s.idx];
   const inp = document.getElementById('w-input');
-  const fb  = document.getElementById('w-feedback');
+  const fb = document.getElementById('w-feedback');
   const userVal = inp.value.trim();
-  if (!userVal) { inp.focus(); return; }
+  if (!userVal) {
+    inp.focus();
+    return;
+  }
 
-  const correct = w.es.split('/').map(c=>c.trim());
+  const correct = w.es.split('/').map(c => c.trim());
   const isOk = correct.some(c => normalize(userVal) === normalize(c));
 
   s.seen++;
   if (isOk) {
-    s.hits++; s.racha++;
+    s.hits++;
+    s.racha++;
     inp.className = 'write-input correct';
-    fb.className  = 'write-feedback correct';
+    fb.className = 'write-feedback correct';
     fb.textContent = `✓ Correcto — ${w.es}`;
   } else {
-    s.racha=0;
+    s.racha = 0;
     inp.className = 'write-input wrong';
-    fb.className  = 'write-feedback wrong';
+    fb.className = 'write-feedback wrong';
     fb.textContent = `✗ La respuesta correcta es: ${w.es}`;
   }
   fb.style.display = '';
   inp.disabled = true;
-  document.getElementById('w-check').style.display='none';
-  document.getElementById('w-next').style.display='';
+  document.getElementById('w-check').style.display = 'none';
+  document.getElementById('w-next').style.display = '';
   updateStats();
 }
 
@@ -1046,78 +1241,98 @@ function nextWrite() {
   renderWrite();
 }
 
-// ── MODO 2: TARJETAS ─────────────────────────────────────
 function renderCard() {
-  const s       = modeState.cards;
-  const empty   = document.getElementById('cardEmpty');
-  const cardArea= document.getElementById('cardArea');
-  if (s.idx>=session.length) { cardArea.style.display='none'; empty.style.display=''; return; }
-  cardArea.style.display=''; empty.style.display='none';
-  const w = session[s.idx];
-  document.getElementById('c-de').textContent    = w.de;
-  document.getElementById('c-es').textContent    = w.es;
-  document.getElementById('c-cat').textContent   = `${w.type} · Thema ${w.thema}`;
-  document.getElementById('c-thema').textContent = `Thema ${w.thema}`;
-  document.getElementById('c-type').textContent  = w.type;
-  document.getElementById('c-counter').textContent = `${s.idx+1} / ${session.length}`;
-  document.getElementById('flashcard').classList.remove('flipped');
-  isFlipped=false;
-}
-function flipCard() {
-  isFlipped=!isFlipped;
-  document.getElementById('flashcard').classList.toggle('flipped',isFlipped);
-}
-function markCard(ok) {
   const s = modeState.cards;
-  if (s.idx>=session.length) return;
-  s.seen++; if(ok){s.hits++;s.racha++;}else{s.racha=0;}
-  s.idx++; renderCard(); updateStats();
-}
-
-// ── MODO 3: MÚLTIPLE OPCIÓN ──────────────────────────────
-function renderMC() {
-  const s     = modeState.mc;
-  const empty = document.getElementById('mcEmpty');
-  const opts  = document.getElementById('mc-options');
+  const empty = document.getElementById('cardEmpty');
+  const cardArea = document.getElementById('cardArea');
   if (s.idx >= session.length) {
-    opts.innerHTML=''; empty.style.display='';
-    document.getElementById('mc-de').textContent='';
-    document.getElementById('mc-badges').style.display='none';
+    cardArea.style.display = 'none';
+    empty.style.display = '';
     return;
   }
-  empty.style.display='none';
-  document.getElementById('mc-badges').style.display='flex';
-  document.getElementById('mc-next').style.display='none';
+  cardArea.style.display = '';
+  empty.style.display = 'none';
+  const w = session[s.idx];
+  document.getElementById('c-de').textContent = w.de;
+  document.getElementById('c-es').textContent = w.es;
+  document.getElementById('c-cat').textContent = `${w.type} · Thema ${w.thema}`;
+  document.getElementById('c-thema').textContent = `Thema ${w.thema}`;
+  document.getElementById('c-type').textContent = w.type;
+  document.getElementById('c-counter').textContent = `${s.idx + 1} / ${session.length}`;
+  document.getElementById('flashcard').classList.remove('flipped');
+  isFlipped = false;
+}
+
+function flipCard() {
+  isFlipped = !isFlipped;
+  document.getElementById('flashcard').classList.toggle('flipped', isFlipped);
+}
+
+function markCard(ok) {
+  const s = modeState.cards;
+  if (s.idx >= session.length) return;
+  s.seen++;
+  if (ok) {
+    s.hits++;
+    s.racha++;
+  } else {
+    s.racha = 0;
+  }
+  s.idx++;
+  renderCard();
+  updateStats();
+}
+
+function renderMC() {
+  const s = modeState.mc;
+  const empty = document.getElementById('mcEmpty');
+  const opts = document.getElementById('mc-options');
+  if (s.idx >= session.length) {
+    opts.innerHTML = '';
+    empty.style.display = '';
+    document.getElementById('mc-de').textContent = '';
+    document.getElementById('mc-badges').style.display = 'none';
+    return;
+  }
+  empty.style.display = 'none';
+  document.getElementById('mc-badges').style.display = 'flex';
+  document.getElementById('mc-next').style.display = 'none';
 
   const w = session[s.idx];
-  document.getElementById('mc-de').textContent    = w.de;
-  document.getElementById('mc-type').textContent  = w.type;
+  document.getElementById('mc-de').textContent = w.de;
+  document.getElementById('mc-type').textContent = w.type;
   document.getElementById('mc-thema').textContent = `Thema ${w.thema}`;
-  document.getElementById('mc-counter').textContent = `${s.idx+1} / ${session.length}`;
+  document.getElementById('mc-counter').textContent = `${s.idx + 1} / ${session.length}`;
 
-  const otherEs = words.filter(x=>x.es !== w.es).map(x=>x.es);
+  const otherEs = words.filter(x => x.es !== w.es).map(x => x.es);
   shuffle(otherEs);
   const distractors = [...new Set(otherEs)].slice(0, 3);
   const options = shuffle([w.es, ...distractors]);
 
   opts.innerHTML = options.map(opt => `
-    <button class="mc-opt" onclick="selectMC(this,'${opt.replace(/'/g,"\\'")}','${w.es.replace(/'/g,"\\'")}')">
+    <button class="mc-opt" onclick="selectMC(this,'${opt.replace(/'/g, "\\'")}','${w.es.replace(/'/g, "\\'")}')">
       ${opt}
     </button>`).join('');
 }
 
 function selectMC(btn, chosen, correct) {
-  const s    = modeState.mc;
+  const s = modeState.mc;
   const opts = document.querySelectorAll('.mc-opt');
-  opts.forEach(b => b.disabled=true);
+  opts.forEach(b => b.disabled = true);
   const isOk = normalize(chosen) === normalize(correct);
   s.seen++;
-  if (isOk) { s.hits++; s.racha++; btn.classList.add('correct'); }
-  else {
-    s.racha=0; btn.classList.add('wrong');
-    opts.forEach(b => { if(normalize(b.textContent.trim())===normalize(correct)) b.classList.add('reveal'); });
+  if (isOk) {
+    s.hits++;
+    s.racha++;
+    btn.classList.add('correct');
+  } else {
+    s.racha = 0;
+    btn.classList.add('wrong');
+    opts.forEach(b => {
+      if (normalize(b.textContent.trim()) === normalize(correct)) b.classList.add('reveal');
+    });
   }
-  document.getElementById('mc-next').style.display='';
+  document.getElementById('mc-next').style.display = '';
   updateStats();
 }
 
@@ -1126,9 +1341,8 @@ function nextMC() {
   renderMC();
 }
 
-// ── Lista ────────────────────────────────────────────────
 function buildWordTable() {
-  document.getElementById('wordTableBody').innerHTML = session.map(w=>`
+  document.getElementById('wordTableBody').innerHTML = session.map(w => `
     <tr>
       <td class="td-de">${w.de}</td>
       <td>${w.es}</td>
@@ -1137,25 +1351,29 @@ function buildWordTable() {
     </tr>`).join('');
 }
 
-// ── Cambiar tab ───────────────────────────────────────────
 function switchTab(tab) {
   const tabs = ['write','cards','mc','list'];
   tabs.forEach(t => {
-    document.getElementById('view-'+t).style.display = t===tab?'':'none';
-    document.getElementById('tab-'+t).className = 'tab-btn'+(t===tab?' active':'');
+    document.getElementById('view-' + t).style.display = t === tab ? '' : 'none';
+    document.getElementById('tab-' + t).className = 'tab-btn' + (t === tab ? ' active' : '');
   });
-  // Cambiar modo activo (sin resetear stats)
   if (tab !== 'list') activeMode = tab;
   updateStats();
-  if (tab==='write') renderWrite();
-  if (tab==='cards') renderCard();
-  if (tab==='mc')    renderMC();
-  if (tab==='list')  buildWordTable();
+  if (tab === 'write') renderWrite();
+  if (tab === 'cards') renderCard();
+  if (tab === 'mc') renderMC();
+  if (tab === 'list') buildWordTable();
 }
 
-// ── Init ─────────────────────────────────────────────────
 buildHome();
-loadWords();
+loadSummary();
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    if (!hasLoadedWords() && !loadWordsPromise) {
+      loadWords().catch(() => {});
+    }
+  }, 1200);
+});
 </script>
 </body>
 </html>
