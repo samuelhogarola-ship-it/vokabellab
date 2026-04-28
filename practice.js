@@ -22,6 +22,13 @@ function startSession(themas, types, title, sub) {
   updateStats();
 }
 
+function resetScore() {
+  ['write', 'cards', 'mc'].forEach(m => { modeState[m] = { idx:0, hits:0, seen:0, racha:0 }; });
+  isFlipped = false;
+  updateStats();
+  switchTab(activeMode);
+}
+
 function restartSession(mode) {
   const m = mode || 'write';
   session = shuffle([...session]);
@@ -280,6 +287,7 @@ function switchTab(tab) {
 Object.assign(window, {
   startSession,
   restartSession,
+  resetScore,
   checkWrite,
   nextWrite,
   flipCard,

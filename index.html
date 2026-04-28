@@ -175,14 +175,11 @@
     <div class="prog-wrap"><div class="prog-fill" id="pBar" style="width:0"></div></div>
     <div class="prog-label" id="pBarLabel" style="margin-bottom:20px"></div>
 
-    <div class="practice-header">
-      <div class="tabs">
-        <button class="tab-btn active" id="tab-write"  onclick="switchTab('write')">✏️ Escribir</button>
-        <button class="tab-btn"        id="tab-cards"  onclick="switchTab('cards')">🃏 Tarjetas</button>
-        <button class="tab-btn"        id="tab-mc"     onclick="switchTab('mc')">🎯 Test</button>
-        <button class="tab-btn"        id="tab-list"   onclick="switchTab('list')">📋 Lista</button>
-      </div>
-      <button class="btn-end-session" onclick="goHome()">✕ Terminar</button>
+    <div class="tabs">
+      <button class="tab-btn active" id="tab-write"  onclick="switchTab('write')">✏️ Escribir</button>
+      <button class="tab-btn"        id="tab-cards"  onclick="switchTab('cards')">🃏 Tarjetas</button>
+      <button class="tab-btn"        id="tab-mc"     onclick="switchTab('mc')">🎯 Test</button>
+      <button class="tab-btn"        id="tab-list"   onclick="switchTab('list')">📋 Lista</button>
     </div>
 
     <!-- ══ MODO 1: ESCRIBIR ══ -->
@@ -288,6 +285,8 @@
       <div class="sidebar-title">Esta sesión</div>
       <div id="sessionSidebar"></div>
     </div>
+    <button class="btn-reset-score" onclick="resetScore()">↺ Reiniciar score</button>
+    <button class="btn-end-session" onclick="goHome()">✕ Terminar sesión</button>
   </div>
 </div>
 
