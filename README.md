@@ -6,7 +6,7 @@ Aplicacion de vocabulario de aleman con:
 - backend minimo en `server.js`
 - base de datos en Supabase
 
-## Estructura del proyecto
+## Estructura actual
 
 Este repositorio esta preparado como **una sola Node app**.
 
@@ -16,7 +16,8 @@ Archivos clave en la raiz:
 - `package-lock.json`
 - `server.js`
 - `index.html`
-- `logo.png`
+- `logo-small.webp`
+- `logo-hero.webp`
 
 No requiere carpeta `frontend/`.
 
@@ -26,9 +27,10 @@ No requiere carpeta `frontend/`.
 
 - `GET /`
 - `GET /api/health`
+- `GET /api/resumen`
 - `GET /api/vocabulario`
 
-El frontend llama a `/api/vocabulario` y renderiza:
+El frontend llama a la API y renderiza:
 
 - `Thema`
 - `Nomen`
@@ -67,6 +69,14 @@ Campos usados por la app:
 
 La API filtra por `is_active = true`.
 
+## Base de datos y migraciones
+
+La fuente de verdad para cambios de base de datos es:
+
+- `supabase/migrations/`
+
+Los `.sql` sueltos de importacion o pruebas ya no forman parte de la estructura principal del repo.
+
 ## Desarrollo local
 
 Instalar dependencias:
@@ -96,3 +106,4 @@ porque este proyecto no tiene estructura separada de frontend/backend.
 Guia rapida:
 
 - `HOSTINGER_DEPLOY.md`
+- `PROJECT_STRUCTURE.md`
