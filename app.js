@@ -118,40 +118,6 @@ const modeState = {
 function ms() { return modeState[activeMode]; }
 
 
-async function ensurePracticeRuntime() {
-  if (Lab.modules.practiceLoaded) return;
-  if (Lab.modules.practicePromise) return Lab.modules.practicePromise;
-
-  Lab.modules.practicePromise = new Promise((resolve, reject) => {
-    const existing = document.querySelector('script[data-vokabel-runtime="practice"]');
-    if (existing) {
-      existing.addEventListener('load', () => {
-        Lab.modules.practiceLoaded = true;
-        resolve();
-      }, { once: true });
-      existing.addEventListener('error', reject, { once: true });
-      return;
-    }
-
-    const script = document.createElement('script');
-    script.src = './practice.js';
-    script.defer = true;
-    script.dataset.vokabelRuntime = 'practice';
-    script.onload = () => {
-      Lab.modules.practiceLoaded = true;
-      resolve();
-    };
-    script.onerror = () => reject(new Error('No se pudo cargar practice.js'));
-    document.head.appendChild(script);
-  });
-
-  try {
-    await Lab.modules.practicePromise;
-  } finally {
-    Lab.modules.practicePromise = null;
-  }
-}
-
 async function goScreen(id) {
   ['s-home','s-simple','s-advanced','s-practice'].forEach(s => {
     document.getElementById(s).style.display = s === id ? 'flex' : 'none';
@@ -159,13 +125,13 @@ async function goScreen(id) {
 
   if (id === 's-simple') {
     if (!hasLoadedWords()) buildSimple();
-    await Promise.all([ensureWordsLoaded(), ensurePracticeRuntime()]);
+    await ensureWordsLoaded();
     if (document.getElementById(id).style.display === 'flex') buildSimple();
   }
 
   if (id === 's-advanced') {
     if (!hasLoadedWords()) buildAdvanced();
-    await Promise.all([ensureWordsLoaded(), ensurePracticeRuntime()]);
+    await ensureWordsLoaded();
     if (document.getElementById(id).style.display === 'flex') buildAdvanced();
   }
 }
