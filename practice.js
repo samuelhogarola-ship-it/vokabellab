@@ -275,5 +275,17 @@ function switchTab(tab) {
   if (tab === 'list') buildWordTable();
 }
 
+
+Object.assign(window, {
+  startSession,
+  restartSession,
+  checkWrite,
+  nextWrite,
+  flipCard,
+  markCard,
+  nextMC,
+  switchTab
+});
+
 Lab.modules = Lab.modules || {};
 Lab.modules.practiceLoaded = true;

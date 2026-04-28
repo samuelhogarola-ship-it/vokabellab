@@ -398,6 +398,15 @@ function startAdvanced() {
 }
 
 
+
+Object.assign(window, {
+  goScreen,
+  goHome,
+  toggleThema,
+  toggleType,
+  startAdvanced
+});
+
 buildHome();
 loadSummary();
 window.addEventListener('load', () => {
