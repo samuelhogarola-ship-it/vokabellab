@@ -71,18 +71,6 @@
     }
     .nav-links a:hover, .nav-links button:hover { color: #3AA9AB; }
     .nav-links .nav-active { color: #3AA9AB; }
-    .nav-right { flex-shrink: 0; }
-    .nav-streak-btn {
-      font-family: 'Lato', sans-serif;
-      font-size: 12px; font-weight: 700;
-      letter-spacing: 1px; text-transform: uppercase;
-      color: #ffffff;
-      background: #1b1b1b;
-      border: none;
-      border-radius: 999px;
-      padding: 10px 16px;
-      cursor: default;
-    }
     .nav-dashboard {
       color: #a4a4a4;
       cursor: default;
@@ -104,8 +92,7 @@
         align-items: stretch;
         padding: 12px 18px;
       }
-      .nav-logo,
-      .nav-right {
+      .nav-logo {
         justify-content: center;
         display: flex;
       }
@@ -157,15 +144,18 @@
     /* ── THEMA GRID ── */
     .thema-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1px; background: #e8e8e8; border: 1px solid #e8e8e8; margin-bottom: 32px; }
     .thema-card {
-      background: #fff; padding: 24px 20px;
-      cursor: pointer; transition: background .15s;
+      background: #fff; padding: 18px 16px;
+      border-top: 3px solid var(--tc, #3AA9AB);
+      cursor: pointer; transition: background .15s, box-shadow .15s;
       text-align: left;
     }
-    .thema-card:hover { background: #f6f6f6; }
+    .thema-card:hover { background: #fafafa; box-shadow: inset 0 -2px 0 var(--tc, #3AA9AB); }
     .thema-card.sel   { background: #f0fafa; }
-    .t-num  { font-family: 'Cabin', sans-serif; font-size: 13px; font-weight: 700; color: #3AA9AB; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
-    .t-name { font-family: 'Cabin', sans-serif; font-size: 15px; font-weight: 700; color: #1b1b1b; margin-bottom: 4px; }
+    .t-num  { font-family: 'Cabin', sans-serif; font-size: 11px; font-weight: 700; color: var(--tc, #3AA9AB); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+    .t-name { font-family: 'Cabin', sans-serif; font-size: 15px; font-weight: 700; color: #1b1b1b; margin-bottom: 6px; }
+    .t-footer { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
     .t-cnt  { font-size: 12px; color: #a4a4a4; }
+    .t-pill { font-size: 10px; font-weight: 700; letter-spacing: .3px; padding: 2px 7px; border-radius: 999px; white-space: nowrap; }
 
     /* ── MODE CARDS ── */
     .mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: #e8e8e8; border: 1px solid #e8e8e8; margin-bottom: 40px; }
@@ -358,14 +348,19 @@
     .hero-actions {
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 16px;
       margin-top: 4px;
     }
-    .hero-note {
+    .hero-action-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .hero-action-desc {
       font-size: 12px;
-      letter-spacing: .6px;
-      text-transform: uppercase;
       color: #759091;
+      line-height: 1.4;
+      max-width: 160px;
     }
     .hero-card {
       position: relative;
@@ -495,10 +490,9 @@
       <span class="nav-sep">|</span>
       <a href="https://derdiedas.vokabellab.com/" target="_blank" rel="noreferrer">der die das</a>
       <span class="nav-sep">|</span>
+      <a href="https://www.imkontext.vokabellab.com/" target="_blank" rel="noreferrer">im Kontext</a>
+      <span class="nav-sep">|</span>
       <span class="nav-dashboard" aria-disabled="true">Dashboard</span>
-    </div>
-    <div class="nav-right">
-      <button class="nav-streak-btn" type="button" aria-label="Racha actual">Racha x0</button>
     </div>
   </div>
 </nav>
@@ -515,10 +509,15 @@
           <h1>Tu laboratorio de vocabulario en formato pop-up</h1>
           <p>Repasa por temas, mezcla tipos de palabra y convierte cada clase en una sesión rápida, visual y bastante más divertida de estudiar.</p>
           <div class="hero-actions">
-            <button class="btn btn-teal" onclick="goScreen('s-simple')">Entrar al laboratorio</button>
-            <button class="btn btn-outline" onclick="goScreen('s-advanced')">Abrir modo avanzado</button>
+            <div class="hero-action-item">
+              <button class="btn btn-teal" onclick="goScreen('s-simple')">Entrar al laboratorio</button>
+              <span class="hero-action-desc">Selecciona un Thema y practica todas sus palabras de una vez.</span>
+            </div>
+            <div class="hero-action-item">
+              <button class="btn btn-outline" onclick="goScreen('s-advanced')">Abrir modo avanzado</button>
+              <span class="hero-action-desc">Combina temas y filtra por tipo de palabra: verbos, sustantivos, adjetivos…</span>
+            </div>
           </div>
-          <div class="hero-note">Práctica visual, tarjetas, escritura y test en una sola pantalla.</div>
         </div>
         <div class="hero-card">
           <div class="hero-card-shadow"></div>
@@ -527,23 +526,8 @@
       </div>
     </section>
     <h1 class="section-heading">Práctica de vocabulario</h1>
-    <p class="section-sub">Elige cómo quieres repasar el vocabulario de tus clases de alemán.</p>
+    <p class="section-sub">Accede al laboratorio y repasa el vocabulario de tus clases de alemán.</p>
     <hr>
-
-    <div class="mode-grid">
-      <div class="mode-card" onclick="goScreen('s-simple')">
-        <div class="mode-icon">📖</div>
-        <div class="mode-label">Tema completo</div>
-        <div class="mode-desc">Selecciona un Thema y practica todas sus palabras de una vez.</div>
-        <span class="mode-tag">Rápido y directo →</span>
-      </div>
-      <div class="mode-card" onclick="goScreen('s-advanced')">
-        <div class="mode-icon">🎯</div>
-        <div class="mode-label">Modo avanzado</div>
-        <div class="mode-desc">Combina varios temas y filtra por tipo de palabra: verbos, sustantivos, adjetivos…</div>
-        <span class="mode-tag">Control total →</span>
-      </div>
-    </div>
 
     <div class="filter-label">Tu progreso</div>
     <div class="stats-row" id="homeStats"></div>
@@ -1022,13 +1006,23 @@ function buildSimple() {
   }
 
   const allThemas = getAllThemas();
-  themaGrid.innerHTML = allThemas.map(th => {
+  const TC = ['#3AA9AB','#4A90D9','#E07AB0','#F0A030','#8B5CF6'];
+  themaGrid.innerHTML = allThemas.map((th, i) => {
     const cnt = words.filter(w => w.thema === th).length;
     const name = themaNames[th] || '';
-    return `<div class="thema-card" onclick="startSession(new Set([${th}]),new Set(),'Thema ${th} — ${name}','Todas las palabras del Thema ${th}')">
+    const color = TC[i % TC.length];
+    const [label, bg, fg] = cnt >= 45
+      ? ['completo', '#dcfce7', '#15803d']
+      : cnt >= 35
+        ? ['casi', '#fef9c3', '#854d0e']
+        : ['corto', '#fce7f3', '#be185d'];
+    return `<div class="thema-card" style="--tc:${color}" onclick="startSession(new Set([${th}]),new Set(),'Thema ${th} — ${name}','Todas las palabras del Thema ${th}')">
       <div class="t-num">Thema ${th}</div>
       <div class="t-name">${name}</div>
-      <div class="t-cnt">${cnt} palabras</div>
+      <div class="t-footer">
+        <span class="t-cnt">${cnt} palabras</span>
+        <span class="t-pill" style="background:${bg};color:${fg}">${label}</span>
+      </div>
     </div>`;
   }).join('');
 }
