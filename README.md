@@ -3,6 +3,9 @@
 Aplicacion de vocabulario de aleman con:
 
 - landing y practica en `index.html`
+- estilos separados en `styles.css`
+- runtime principal en `app.js`
+- runtime de practica en `practice.js`
 - backend minimo en `server.js`
 - base de datos en Supabase
 
@@ -16,6 +19,9 @@ Archivos clave en la raiz:
 - `package-lock.json`
 - `server.js`
 - `index.html`
+- `styles.css`
+- `app.js`
+- `practice.js`
 - `logo-small.webp`
 - `logo-hero.webp`
 
@@ -30,13 +36,22 @@ No requiere carpeta `frontend/`.
 - `GET /api/resumen`
 - `GET /api/vocabulario`
 
-El frontend llama a la API y renderiza:
+El frontend se divide asi:
 
-- `Thema`
-- `Nomen`
-- `Verb`
-- `Ausdruck`
-- `Adjektiv/Adverb`
+- `index.html`: estructura y pantallas
+- `styles.css`: estilos compartidos
+- `app.js`: home, navegacion, resumen, carga de datos y shell de aplicacion
+- `practice.js`: logica de practica, cargada bajo demanda al entrar al laboratorio
+
+## Preparado para futuras versiones
+
+La app ya deja una base minima para crecer hacia:
+
+- login de usuarios
+- niveles/roles
+- panel maestro o admin panel
+
+La configuracion inicial vive en `window.VokabelLab` dentro de `app.js`.
 
 ## Variables de entorno
 
@@ -75,8 +90,6 @@ La fuente de verdad para cambios de base de datos es:
 
 - `supabase/migrations/`
 
-Los `.sql` sueltos de importacion o pruebas ya no forman parte de la estructura principal del repo.
-
 ## Desarrollo local
 
 Instalar dependencias:
@@ -94,14 +107,6 @@ npm start
 ## Deploy en Hostinger
 
 Despliega esta app como **Node app desde la raiz del repositorio**.
-
-No uses scripts del estilo:
-
-```bash
-cd frontend && npm install
-```
-
-porque este proyecto no tiene estructura separada de frontend/backend.
 
 Guia rapida:
 

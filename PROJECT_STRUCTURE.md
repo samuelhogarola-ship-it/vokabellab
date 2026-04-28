@@ -1,54 +1,67 @@
 # Estructura recomendada del proyecto
 
-Esta app esta organizada para que podamos evolucionarla sin volver a llenar el repo de archivos temporales.
+Esta app esta organizada para poder crecer sin volver a un HTML monolitico dificil de mantener.
 
 ## Regla base
 
 Mantener **una sola app Node** en la raiz del proyecto.
 
-Archivos base:
+## Capas actuales
+
+### Shell de aplicacion
 
 - `index.html`
-- `server.js`
-- `package.json`
-- `package-lock.json`
-- `.env.example`
+- `styles.css`
+- `app.js`
 
-Assets activos:
+Responsabilidades:
 
-- `logo-small.webp`
-- `logo-hero.webp`
+- layout general
+- home
+- navegacion entre pantallas
+- resumen del catalogo
+- carga inicial ligera
+- punto de entrada para futuras capas de auth y admin
 
-## Donde va cada cosa
+### Runtime de practica
 
-### Frontend
+- `practice.js`
 
-- `index.html`
-- si el frontend crece mucho, extraer a:
-  - `styles/`
-  - `scripts/`
-  - `assets/`
+Responsabilidades:
+
+- sesion de estudio
+- tarjetas
+- escribir
+- multiple choice
+- tabla de palabras
+
+Esta capa se carga **bajo demanda** para ayudar al `Time to Interactive`.
 
 ### Backend
 
 - `server.js`
-- si el backend crece mucho, extraer a:
-  - `api/`
-  - `lib/`
-  - `services/`
+
+Responsabilidades:
+
+- servir frontend
+- exponer API
+- hablar con Supabase
+- cachear resumen y vocabulario
 
 ### Base de datos
 
-- usar `supabase/migrations/` como unica fuente de verdad versionada
-- no dejar `.sql` sueltos en la raiz salvo que sean temporales y no se suban
+- `supabase/migrations/`
 
-### Documentacion
+Unica fuente de verdad versionada para cambios de esquema o carga controlada.
 
-Mantener solo documentos vivos:
+## Evolucion recomendada
 
-- `README.md`
-- `HOSTINGER_DEPLOY.md`
-- `PROJECT_STRUCTURE.md`
+Cuando aparezca login o panel maestro:
+
+- crear `auth.js` o `scripts/auth/`
+- crear `admin.js` o `scripts/admin/`
+- mantener `app.js` como shell/orquestador
+- no mezclar logica de practica con permisos de usuario
 
 ## Que no deberia volver a entrar al repo
 

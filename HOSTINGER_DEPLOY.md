@@ -10,6 +10,9 @@ Hostinger debe apuntar a la raiz del proyecto, donde viven:
 - `package-lock.json`
 - `server.js`
 - `index.html`
+- `styles.css`
+- `app.js`
+- `practice.js`
 - `logo-small.webp`
 - `logo-hero.webp`
 
@@ -44,18 +47,10 @@ Opcional:
 
 ## Nota importante
 
-Si Hostinger intenta ejecutar algo tipo:
-
-```bash
-cd frontend && npm install
-```
-
-esa configuracion es incorrecta para este proyecto.
 La app debe desplegarse desde la **raiz del repositorio**.
 
 ## Nota de mantenimiento
 
-Este repo ya no usa seeds sueltos ni imports manuales en la raiz.
-La referencia versionada para base de datos debe mantenerse en:
-
-- `supabase/migrations/`
+- `app.js` carga el shell principal
+- `practice.js` se carga solo cuando el usuario entra al laboratorio
+- `supabase/migrations/` es la referencia versionada para base de datos
