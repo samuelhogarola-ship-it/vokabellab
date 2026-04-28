@@ -425,6 +425,10 @@
     .empty-sub  { font-size: 14px; color: #5e5e5e; }
 
     /* ── TABS ── */
+    .practice-header { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin-bottom: 28px; border-bottom: 2px solid #e8e8e8; }
+    .practice-header .tabs { border-bottom: none; margin-bottom: 0; flex: 1; }
+    .btn-end-session { flex-shrink: 0; font-family: 'Lato', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: #a4a4a4; background: none; border: none; cursor: pointer; padding: 10px 4px; line-height: 1; transition: color .15s; }
+    .btn-end-session:hover { color: #e76f51; }
     .tabs { display: flex; gap: 0; border-bottom: 2px solid #e8e8e8; margin-bottom: 28px; }
     .tab-btn {
       font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
