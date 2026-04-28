@@ -151,6 +151,7 @@ function checkWrite() {
   document.getElementById('w-check').style.display = 'none';
   document.getElementById('w-next').style.display = '';
   updateStats();
+  window.VokabelLab.recordAnswer(isOk, s.racha);
 }
 
 function nextWrite() {
@@ -199,6 +200,7 @@ function markCard(ok) {
   s.idx++;
   renderCard();
   updateStats();
+  if (ok !== null) window.VokabelLab.recordAnswer(ok === true, s.racha);
 }
 
 function renderMC() {
@@ -252,6 +254,7 @@ function selectMC(btn, chosen, correct) {
   }
   document.getElementById('mc-next').style.display = '';
   updateStats();
+  window.VokabelLab.recordAnswer(isOk, s.racha);
 }
 
 function nextMC() {

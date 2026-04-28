@@ -92,6 +92,33 @@ function setSummaryState(partial) {
   saveStoredSummary(summaryState);
 }
 
+const defaultProgress = { seen: 0, hits: 0, bestRacha: 0 };
+
+function readProgress() {
+  try {
+    const raw = localStorage.getItem('vokabel-progress');
+    if (!raw) return { ...defaultProgress };
+    const p = JSON.parse(raw);
+    return typeof p.seen === 'number' ? { ...defaultProgress, ...p } : { ...defaultProgress };
+  } catch { return { ...defaultProgress }; }
+}
+
+let progressState = readProgress();
+
+function saveProgress() {
+  try { localStorage.setItem('vokabel-progress', JSON.stringify(progressState)); } catch {}
+}
+
+function recordAnswer(isHit, racha) {
+  progressState.seen++;
+  if (isHit) progressState.hits++;
+  if (racha > (progressState.bestRacha || 0)) progressState.bestRacha = racha;
+  saveProgress();
+  buildHome();
+}
+
+Lab.recordAnswer = recordAnswer;
+
 function hasLoadedWords() {
   return Array.isArray(words) && words.length > 0;
 }
@@ -245,21 +272,23 @@ function buildHome() {
     return;
   }
 
-  homeStats.innerHTML = `
-    <div class="stat-box"><div class="stat-n">${total}</div><div class="stat-l">palabras</div></div>
-    <div class="stat-box"><div class="stat-n">${themes}</div><div class="stat-l">temas</div></div>
-    <div class="stat-box"><div class="stat-n">${types}</div><div class="stat-l">tipos</div></div>
-    <div class="stat-box"><div class="stat-n">${total ? '100%' : '—'}</div><div class="stat-l">catalogo</div></div>`;
-  document.getElementById('homeBar').style.width = total ? '100%' : '0';
+  const pSeen = progressState.seen;
+  const pHits = progressState.hits;
+  const pRacha = progressState.bestRacha;
+  const pPct = pSeen > 0 ? Math.round(pHits / pSeen * 100) + '%' : '—';
+  const barPct = total > 0 ? Math.min(100, Math.round(pSeen / total * 100)) : 0;
 
-  if (isLoadingWords && !hasLoadedWords()) {
-    document.getElementById('homeBarLabel').textContent = `Catalogo visible al instante. Preparando las ${total} palabras para practicar...`;
-  } else if (hasLoadedWords()) {
-    document.getElementById('homeBarLabel').textContent = `${total} palabras listas para practicar`;
-  } else if (summaryState.lastUpdated) {
-    document.getElementById('homeBarLabel').textContent = `${total} palabras segun la ultima medicion guardada`;
+  homeStats.innerHTML = `
+    <div class="stat-box"><div class="stat-n">${pSeen}</div><div class="stat-l">practicadas</div></div>
+    <div class="stat-box"><div class="stat-n">${pHits}</div><div class="stat-l">acertadas</div></div>
+    <div class="stat-box"><div class="stat-n">${pRacha}</div><div class="stat-l">racha récord</div></div>
+    <div class="stat-box"><div class="stat-n">${pPct}</div><div class="stat-l">% acierto</div></div>`;
+  document.getElementById('homeBar').style.width = barPct + '%';
+
+  if (pSeen === 0) {
+    document.getElementById('homeBarLabel').textContent = 'Aún no has practicado ninguna palabra. ¡Empieza ya!';
   } else {
-    document.getElementById('homeBarLabel').textContent = 'Cargando resumen del catalogo...';
+    document.getElementById('homeBarLabel').textContent = `${pSeen} palabras practicadas · ${barPct}% del catálogo cubierto`;
   }
 
   if (hasLoadedWords()) {
