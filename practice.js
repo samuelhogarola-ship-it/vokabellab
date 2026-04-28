@@ -1,4 +1,4 @@
-const Lab = window.VokabelLab = window.VokabelLab || {};
+// window.VokabelLab is initialised by app.js — do not redeclare
 
 function shuffle(arr) {
   for (let i = arr.length - 1; i > 0; i--) {
@@ -283,9 +283,10 @@ Object.assign(window, {
   nextWrite,
   flipCard,
   markCard,
+  selectMC,
   nextMC,
   switchTab
 });
 
-Lab.modules = Lab.modules || {};
-Lab.modules.practiceLoaded = true;
+window.VokabelLab.modules = window.VokabelLab.modules || {};
+window.VokabelLab.modules.practiceLoaded = true;
