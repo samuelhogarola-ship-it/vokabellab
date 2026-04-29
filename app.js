@@ -222,10 +222,36 @@ function formatSummaryTimestamp(value) {
   });
 }
 
+function readPracticeStats() {
+  try {
+    return JSON.parse(
+      localStorage.getItem('vokabel-practice-stats') || 'null'
+    ) || {
+      practiced: 0,
+      correct: 0,
+      wrong: 0,
+      bestStreak: 0
+    };
+  } catch {
+    return {
+      practiced: 0,
+      correct: 0,
+      wrong: 0,
+      bestStreak: 0
+    };
+  }
+}
+
 function buildHome() {
   const allThemas = hasLoadedWords() ? getAllThemas() : [];
   const allTypes = hasLoadedWords() ? getAllTypes() : [];
   const homeStats = document.getElementById('homeStats');
+  const stats = readPracticeStats();
+  const totalAnswered = stats.correct + stats.wrong;
+  const pct =
+    totalAnswered > 0
+      ? Math.round((stats.correct / totalAnswered) * 100) + '%'
+      : '—';
 
   const total = hasLoadedWords() ? words.length : summaryState.totalWords;
   const themes = hasLoadedWords() ? allThemas.length : summaryState.totalThemas;
@@ -233,10 +259,10 @@ function buildHome() {
 
   if (loadWordsError && !hasLoadedWords()) {
     homeStats.innerHTML = `
-      <div class="stat-box"><div class="stat-n">${total}</div><div class="stat-l">palabras</div></div>
-      <div class="stat-box"><div class="stat-n">${themes}</div><div class="stat-l">temas</div></div>
-      <div class="stat-box"><div class="stat-n">${types}</div><div class="stat-l">tipos</div></div>
-      <div class="stat-box"><div class="stat-n">!</div><div class="stat-l">error</div></div>`;
+      <div class="stat-box"><div class="stat-n">${stats.practiced}</div><div class="stat-l">practicadas</div></div>
+      <div class="stat-box"><div class="stat-n">${stats.correct}</div><div class="stat-l">acertadas</div></div>
+      <div class="stat-box"><div class="stat-n">${stats.bestStreak}</div><div class="stat-l">racha récord</div></div>
+      <div class="stat-box"><div class="stat-n">${pct}</div><div class="stat-l">% acierto</div></div>`;
     document.getElementById('homeBar').style.width = total ? '100%' : '0';
     document.getElementById('homeBarLabel').textContent = `${loadWordsError} Mostrando la ultima medicion guardada.`;
     document.getElementById('sidebarLevels').innerHTML = `
@@ -246,10 +272,10 @@ function buildHome() {
   }
 
   homeStats.innerHTML = `
-    <div class="stat-box"><div class="stat-n">${total}</div><div class="stat-l">palabras</div></div>
-    <div class="stat-box"><div class="stat-n">${themes}</div><div class="stat-l">temas</div></div>
-    <div class="stat-box"><div class="stat-n">${types}</div><div class="stat-l">tipos</div></div>
-    <div class="stat-box"><div class="stat-n">${total ? '100%' : '—'}</div><div class="stat-l">catalogo</div></div>`;
+    <div class="stat-box"><div class="stat-n">${stats.practiced}</div><div class="stat-l">practicadas</div></div>
+    <div class="stat-box"><div class="stat-n">${stats.correct}</div><div class="stat-l">acertadas</div></div>
+    <div class="stat-box"><div class="stat-n">${stats.bestStreak}</div><div class="stat-l">racha récord</div></div>
+    <div class="stat-box"><div class="stat-n">${pct}</div><div class="stat-l">% acierto</div></div>`;
   document.getElementById('homeBar').style.width = total ? '100%' : '0';
 
   if (isLoadingWords && !hasLoadedWords()) {

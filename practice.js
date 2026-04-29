@@ -72,6 +72,49 @@ function updateStats() {
   `;
 }
 
+function updatePracticeStats(ok) {
+  let stats;
+
+  try {
+    stats = JSON.parse(
+      localStorage.getItem('vokabel-practice-stats') || 'null'
+    ) || {
+      practiced: 0,
+      correct: 0,
+      wrong: 0,
+      bestStreak: 0,
+      currentStreak: 0
+    };
+  } catch {
+    stats = {
+      practiced: 0,
+      correct: 0,
+      wrong: 0,
+      bestStreak: 0,
+      currentStreak: 0
+    };
+  }
+
+  stats.practiced++;
+
+  if (ok) {
+    stats.correct++;
+    stats.currentStreak++;
+    stats.bestStreak = Math.max(
+      stats.bestStreak || 0,
+      stats.currentStreak
+    );
+  } else {
+    stats.wrong++;
+    stats.currentStreak = 0;
+  }
+
+  localStorage.setItem(
+    'vokabel-practice-stats',
+    JSON.stringify(stats)
+  );
+}
+
 function renderWrite() {
   const s = modeState.write;
   const empty = document.getElementById('writeEmpty');
@@ -143,6 +186,7 @@ function checkWrite() {
   inp.disabled = true;
   document.getElementById('w-check').style.display = 'none';
   document.getElementById('w-next').style.display = '';
+  updatePracticeStats(isOk);
   updateStats();
 }
 
@@ -188,6 +232,7 @@ function markCard(ok) {
   } else {
     s.racha = 0;
   }
+  updatePracticeStats(ok);
   s.idx++;
   renderCard();
   updateStats();
@@ -243,12 +288,30 @@ function selectMC(btn, chosen, correct) {
     });
   }
   document.getElementById('mc-next').style.display = '';
+  updatePracticeStats(isOk);
   updateStats();
 }
 
 function nextMC() {
   modeState.mc.idx++;
   renderMC();
+}
+
+function resetScore() {
+  ['write', 'cards', 'mc'].forEach(m => {
+    modeState[m] = {
+      idx: modeState[m]?.idx || 0,
+      hits: 0,
+      seen: 0,
+      racha: 0
+    };
+  });
+
+  updateStats();
+
+  if (activeMode === 'write') renderWrite();
+  if (activeMode === 'cards') renderCard();
+  if (activeMode === 'mc') renderMC();
 }
 
 function buildWordTable() {
@@ -285,7 +348,8 @@ Object.assign(window, {
   markCard,
   selectMC,
   nextMC,
-  switchTab
+  switchTab,
+  resetScore
 });
 
 window.VokabelLab.modules = window.VokabelLab.modules || {};
