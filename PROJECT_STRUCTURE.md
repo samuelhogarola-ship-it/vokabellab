@@ -26,6 +26,9 @@ Responsabilidades:
 ### Runtime de practica
 
 - `practice.js`
+- `shared/answer-utils.js`
+- `shared/practice-core.js`
+- `shared/flashcard-core.js`
 
 Responsabilidades:
 
@@ -34,8 +37,17 @@ Responsabilidades:
 - escribir
 - multiple choice
 - tabla de palabras
+- helpers puros reutilizables para normalizacion, scoring y estado compartido
 
 Esta capa se carga **bajo demanda** para ayudar al `Time to Interactive`.
+
+## Regla de seguridad para scripts clasicos
+
+El bug corregido en la PR #3 dejo una restriccion clara para futuras extracciones:
+
+- no redeclarar `const Lab` ni otros bindings globales compartidos entre `app.js` y `practice.js`
+- cualquier logica reutilizable nueva debe entrar primero en `shared/`
+- `shared/` debe mantenerse puro, sin DOM, sin framework y sin dependencias de Supabase
 
 ### Backend
 
