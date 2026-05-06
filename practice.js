@@ -8,6 +8,29 @@ function shuffle(arr) {
   return arr;
 }
 
+function getRandomWrongOptions(word, pool, count = 3) {
+  const others = pool.filter(item => item.id !== word.id && item.es !== word.es);
+  const sameType = word.type
+    ? [...new Map(
+        shuffle(others.filter(item => item.type === word.type))
+          .map(item => [item.es, item])
+      ).values()]
+    : [];
+
+  if (sameType.length >= count) {
+    return sameType
+      .slice(0, count)
+      .map(item => item.es);
+  }
+
+  const usedIds = new Set(sameType.map(item => item.id));
+  const fallback = shuffle(others.filter(item => !usedIds.has(item.id)));
+
+  return [...new Map([...sameType, ...fallback].map(item => [item.es, item])).values()]
+    .slice(0, count)
+    .map(item => item.es);
+}
+
 function startSession(themas, types, title, sub) {
   session = shuffle(words.filter(w => themas.has(w.thema) && (types.size === 0 || types.has(w.type))));
   savedThemas = themas;
@@ -259,9 +282,7 @@ function renderMC() {
   document.getElementById('mc-thema').textContent = `Thema ${w.thema}`;
   document.getElementById('mc-counter').textContent = `${s.idx + 1} / ${session.length}`;
 
-  const otherEs = words.filter(x => x.es !== w.es).map(x => x.es);
-  shuffle(otherEs);
-  const distractors = [...new Set(otherEs)].slice(0, 3);
+  const distractors = getRandomWrongOptions(w, words, 3);
   const options = shuffle([w.es, ...distractors]);
 
   opts.innerHTML = options.map(opt => `
