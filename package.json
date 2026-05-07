@@ -6,7 +6,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "validate:shared": "node scripts/validate-shared-core.mjs"
   },
   "engines": {
     "node": ">=20"
