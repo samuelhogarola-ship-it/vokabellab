@@ -1,11 +1,40 @@
 // window.VokabelLab is initialised by app.js — do not redeclare
 
+const sharedAnswerUtils = window.AnswerUtils || null;
+const sharedPracticeCore = window.SharedPracticeCore || null;
+const sharedFlashcardCore = window.FlashcardCore || null;
+let flashcardState = null;
+
 function shuffle(arr) {
+  if (sharedAnswerUtils && typeof sharedAnswerUtils.shuffle === 'function') {
+    return sharedAnswerUtils.shuffle(arr);
+  }
+
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
   return arr;
+}
+
+function createPracticeSessionState(items, index = 0) {
+  if (!sharedPracticeCore || typeof sharedPracticeCore.createSession !== 'function') {
+    return null;
+  }
+
+  return sharedPracticeCore.createSession(items, { initialIndex: index });
+}
+
+function getPracticeProgressPercent(currentIndex, totalItems) {
+  if (totalItems <= 0) return 0;
+  if (!sharedPracticeCore || typeof sharedPracticeCore.getProgressPercent !== 'function') {
+    if (currentIndex >= totalItems) return 100;
+    return Math.round(((Math.min(currentIndex, totalItems - 1) + 1) / totalItems) * 100);
+  }
+
+  return sharedPracticeCore.getProgressPercent(
+    createPracticeSessionState(new Array(totalItems).fill(null), currentIndex >= totalItems ? totalItems : currentIndex)
+  );
 }
 
 function getRandomWrongOptions(word, pool, count = 3) {
@@ -36,6 +65,9 @@ function startSession(themas, types, title, sub) {
   savedThemas = themas;
   savedTypes = types;
   ['write', 'cards', 'mc'].forEach(m => { modeState[m] = { idx:0, hits:0, seen:0, racha:0 }; });
+  flashcardState = sharedFlashcardCore && typeof sharedFlashcardCore.createFlashcardState === 'function'
+    ? sharedFlashcardCore.createFlashcardState(session)
+    : null;
   isFlipped = false;
   document.getElementById('practiceTitle').textContent = title;
   document.getElementById('practiceSub').textContent = sub;
@@ -49,6 +81,11 @@ function restartSession(mode) {
   const m = mode || 'write';
   session = shuffle([...session]);
   modeState[m] = { idx:0, hits:0, seen:0, racha:0 };
+  if (m === 'cards') {
+    flashcardState = sharedFlashcardCore && typeof sharedFlashcardCore.createFlashcardState === 'function'
+      ? sharedFlashcardCore.createFlashcardState(session)
+      : null;
+  }
   isFlipped = false;
   updateStats();
   switchTab(m);
@@ -61,9 +98,9 @@ function updateStats() {
   document.getElementById('pDom').textContent = s.hits;
   document.getElementById('pRacha').textContent = s.racha;
   document.getElementById('pPct').textContent = s.seen > 0 ? Math.round(s.hits / s.seen * 100) + '%' : '—';
-  const p = t > 0 ? Math.round(s.idx / t * 100) : 0;
+  const p = getPracticeProgressPercent(s.idx, t);
   document.getElementById('pBar').style.width = p + '%';
-  document.getElementById('pBarLabel').textContent = `${s.idx} de ${t} palabras`;
+  document.getElementById('pBarLabel').textContent = `${t > 0 ? Math.min(s.idx + 1, t) : 0} de ${t} palabras`;
 
   const modeInfo = [
     {key:'write', icon:'✏️', name:'Escribir'},
@@ -170,6 +207,10 @@ function renderWrite() {
 }
 
 function normalize(s) {
+  if (sharedAnswerUtils && typeof sharedAnswerUtils.normalizeAnswer === 'function') {
+    return sharedAnswerUtils.normalizeAnswer(s);
+  }
+
   return s.toLowerCase()
     .replace(/[áàä]/g,'a').replace(/[éèë]/g,'e')
     .replace(/[íìï]/g,'i').replace(/[óòö]/g,'o')
@@ -189,8 +230,9 @@ function checkWrite() {
     return;
   }
 
-  const correct = w.es.split('/').map(c => c.trim());
-  const isOk = correct.some(c => normalize(userVal) === normalize(c));
+  const isOk = sharedAnswerUtils && typeof sharedAnswerUtils.matchesAnyAcceptedAnswer === 'function'
+    ? sharedAnswerUtils.matchesAnyAcceptedAnswer(userVal, w.es)
+    : w.es.split('/').map(c => c.trim()).some(c => normalize(userVal) === normalize(c));
 
   s.seen++;
   if (isOk) {
@@ -222,14 +264,18 @@ function renderCard() {
   const s = modeState.cards;
   const empty = document.getElementById('cardEmpty');
   const cardArea = document.getElementById('cardArea');
-  if (s.idx >= session.length) {
+  const currentCard = flashcardState && sharedPracticeCore && typeof sharedPracticeCore.getCurrentItem === 'function'
+    ? sharedPracticeCore.getCurrentItem(flashcardState.session)
+    : session[s.idx];
+
+  if (s.idx >= session.length || !currentCard) {
     cardArea.style.display = 'none';
     empty.style.display = '';
     return;
   }
   cardArea.style.display = '';
   empty.style.display = 'none';
-  const w = session[s.idx];
+  const w = currentCard;
   document.getElementById('c-de').textContent = w.de;
   document.getElementById('c-es').textContent = w.es;
   document.getElementById('c-cat').textContent = `${w.type} · Thema ${w.thema}`;
@@ -241,7 +287,12 @@ function renderCard() {
 }
 
 function flipCard() {
-  isFlipped = !isFlipped;
+  if (sharedFlashcardCore && typeof sharedFlashcardCore.flipCard === 'function') {
+    flashcardState = sharedFlashcardCore.flipCard(flashcardState);
+    isFlipped = Boolean(flashcardState && flashcardState.flipped);
+  } else {
+    isFlipped = !isFlipped;
+  }
   document.getElementById('flashcard').classList.toggle('flipped', isFlipped);
 }
 
@@ -256,7 +307,16 @@ function markCard(ok) {
     s.racha = 0;
   }
   updatePracticeStats(ok);
-  s.idx++;
+  if (sharedFlashcardCore && flashcardState) {
+    flashcardState = ok
+      ? sharedFlashcardCore.markKnown(flashcardState)
+      : sharedFlashcardCore.markUnknown(flashcardState);
+    s.idx = flashcardState && flashcardState.session
+      ? flashcardState.session.currentIndex
+      : s.idx + 1;
+  } else {
+    s.idx++;
+  }
   renderCard();
   updateStats();
 }
@@ -327,6 +387,11 @@ function resetScore() {
       racha: 0
     };
   });
+
+  flashcardState = sharedFlashcardCore && typeof sharedFlashcardCore.createFlashcardState === 'function'
+    ? sharedFlashcardCore.createFlashcardState(session)
+    : null;
+  isFlipped = false;
 
   updateStats();
 

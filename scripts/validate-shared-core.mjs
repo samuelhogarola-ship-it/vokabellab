@@ -38,6 +38,11 @@ assert.deepEqual(session.score, { correct: 1, incorrect: 0, answered: 1 });
 session = SharedPracticeCore.nextItem(session);
 assert.equal(SharedPracticeCore.getProgressPercent(session), 67);
 
+session = SharedPracticeCore.nextItem(session);
+session = SharedPracticeCore.nextItem(session);
+assert.equal(SharedPracticeCore.getProgressPercent(session), 100);
+assert.equal(SharedPracticeCore.getCurrentItem(session), null);
+
 session = SharedPracticeCore.resetScore(session);
 assert.deepEqual(session.score, { correct: 0, incorrect: 0, answered: 0 });
 assert.deepEqual(session.answers, []);
@@ -53,5 +58,6 @@ assert.equal(flashcards.flipped, false);
 flashcards = FlashcardCore.markUnknown(flashcards);
 assert.deepEqual(flashcards.unknownIds, [11]);
 assert.equal(flashcards.marks.length, 2);
+assert.equal(flashcards.session.currentIndex, 2);
 
 console.log("shared-ok");

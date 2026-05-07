@@ -21,7 +21,7 @@
 
     return {
       items: source,
-      currentIndex: source.length === 0 ? -1 : Math.max(0, Math.min(initialIndex, source.length - 1)),
+      currentIndex: source.length === 0 ? -1 : Math.max(0, Math.min(initialIndex, source.length)),
       answers: [],
       score: createEmptyScore(),
       meta: Object.assign({}, config.meta || {})
@@ -39,7 +39,7 @@
     if (!current.items.length) return Object.assign({}, current, { currentIndex: -1 });
 
     return Object.assign({}, current, {
-      currentIndex: Math.min(current.currentIndex + 1, current.items.length - 1)
+      currentIndex: Math.min(current.currentIndex + 1, current.items.length)
     });
   }
 
@@ -90,6 +90,7 @@
   function getProgressPercent(session) {
     if (!session || !Array.isArray(session.items) || session.items.length === 0) return 0;
     if (session.currentIndex < 0) return 0;
+    if (session.currentIndex >= session.items.length) return 100;
 
     return Math.round(((session.currentIndex + 1) / session.items.length) * 100);
   }
