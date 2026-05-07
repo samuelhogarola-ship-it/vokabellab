@@ -2,6 +2,12 @@
 
 Este proyecto esta preparado para desplegarse como **una sola Node app**.
 
+## Repo correcto
+
+Hostinger debe desplegar el repo canonico `samuelhogarola-ship-it/vokabellab`.
+
+No debe apuntar al repo duplicado `VokabelLab.node`.
+
 ## Estructura correcta
 
 Hostinger debe apuntar a la raiz del proyecto, donde viven:
@@ -48,6 +54,8 @@ Opcional:
 ## Nota importante
 
 La app debe desplegarse desde la **raiz del repositorio**.
+
+Abrir `index.html` en local con `file://` puede hacer pensar que la app es estatica, pero produccion corre por Node y Express.
 
 ## Nota de mantenimiento
 
