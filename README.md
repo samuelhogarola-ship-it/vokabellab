@@ -9,6 +9,24 @@ Aplicacion de vocabulario de aleman con:
 - backend minimo en `server.js`
 - base de datos en Supabase
 
+## Estado canonico
+
+Este repositorio es la **app canonica actual** de Vokabel Lab.
+
+- Produccion en Hostinger corre como **Node app**
+- `server.js` sirve el frontend y la API
+- el frontend sigue siendo HTML/CSS/JS clasico, pero **no** es un hosting estatico separado
+- la carpeta o repo `VokabelLab.node` debe tratarse como **legado/duplicado**, no como fuente activa
+
+Si estas probando localmente, evita abrir `file://.../index.html` para validar comportamiento real.
+Usa siempre la app servida por Node:
+
+```bash
+npm start
+```
+
+y abre `http://localhost:3000` o el puerto configurado.
+
 ## Estructura actual
 
 Este repositorio esta preparado como **una sola Node app**.
