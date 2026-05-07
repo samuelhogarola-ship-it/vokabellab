@@ -14,7 +14,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
-    <link rel="stylesheet" href="./styles.css"/>
+  <link rel="stylesheet" href="./shared/navbar.css"/>
+  <link rel="stylesheet" href="./styles.css"/>
 
 </head>
 <body>
@@ -23,25 +24,7 @@
 <div class="topbar">www.vokabellab.com &nbsp;|&nbsp; Laboratorio de vocabulario alemán</div>
 
 <!-- NAVBAR -->
-<nav>
-  <div class="nav-inner">
-    <a class="nav-logo" href="https://www.vokabellab.com/" aria-label="Ir a Vokabel Lab">
-      <img src="./logo-small.webp" alt="Logo de Vokabel Lab" width="34" height="51" decoding="async"/>
-      <span>Vokabel Lab</span>
-    </a>
-    <div class="nav-links">
-      <a href="https://www.samuelcoachdealeman.com/" target="_blank" rel="noreferrer">Samuel Coach de alemán</a>
-      <span class="nav-sep">|</span>
-      <a href="https://www.vokabellab.com/" class="nav-active">Vokabel Lab</a>
-      <span class="nav-sep">|</span>
-      <a href="https://derdiedas.vokabellab.com/" target="_blank" rel="noreferrer">der die das</a>
-      <span class="nav-sep">|</span>
-      <a href="https://www.imkontext.vokabellab.com/" target="_blank" rel="noreferrer">im Kontext</a>
-      <span class="nav-sep">|</span>
-      <span class="nav-dashboard" aria-disabled="true">Dashboard</span>
-    </div>
-  </div>
-</nav>
+<div id="shared-navbar"></div>
 
 <!-- ══════════════════════════════════════════════════════ -->
 <!-- HOME                                                   -->
@@ -294,10 +277,11 @@
 </div>
 
 <!-- ══════════════════════════════════════════════════════ -->
+<script defer src="./shared/navbar.js"></script>
 <script defer src="./shared/answer-utils.js"></script>
 <script defer src="./shared/practice-core.js"></script>
 <script defer src="./shared/flashcard-core.js"></script>
-<script defer src="./app.js?v=2"></script>
+<script defer src="./app.js?v=3"></script>
 <script defer src="./practice.js?v=3"></script>
 </body>
 </html>

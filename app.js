@@ -124,6 +124,16 @@ const modeState = {
 
 function ms() { return modeState[activeMode]; }
 
+function initSharedNavbar() {
+  if (!window.SharedNavbar || typeof window.SharedNavbar.mountNavbar !== 'function') return;
+
+  window.SharedNavbar.mountNavbar('#shared-navbar', {
+    variant: 'vokabellab',
+    activeApp: 'vokabellab',
+    supportEmail: 'vokabellab@pm.me'
+  });
+}
+
 
 async function goScreen(id) {
   ['s-home','s-simple','s-advanced','s-practice'].forEach(s => {
@@ -407,6 +417,7 @@ Object.assign(window, {
 });
 
 buildHome();
+initSharedNavbar();
 loadSummary();
 window.addEventListener('load', () => {
   const warmWords = () => {
