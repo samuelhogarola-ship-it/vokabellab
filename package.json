@@ -6,7 +6,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "validate:shared-navbar": "node scripts/validate-shared-navbar.mjs"
   },
   "engines": {
     "node": ">=20"

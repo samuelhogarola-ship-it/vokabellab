@@ -1,0 +1,247 @@
+.shared-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.shared-navbar-shell {
+  background: transparent;
+}
+
+.shared-navbar-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.shared-navbar-logo {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+
+.shared-navbar-logo img {
+  height: 34px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.shared-navbar-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0;
+  min-width: 0;
+  flex: 1;
+}
+
+.shared-navbar-link,
+.shared-navbar-dashboard {
+  background: none;
+  border: none;
+  text-decoration: none;
+  transition: color .15s, border-color .15s;
+}
+
+.shared-navbar-dashboard {
+  position: relative;
+}
+
+.shared-navbar--vokabellab {
+  background: #ffffff;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.shared-navbar--vokabellab .shared-navbar-inner {
+  padding: 12px 24px;
+}
+
+.shared-navbar--vokabellab .shared-navbar-logo {
+  gap: 10px;
+  color: #1b1b1b;
+}
+
+.shared-navbar--vokabellab .shared-navbar-logo img {
+  aspect-ratio: 1024 / 1536;
+}
+
+.shared-navbar--vokabellab .shared-navbar-logo span {
+  font-family: "Lato", Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: .4px;
+  color: #1b1b1b;
+}
+
+.shared-navbar--vokabellab .shared-navbar-link,
+.shared-navbar--vokabellab .shared-navbar-dashboard {
+  font-family: "Lato", Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+  color: #1b1b1b;
+  cursor: pointer;
+  padding: 8px 10px;
+}
+
+.shared-navbar--vokabellab .shared-navbar-link:hover {
+  color: #3AA9AB;
+}
+
+.shared-navbar--vokabellab .shared-navbar-link.nav-active {
+  color: #3AA9AB;
+}
+
+.shared-navbar--vokabellab .shared-navbar-dashboard {
+  color: #a4a4a4;
+}
+
+.shared-navbar--vokabellab .shared-navbar-dashboard::after {
+  content: "Coming soon";
+  display: inline-block;
+  margin-left: 6px;
+  font-size: 10px;
+  letter-spacing: .6px;
+  text-transform: none;
+  color: #a4a4a4;
+}
+
+.shared-navbar--vokabellab .shared-navbar-sep {
+  color: #ddd;
+  font-size: 11px;
+}
+
+.shared-navbar--imkontext {
+  background: #f8f4ea;
+  border-top: 3px double #1a1814;
+  border-bottom: 1px solid #d9d0bf;
+  z-index: 50;
+  box-shadow: 0 1px 0 rgba(26, 24, 20, .05);
+}
+
+.shared-navbar--imkontext .shared-navbar-inner {
+  padding: 7px 24px;
+}
+
+.shared-navbar--imkontext .shared-navbar-logo {
+  gap: 8px;
+  color: #1a1814;
+}
+
+.shared-navbar--imkontext .shared-navbar-logo img {
+  border-radius: 4px;
+}
+
+.shared-navbar--imkontext .shared-navbar-logo span {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -.01em;
+  color: #1a1814;
+}
+
+.shared-navbar--imkontext .shared-navbar-logo-im {
+  color: #3AA9AB;
+}
+
+.shared-navbar--imkontext .shared-navbar-link,
+.shared-navbar--imkontext .shared-navbar-dashboard {
+  font-family: "DM Sans", "Lato", Arial, sans-serif;
+  font-size: .68rem;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: #5f594f;
+  cursor: pointer;
+  padding: 6px 10px;
+}
+
+.shared-navbar--imkontext .shared-navbar-link:hover {
+  color: #3AA9AB;
+}
+
+.shared-navbar--imkontext .shared-navbar-link.nav-active {
+  color: #3AA9AB;
+  border-bottom: 2px solid #3AA9AB;
+  padding-bottom: 4px;
+}
+
+.shared-navbar--imkontext .shared-navbar-dashboard {
+  color: #8a8378;
+}
+
+.shared-navbar--imkontext .shared-navbar-dashboard::after {
+  content: "próximamente";
+  display: inline-block;
+  margin-left: 5px;
+  font-size: .58rem;
+  letter-spacing: .05em;
+  text-transform: none;
+  color: #8a8378;
+  opacity: .7;
+}
+
+.shared-navbar--imkontext .shared-navbar-sep {
+  color: #d9d0bf;
+  font-size: .75rem;
+}
+
+@media (max-width: 900px) {
+  .shared-navbar-inner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+  }
+
+  .shared-navbar--vokabellab .shared-navbar-inner {
+    padding: 12px 18px;
+  }
+
+  .shared-navbar--imkontext .shared-navbar-inner {
+    padding: 8px 18px;
+  }
+
+  .shared-navbar-logo {
+    justify-content: center;
+  }
+
+  .shared-navbar-links {
+    justify-content: center;
+    row-gap: 4px;
+  }
+
+  .shared-navbar-sep {
+    display: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .shared-navbar-link,
+  .shared-navbar-dashboard {
+    width: 100%;
+    text-align: center;
+  }
+
+  .shared-navbar--vokabellab .shared-navbar-link,
+  .shared-navbar--vokabellab .shared-navbar-dashboard {
+    padding: 6px 8px;
+  }
+
+  .shared-navbar--imkontext .shared-navbar-link,
+  .shared-navbar--imkontext .shared-navbar-dashboard {
+    padding: 5px 8px;
+  }
+
+  .shared-navbar-dashboard::after {
+    display: block;
+    margin-left: 0;
+    margin-top: 4px;
+  }
+}
