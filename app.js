@@ -16,8 +16,15 @@ Lab.user = Lab.user || {
 };
 Lab.modules = Lab.modules || {
   practiceLoaded: false,
-  practicePromise: null
+  practicePromise: null,
+  sharedCoreLoaded: false
 };
+
+Lab.modules.sharedCoreLoaded = Boolean(
+  window.AnswerUtils &&
+  window.SharedPracticeCore &&
+  window.FlashcardCore
+);
 
 // ── DATOS (vendrán de tu BD) ────────────────────────────
 let words = [];
